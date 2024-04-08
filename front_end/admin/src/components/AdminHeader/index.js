@@ -10,10 +10,10 @@ function AdminHeader() {
       src = "https://th.bing.com/th/id/R.5ca7598094fd31a541a980e0fb9265be?rik=nMPAMw9BVCd%2bVA&riu=http%3a%2f%2fpvpsit.ac.in%2fcomplaintbox%2fadmin.png&ehk=r7gsoK2xBOgEn4Yg77MGh4tjddhzHAGgWe3e%2fR4Zl14%3d&risl=&pid=ImgRaw&r=0"
       />
       <Typography.Title>
-        Admin Header
+        TheGioiDienThoai
       </Typography.Title>
       <Space>
-          <Avatar size="large" icon={<UserOutlined />} />
+          <Avatar size="large" icon={<UserOutlined />} /> Admin  
           
       </Space>
     </div>
