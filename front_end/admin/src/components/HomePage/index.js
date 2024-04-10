@@ -5,7 +5,7 @@ function HomePage() {
   return (
     <div>
         <Typography.Text>
-            This is the admin home page.
+            This is the admin home page!
         </Typography.Text>
     </div>
   )
