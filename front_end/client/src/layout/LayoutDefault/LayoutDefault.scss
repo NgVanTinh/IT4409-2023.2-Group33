@@ -1,0 +1,69 @@
+.layout-default {
+  &__header {
+    background: orange;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+
+  &__main {
+    padding: 20px;
+  }
+
+  &__footer {
+    background: orange;
+    padding: 10px 20px;
+    text-align: center;
+  }
+}
+
+.menu {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+
+    li {
+      margin-left: 20px;
+      position: relative;
+    }
+  }
+
+  &__link {
+    color: #000;
+    text-decoration: none;
+
+    &--active {
+      color: #fff;
+    }
+  }
+
+  &__sub {
+    position: absolute;
+    top: 100%;
+    background: orangered;
+    right: 0;
+    display: none !important;
+    flex-direction: column;
+
+    li {
+      margin-left: 0 !important;
+    }
+
+    a {
+      white-space: nowrap; // khong xuong dong
+      display: block;
+      padding: 4px 10px;
+    }
+
+    a:hover {
+      background-color: white;
+    }
+  }
+
+  li:hover > &__sub {
+    display: flex !important;
+  }
+}
