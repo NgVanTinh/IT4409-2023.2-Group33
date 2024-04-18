@@ -1,63 +1,54 @@
+import { useSelector } from "react-redux";
+import { getCookie } from "../../helpers/cookie";
 import "./LayoutDefault.scss";
 import { Link, NavLink, Outlet } from "react-router-dom";
 
 function LayoutDefautl() {
-  const navLinkActive = (e) => {
-    return e.isActive ? "menu__link menu__link--active" : "menu__link";
-  };
+  const token = getCookie("token");
+  const isLogin = useSelector((state) => state.loginReducer);
 
   return (
     <>
       <div className="layout-default">
         <header className="layout-default__header">
-          <div className="layout-default__logo">Logo</div>
+          <div className="layout-default__logo">
+            <Link to="/">Quiz</Link>
+          </div>
           <div className="menu">
             <ul>
               <li>
-                <NavLink to="/" className={navLinkActive}>
-                  Home
-                </NavLink>
+                <NavLink to="/">Home</NavLink>
               </li>
-              <li>
-                <NavLink to="/about" className={navLinkActive}>
-                  About
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/contact" className={navLinkActive}>
-                  Contact
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/blog" className={navLinkActive}>
-                  Blog
-                </NavLink>
-                <ul className="menu__sub">
+              {token && (
+                <>
                   <li>
-                    <NavLink to="/blog/news" className={navLinkActive}>
-                      Blog News
-                    </NavLink>
+                    <NavLink to="/topic">Topic</NavLink>
                   </li>
                   <li>
-                    <NavLink to="/blog/related" className={navLinkActive}>
-                      Blog Related
-                    </NavLink>
+                    <NavLink to="/answers">Answers</NavLink>
                   </li>
-                </ul>
-              </li>
-              <li>
-                <NavLink to="/info-user" className={navLinkActive}>
-                  Info User
-                </NavLink>
-              </li>
+                </>
+              )}
             </ul>
+          </div>
+          <div className="layout-default__account">
+            {token ? (
+              <>
+                <NavLink to="/logout">Đăng xuất</NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink to="/login">Đăng nhập</NavLink>
+                <NavLink to="/register">Đăng ký</NavLink>
+              </>
+            )}
           </div>
         </header>
         <main className="layout-default__main">
           <Outlet />
         </main>
         <footer className="layout-default__footer">
-          Copyright @ 2023 by Nguyễn Quang Thuận
+          Copyright @ 2024 by Nguyễn Quang Thuận
         </footer>
       </div>
     </>
