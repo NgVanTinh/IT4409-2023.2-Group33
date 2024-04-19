@@ -25,13 +25,13 @@ public class Login {
         if(username != null && password != null) {
             User dbUser = userRepository.findByUsername(username);
             if(dbUser == null) {
-                message = "Không tồn tại username";
+                message = "Username not exist";
                 code = 101;
             } else if (dbUser.getPassword().equals(sha256(password))) {
-                message = "Đăng nhập thành công";
+                message = "Login success";
                 code = 100;
             } else {
-                message = "Sai mật khẩu";
+                message = "Wrong password";
                 code = 102;
             }
         }

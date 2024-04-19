@@ -46,18 +46,18 @@ public class SignUp {
                         userRepository.save(user);
 
                         response.put("code",100);
-                        response.put("message","Đăng ký thành công");
+                        response.put("message","Sign Up complete");
                     } else {
                         response.put("code",102);
-                        response.put("message","Số điện thoại đã tồn tại");
+                        response.put("message","Invalid phone");
                     }
                 } else {
                     response.put("code",103);
-                    response.put("message","Email đã tồn tại");
+                    response.put("message","Invalid Email");
                 }
             } else {
                 response.put("code",101);
-                response.put("message","User name đã tồn tại");
+                response.put("message","Invalid Username");
             }
         } catch (JSONException e) {
             e.printStackTrace();
