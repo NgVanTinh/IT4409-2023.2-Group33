@@ -14,13 +14,14 @@ public class User {
     private String address;
     private String phone;
     private String role;
+    private int isActived;
     private int deleted;
 
     public User() {
 
     }
 
-    public User(String username, String password, String email, String address, String phone, String role, int deleted) {
+    public User(String username, String password, String email, String address, String phone, String role, int deleted, int isActived) {
         this.username = username;
         this.password = password;
         this.deleted = deleted;
@@ -28,6 +29,7 @@ public class User {
         this.address = address;
         this.phone = phone;
         this.role = role;
+        this.isActived = isActived;
     }
 
     public void setId(Long id) {
@@ -72,6 +74,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public int isActived() {
+        return isActived;
+    }
+
+    public void setActived(int actived) {
+        isActived = actived;
     }
 
     public String getPhone() {

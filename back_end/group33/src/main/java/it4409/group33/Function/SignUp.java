@@ -42,7 +42,7 @@ public class SignUp {
                             jsonBody.getString("address"),
                             jsonBody.getString("phone"),
                             jsonBody.getString("role"),
-                            0);
+                            0, 0);
                         userRepository.save(user);
 
                         response.put("code",100);

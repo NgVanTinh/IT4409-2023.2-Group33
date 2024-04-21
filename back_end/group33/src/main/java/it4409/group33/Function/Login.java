@@ -28,11 +28,16 @@ public class Login {
                 message = "Username not exist";
                 code = 101;
             } else if (dbUser.getPassword().equals(sha256(password))) {
-                message = "Login success";
-                code = 100;
+                if(dbUser.isActived() == 1) {
+                    message = "Login success";
+                    code = 100;
+                } else {
+                    message = "Account is not activated";
+                    code = 102;
+                }
             } else {
                 message = "Wrong password";
-                code = 102;
+                code = 103;
             }
         }
 
