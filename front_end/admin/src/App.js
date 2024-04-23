@@ -1,21 +1,16 @@
-import { Space } from 'antd';
 import './App.css';
-import { BrowserRouter} from 'react-router-dom';
-import SideMenu from './components/SideMenu';
-import AdminHeader from './components/AdminHeader';
-import PageContent from './components/PageContent';
-import AdminFooter from './components/AdminFooter';
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
+import Login from './pages/Login';
+import MainLayout from './components/MainLayout';
+import Dashboard from './pages/Dashboard';
 function App() {
   return (
     <BrowserRouter>
-      <div className="App">
-       <AdminHeader/>
-       <Space className='SideMenuAndPageContent'>
-        <SideMenu/>
-        <PageContent/>
-       </Space>
-       <AdminFooter/>
-      </div>
+    <Routes>
+      <Route path='/' element={<Login/>}/>
+      <Route path='/admin' element={<MainLayout/>}/>
+      <Route index element={<Dashboard />} />
+    </Routes>
     </BrowserRouter>
   );
 }
