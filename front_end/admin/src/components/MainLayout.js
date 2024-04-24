@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
-import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, BarChartOutlined } from '@ant-design/icons'
+import { Outlet } from "react-router-dom";
+
+import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined } from '@ant-design/icons'
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
 
-import { Button, Layout, Menu, Space, theme } from 'antd';
+import { Button, Layout, Menu, theme } from 'antd';
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   
@@ -28,34 +30,32 @@ const MainLayout = () => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['']}
-          onClick={(items) =>{
-             navigate(items.key)
+           onClick={({ key }) => {
+            if (key === "signout") {
+            } else {
+              navigate(key);
+            }
           }}  
           items={[
             {
-              key: '/',
+              key: '',
               icon: <DashboardOutlined />,
               label: 'dashboard',
             },
             {
               label: 'Products',
               icon: <ProductOutlined/>,
-              key: '/products'
+              key: 'products'
             },
             {
               label: 'Users',
               icon: <UserOutlined/>,
-              key: '/users'
+              key: 'users'
             },
             {
               label: 'Orders',
               icon: <OrderedListOutlined/>,
-              key: '/orders'
-            },
-            {
-              label: 'Chart',
-              icon: <BarChartOutlined/>,
-              key: '/chart'
+              key: 'orders'
             }
           ]}
         />
@@ -68,8 +68,6 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
-          
-
           <Button
             type="text"
             icon={collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
@@ -82,7 +80,7 @@ const MainLayout = () => {
           />
           <div className='d-flex gap-3 align-items-center'>
             <div></div>
-            <div className='d-flex gap-3 align-items-center' >
+            <div className='d-flex gap-3 align-items-center'>
               <div
               role="button"
                 id="dropdownMenuLink"
@@ -117,7 +115,7 @@ const MainLayout = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          <Outlet/>
         </Content>
       </Layout>
     </Layout>
