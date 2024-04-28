@@ -3,6 +3,9 @@ package it4409.group33.Util;
 import static it4409.group33.Util.Hash.sha256;
 
 public class TimeStamp {
+    public static long getTimestamp() {
+        return System.currentTimeMillis();
+    }
     public static String getTimeX() {
         long unixTimestamp = System.currentTimeMillis() / 1000;
         int result = (int) (unixTimestamp / 180) % 1000000;
