@@ -10,9 +10,12 @@ import {
 // solve sidebar
 import { setSidebarOn } from "../../store/sidebarSlice";
 import { useSelector, useDispatch } from "react-redux";
+// get all categories
+import { getAllCategories } from "../../store/categorySlice";
 
 export default function Navbar() {
   const dispatch = useDispatch();
+  const categories = useSelector(getAllCategories);
 
   return (
     <nav className="navbar">
@@ -51,11 +54,17 @@ export default function Navbar() {
           </div>
 
           <ul className="navbar-nav flex align-center fs-12 fw-4 font-manrope">
-            <li className="nav-item no-wrap">
-              <Link to={"/"} className="nav-link text-capitalize">
-                Category here
-              </Link>
-            </li>
+            {categories.length > 0 &&
+              categories.slice(0, 8).map((category, idx) => (
+                <li className="nav-item no-wrap">
+                  <Link
+                    to={`category/${category}`}
+                    className="nav-link text-capitalize"
+                  >
+                    {category.replace("-", " ")}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </div>
 
