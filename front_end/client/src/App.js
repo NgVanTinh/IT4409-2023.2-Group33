@@ -26,7 +26,16 @@ function App() {
             <Header />
             <Sidebar />
             <Routes>
+              {/* home page route  */}
               <Route path="/" element={<Home />} />
+              {/* single product route  */}
+              <Route path="/product/:id" element={<ProductSingle />} />
+              {/* products in the category route  */}
+              <Route path="/category/:category" element={<CategoryProduct />} />
+              {/* cart route */}
+              <Route path="/cart" element={<Cart />} />
+              {/* search products route  */}
+              <Route path="/search/:searchTerm" element={<Search />} />
             </Routes>
           </BrowserRouter>
         </Provider>
