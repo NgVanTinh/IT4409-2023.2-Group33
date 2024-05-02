@@ -37,6 +37,7 @@ function App() {
               {/* search products route  */}
               <Route path="/search/:searchTerm" element={<Search />} />
             </Routes>
+            <Footer />
           </BrowserRouter>
         </Provider>
       </div>
