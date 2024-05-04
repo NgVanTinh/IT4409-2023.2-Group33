@@ -21,9 +21,9 @@ const MainLayout = () => {
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" > 
-           <h2 className='fs-5 text-center py-3 mb-0'> 
+           <h2 className='fs-7 text-center py-3 mb-0'> 
                 <span className='lg-logo'>Bucky <span className='text-white'>Tank</span> </span>
-                <span className='sm-logo'>B<span className='text-white'>T</span></span>
+                <span className='sm-logo 50px'>B<span className='text-white'>T</span></span>
            </h2>
         </div>
         <Menu
