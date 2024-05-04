@@ -6,7 +6,11 @@ import Dashboard from './pages/Dashboard';
 import ProductPage from './pages/ProductPage';
 import UserPage from './pages/UserPage';
 import OrderPage from './pages/OrderPage';
+import { ColorModeContext, useMode } from './theme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 function App() {
+  const {theme, colorMode} = useMode();
+  
   return (
     <BrowserRouter>
       <Routes>
