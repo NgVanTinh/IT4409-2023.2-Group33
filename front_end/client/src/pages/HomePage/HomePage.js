@@ -71,7 +71,6 @@ export default function HomePage() {
                 )}
               </div>
             </div>
-
             <div className="categories-item">
               <div className="title-md">
                 <h3>{categories[0]}</h3>
