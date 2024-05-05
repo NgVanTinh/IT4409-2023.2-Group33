@@ -2,14 +2,11 @@ import './App.css';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
-import Dashboard from './pages/Dashboard';
-import ProductPage from './pages/ProductPage';
-import UserPage from './pages/UserPage';
-import OrderPage from './pages/OrderPage';
-import { ColorModeContext, useMode } from './theme';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import Dashboard from './pages/dashboard/Dashboard';
+import ProductPage from './pages/product/ProductPage';
+import UserPage from './pages/user/UserPage';
+import OrderPage from './pages/order/OrderPage';
 function App() {
-  const {theme, colorMode} = useMode();
   
   return (
     <BrowserRouter>

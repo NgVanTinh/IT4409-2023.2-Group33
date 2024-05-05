@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
-import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined } from '@ant-design/icons'
+import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, AppstoreAddOutlined } from '@ant-design/icons'
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
 
 import { Button, Layout, Menu, theme } from 'antd';
 const { Header, Sider, Content } = Layout;
+
+
 const MainLayout = () => {
   
   const [collapsed, setCollapsed] = useState(false);
@@ -40,12 +42,19 @@ const MainLayout = () => {
             {
               key: '',
               icon: <DashboardOutlined />,
-              label: 'dashboard',
+              label: 'dashboard'
             },
             {
               label: 'Products',
               icon: <ProductOutlined/>,
-              key: 'products'
+              key: 'products',
+              children: [
+                {
+                  label: 'Add Product',
+                  icon: <AppstoreAddOutlined />,
+                  key: 'product'
+                }
+              ]
             },
             {
               label: 'Users',
@@ -78,6 +87,7 @@ const MainLayout = () => {
               height: 64,
             }}
           />
+          
           <div className='d-flex gap-3 align-items-center'>
             <div></div>
             <div className='d-flex gap-3 align-items-center'>

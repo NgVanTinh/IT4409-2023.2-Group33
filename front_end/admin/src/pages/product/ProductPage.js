@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { tokens } from "../theme";
+import { tokens } from "../../theme";
 import { useTheme } from "@mui/material";
 
 import IconButton from '@mui/material/IconButton';
@@ -11,9 +11,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-import Header from "../components/Header";
+import Header from "../../components/Header";
 
-const OrderPage = () => {
+const ProductPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
     const [movies, setMovies] = useState([]);
@@ -86,7 +86,7 @@ const OrderPage = () => {
 
   return (
   <>
-    <Header title="ORDERS" subtitle="Managing all orders off the shop" />
+    <Header title="PRODUCTS" subtitle="Managing all products of the shop" />
       <Box m="10px">
         <Box
           m="25px 0 0 0"
@@ -136,4 +136,4 @@ const OrderPage = () => {
   );
 };
 
-export default OrderPage;
+export default ProductPage;
