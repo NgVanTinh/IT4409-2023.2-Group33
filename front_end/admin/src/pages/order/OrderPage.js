@@ -1,53 +1,52 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Box } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import React, { useState } from 'react'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Box } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid' 
+import {IconButton} from '@mui/material';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import Header from '../../components/Header';
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material";
-
-import IconButton from '@mui/material/IconButton';
-
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-
-import Header from "../../components/Header";
-
 const OrderPage = () => {
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-    const [movies, setMovies] = useState([]);
+  const [oders, setOrders] = useState([]);
 
-    const loadMovies = async () => {
-        const result = await axios.get(`http://localhost:8080/api/movie/`);
-        setMovies(result.data);
-    }
+  const loadOrder = async () => {
+      const result = await axios.get(`http://localhost:8080/api/movie/`);
+      setOrders(result.data);
+  }
 
-    useEffect(() => {
-        loadMovies();
-    }, []);
+  useEffect(() => {
+      loadOrder();
+  }, []);
 
-    const deleteProduct = async (id) => {
-      await axios.delete(`http://localhost:8080/api/movie/${id}`);
-      loadMovies();
+  // const deleteProduct = async (id) => {
+  //   await axios.delete(`http://localhost:8080/api/movie/${id}`);
+  //   loadOrder();
 
-    }
-     
+  // }
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "id", id:"id", headerName: "ID", flex: 0.5 },
     {
       field: "movieName",
+      id:"movieName",
       headerName: "Movie Name",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "categories",
+      id:"categories",
       headerName: "Categories",
       flex: 1,
     },
     {
       field: "directors",
+      id:"directors",
       headerName: "Directors",
       headerAlign: "left",
       cellClassName: "director-column--cell",
@@ -55,85 +54,89 @@ const OrderPage = () => {
     },
     {
       field: "description",
+      id:"description",
       headerName: "Description",
-      
       flex: 1,
     },
     {
       headerName: "Action",
+      id:"action",
       flex: 1,
       cellClassName: "action-column--cell",
-      renderCell: () => {
+      renderCell: params => {
         return (
           <Box>
-            <IconButton aria-label="view" color="primary">
-              < VisibilityIcon />
-            </IconButton> 
-            <IconButton aria-label="delete" color="error"
-              onClick={() => deleteProduct()}
+            <Link to={`/admin/view-order/${params.row.id}`}>
+              <IconButton aria-label="view" color="primary">
+                < VisibilityOutlinedIcon />
+              </IconButton> 
+            </Link>
+            
+            {/* <IconButton aria-label="delete" color="error"
+              onClick={() => deleteProduct(params.row.id)}
             >
-              <DeleteIcon />
+              <DeleteOutlinedIcon />
             </IconButton> 
-            <IconButton aria-label="edit" color="success">
-              <EditOutlinedIcon />
+            <Link to={`/edit-product/`}>
+              <IconButton aria-label="edit" color="success">
+              <EditOutlinedIcon/>
             </IconButton> 
+            </Link> */}
           </Box>
         );
       },
       
     }
-  ];
-
+  ]
   return (
-  <>
-    <Header title="ORDERS" subtitle="Managing all orders off the shop" />
-      <Box m="10px">
-        <Box
-          m="25px 0 0 0"
-          height="80vh"
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-            "& .name-column--cell": {
-              color: colors.greenAccent[300],
-            },
-            "& .director-column--cell": {
-              color: colors.blueAccent[400],
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
-              // display: "inline-block",
-              backgroundColor: colors.blueAccent[700],
-            },
-            "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
-            },
-          }}
-        >
-          <DataGrid
-            rows={movies}
-            columns={columns} 
-            components={{ Toolbar: GridToolbar }} 
-          />
+    <>
+      <Header title="USERS" subtitle="Managing all users information" />
+        <Box m="20px">
+          <Box
+            m="40px 0 0 0"
+            height="75vh"
+            sx={{
+              "& .MuiDataGrid-root": {
+                border: "none",
+              },
+              "& .MuiDataGrid-cell": {
+                borderBottom: "none",
+              },
+              "& .name-column--cell": {
+                color: colors.greenAccent[300],
+              },
+              "& .phone-column--cell": {
+                color: colors.blueAccent[400],
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: colors.blueAccent[700],
+                borderBottom: "none",
+              },
+              "& .MuiDataGrid-virtualScroller": {
+                backgroundColor: colors.primary[400],
+              },
+              "& .MuiDataGrid-footerContainer": {
+                borderTop: "none",
+                display: "inline-block",
+                backgroundColor: colors.blueAccent[700],
+              },
+              "& .MuiCheckbox-root": {
+                color: `${colors.greenAccent[200]} !important`,
+              },
+              "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                color: `${colors.grey[100]} !important`,
+              },
+            }}
+          >
+            <DataGrid
+              rows={oders}
+              columns={columns}
+            />
+          </Box>
         </Box>
-      </Box>
-  </>
+    </>
     
-  );
-};
+  )
+}
 
-export default OrderPage;
+export default OrderPage

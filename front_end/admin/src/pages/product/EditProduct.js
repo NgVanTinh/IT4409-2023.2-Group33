@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-const EditProduct = () {
+const EditProduct = ({params, rowId, setRowId}) => {
   let navigate = useNavigate();
 
   const { id } = useParams();
@@ -28,16 +28,16 @@ const EditProduct = () {
 
   useEffect(() => {
     loadProduct();
-  }, []);
+  });
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8080/api/products/${id}`, product);
+    await axios.put(`http://localhost:8080/products/${id}`, product);
     navigate("/admin/products");
   };
 
   const loadProduct = async () => {
-    const result = await axios.get(`http://localhost:8080/api/products/${id}`);
+    const result = await axios.get(`http://localhost:8080/products/${id}`);
     setProduct(result.data);
   };
 

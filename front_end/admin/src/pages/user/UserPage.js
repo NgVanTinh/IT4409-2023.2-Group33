@@ -4,10 +4,8 @@ import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-
-import IconButton from '@mui/material/IconButton';
 import Header from "../../components/Header";
+
 
 const UserPage = () => {
   const theme = useTheme();
@@ -55,34 +53,32 @@ const UserPage = () => {
       headerName: "Email",
       flex: 1,
     },
-    {
-      field: "Action",
-      headerName: "Action",
-      flex: 1,
-      cellClassName: "action-column--cell",
-      renderCell: () => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            borderRadius="4px"
-          >
-            
-          <IconButton aria-label="delete" color="error"
-          onClick={() => {
-            console.log("delete");
-          }}
-          >
-             <DeleteIcon />
-          </IconButton>
-          </Box>
-        );
-      },
+    // {
+    //   field: "Action",
+    //   headerName: "Action",
+    //   flex: 1,
+    //   cellClassName: "action-column--cell",
+    //   renderCell: params => {
+    //     return (
+    //       <Box>
+    //         <IconButton aria-label="view" color="primary">
+    //           < VisibilityOutlinedIcon />
+    //         </IconButton> 
+    //         <IconButton aria-label="delete" color="error"
+    //           onClick={() => deleteUser(params.row.id)}
+    //         >
+    //           <DeleteOutlinedIcon />
+    //         </IconButton> 
+    //         <Link to={`/edit-product/`}>
+    //           <IconButton aria-label="edit" color="success">
+    //           <EditOutlinedIcon />
+    //         </IconButton> 
+    //         </Link>
+    //       </Box>
+    //     );
+    //   },
       
-    }
+    // }
   ];
 
   return (

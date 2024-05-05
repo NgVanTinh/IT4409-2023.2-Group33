@@ -1,38 +1,38 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Box } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
-import { useTheme } from "@mui/material";
-
-import IconButton from '@mui/material/IconButton';
-
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, { useState } from 'react'
+import axios from 'axios'
+import { Link } from "react-router-dom";
+import { useEffect } from 'react'
+import { Box } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid' 
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import IconButton from '@mui/material/IconButton';
 import Header from "../../components/Header";
 
-const ProductPage = () => {
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material";
+const OrderPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-    const [movies, setMovies] = useState([]);
 
-    const loadMovies = async () => {
-        const result = await axios.get(`http://localhost:8080/api/movie/`);
-        setMovies(result.data);
-    }
+  const [product, setProduct] = useState([]);
 
-    useEffect(() => {
-        loadMovies();
-    }, []);
+  const loadProduct = async () => {
+      const result = await axios.get(`http://localhost:8080/api/movie/`);
+      setProduct(result.data);
+  }
 
-    const deleteProduct = async (id) => {
-      await axios.delete(`http://localhost:8080/api/movie/${id}`);
-      loadMovies();
+  useEffect(() => {
+      loadProduct();
+  }, []);
 
-    }
-     
+  const deleteProduct = async (id) => {
+    await axios.delete(`http://localhost:8080/api/movie/${id}`);
+    loadProduct();
+
+  }
+
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     {
@@ -63,34 +63,38 @@ const ProductPage = () => {
       headerName: "Action",
       flex: 1,
       cellClassName: "action-column--cell",
-      renderCell: () => {
+      renderCell: params => {
         return (
           <Box>
-            <IconButton aria-label="view" color="primary">
-              < VisibilityIcon />
-            </IconButton> 
+            <Link to={`/admin/view-product/${params.row.id}`}>
+              <IconButton aria-label="view" color="primary">
+                < VisibilityOutlinedIcon />
+              </IconButton> 
+            </Link>
+            
             <IconButton aria-label="delete" color="error"
-              onClick={() => deleteProduct()}
+              onClick={() => deleteProduct(params.row.id)}
             >
-              <DeleteIcon />
+              <DeleteOutlinedIcon />
             </IconButton> 
-            <IconButton aria-label="edit" color="success">
+            <Link to={`/edit-product/`}>
+              <IconButton aria-label="edit" color="success">
               <EditOutlinedIcon />
             </IconButton> 
+            </Link>
           </Box>
         );
       },
       
     }
-  ];
-
+  ]
   return (
-  <>
-    <Header title="PRODUCTS" subtitle="Managing all products of the shop" />
-      <Box m="10px">
+    <>
+      <Header title="USERS" subtitle="Managing all users information" />
+      <Box m="20px">
         <Box
-          m="25px 0 0 0"
-          height="80vh"
+          m="40px 0 0 0"
+          height="75vh"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -101,7 +105,7 @@ const ProductPage = () => {
             "& .name-column--cell": {
               color: colors.greenAccent[300],
             },
-            "& .director-column--cell": {
+            "& .phone-column--cell": {
               color: colors.blueAccent[400],
             },
             "& .MuiDataGrid-columnHeaders": {
@@ -113,7 +117,7 @@ const ProductPage = () => {
             },
             "& .MuiDataGrid-footerContainer": {
               borderTop: "none",
-              // display: "inline-block",
+              display: "inline-block",
               backgroundColor: colors.blueAccent[700],
             },
             "& .MuiCheckbox-root": {
@@ -125,15 +129,13 @@ const ProductPage = () => {
           }}
         >
           <DataGrid
-            rows={movies}
-            columns={columns} 
-            components={{ Toolbar: GridToolbar }} 
+            rows={product}
+            columns={columns}
           />
         </Box>
       </Box>
-  </>
-    
-  );
-};
+    </>
+  )
+}
 
-export default ProductPage;
+export default OrderPage

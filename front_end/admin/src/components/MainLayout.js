@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
-import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, AppstoreAddOutlined } from '@ant-design/icons'
+import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined } from '@ant-design/icons'
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
-
 import { Button, Layout, Menu, theme } from 'antd';
 const { Header, Sider, Content } = Layout;
 
@@ -19,6 +18,8 @@ const MainLayout = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const navigate = useNavigate();
+
+  
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -47,13 +48,17 @@ const MainLayout = () => {
             {
               label: 'Products',
               icon: <ProductOutlined/>,
-              key: 'products',
               children: [
                 {
-                  label: 'Add Product',
+                  label: 'View all products',
+                  icon: <AppstoreOutlined />,
+                  key: 'products'
+                },
+                {
+                  label: 'Add product',
                   icon: <AppstoreAddOutlined />,
-                  key: 'product'
-                }
+                  key: 'add-product'
+                },
               ]
             },
             {
@@ -91,7 +96,7 @@ const MainLayout = () => {
           <div className='d-flex gap-3 align-items-center'>
             <div></div>
             <div className='d-flex gap-3 align-items-center'>
-              <div
+              {/* <div
               role="button"
                 id="dropdownMenuLink"
                 data-bs-toggle="dropdown"
@@ -99,7 +104,7 @@ const MainLayout = () => {
               >
                 <img src='https://th.bing.com/th/id/R.a9722907a8d589d382e5138e48edc2b7?rik=KV0nur0qipcHnA&pid=ImgRaw&r=0' alt=''></img>
                 
-              </div>
+              </div> */}
               <div>
                 <h5>ADMIN</h5>
               </div>
