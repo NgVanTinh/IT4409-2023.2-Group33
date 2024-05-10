@@ -13,20 +13,49 @@ import Loader from "../../components/Loader/Loader";
 import { formatPrice } from "../../utils/helpers";
 
 import { FaMinus, FaPlus, FaShoppingCart } from "react-icons/fa";
-import { addToCart } from "../../store/cartSlice";
+import {
+  addToCart,
+  getCartMessageStatus,
+  setCartMessageOff,
+  setCartMessageOn,
+} from "../../store/cartSlice";
+import CartMessage from "../../components/CartMessage/CartMessage";
 
 export default function ProductSinglePage() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector(getProductSingle);
   const productSingleStatus = useSelector(getProductSingleStatus);
-
   const [quantity, setQuantity] = useState(1);
+  const cartMessageStatus = useSelector(getCartMessageStatus);
 
   // getting single product
   useEffect(() => {
     dispatch(fetchAsyncProductSingle(id));
-  }, [id]);
+
+    if (cartMessageStatus) {
+      setTimeout(() => {
+        dispatch(setCartMessageOff());
+      }, 2000);
+    }
+  }, [cartMessageStatus]);
+
+  // // Xử lý tải thông tin sản phẩm
+  // useEffect(() => {
+  //   dispatch(fetchAsyncProductSingle(id));
+  // }, [id, dispatch]); // Phụ thuộc vào id và dispatch
+
+  // // Xử lý tắt thông báo giỏ hàng
+  // useEffect(() => {
+  //   if (cartMessageStatus) {
+  //     const timer = setTimeout(() => {
+  //       dispatch(setCartMessageOff());
+  //     }, 2000);
+
+  //     // Dọn dẹp khi component bị unmount hoặc trước khi useEffect chạy lại
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [cartMessageStatus, dispatch]);
 
   let discountedPrice = (
     product?.price *
@@ -59,6 +88,7 @@ export default function ProductSinglePage() {
     let totalPrice = quantity * discountedPrice;
 
     dispatch(addToCart({ ...product, quantity, totalPrice, discountedPrice }));
+    dispatch(setCartMessageOn(true));
   };
 
   return (
@@ -211,6 +241,7 @@ export default function ProductSinglePage() {
           </div>
         </div>
       </div>
+      {cartMessageStatus && <CartMessage />}
     </main>
   );
 }
