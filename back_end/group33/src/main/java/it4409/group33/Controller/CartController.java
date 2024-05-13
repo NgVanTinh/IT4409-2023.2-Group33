@@ -92,7 +92,7 @@ public class CartController {
         }
 
     }
-    
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<String> getUserCart(@PathVariable Long userId) {
         Cart cart = cartRepository.findByUserId(userId);
@@ -161,7 +161,7 @@ public class CartController {
         for (int k = 0; k < oldArray.length(); k++) {
             JSONObject item = oldArray.getJSONObject(k);
             int quantity = item.getInt("quantity");
-            if (quantity < 0) {
+            if (quantity <= 0) {
                 oldArray.remove(k);
                 k--; // Adjust index after removal
             }

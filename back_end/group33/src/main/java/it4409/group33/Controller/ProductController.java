@@ -11,12 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Base64;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static it4409.group33.Controller.CloudinaryController.uploadAndGetUrl;
 import static it4409.group33.Util.TimeStamp.getTimestamp;
 
 @RestController
@@ -152,28 +152,6 @@ public class ProductController {
         }
     }
 
-
-
-    @PostMapping("/test")
-    public ResponseEntity<String> uploadImageAndData(
-            @RequestParam("image") MultipartFile image,
-            @RequestParam("data") String jsonData) {
-        if (image.isEmpty()) {
-            return ResponseEntity.badRequest().body("Please upload an image");
-        }
-
-        try {
-            String base64Image = Base64.getEncoder().encodeToString(image.getBytes());
-            JSONObject jsonObject = new JSONObject(jsonData);
-            System.out.println("Base64 Image: " + base64Image);
-            System.out.println("JSON Data: " + jsonObject);
-            return ResponseEntity.ok("Image and JSON data received successfully");
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while processing the image");
-        }
-    }
-
     public JSONObject filterProduct(String select, Product product) {
         JSONObject productObj = new JSONObject();
         try {
@@ -267,5 +245,35 @@ public class ProductController {
         return response.toString();
     }
 
+    @PostMapping("test")
+    public ResponseEntity<Product> createProduct(@RequestParam("thumbnail") MultipartFile thumbnail,
+                                                 @RequestParam("image") List<MultipartFile> images,
+                                                 @RequestParam("title") String title,
+                                                 @RequestParam("description") String description,
+                                                 @RequestParam("price") Double price,
+                                                 @RequestParam("discountPercentage") Double discountPercentage,
+                                                 @RequestParam("rating") Double rating,
+                                                 @RequestParam("stock") Integer stock,
+                                                 @RequestParam("brand") String brand,
+                                                 @RequestParam("category") String category
+    ){
 
+        List<String> X = new ArrayList<>();
+
+        String thumb = uploadAndGetUrl(thumbnail);
+        if(thumb.equals("Upload failed")) {
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        for (MultipartFile image : images) {
+            String tmp = uploadAndGetUrl(image);
+            if(!tmp.equals("Upload failed")) {
+                X.add(tmp);
+            }
+        }
+
+        Product product = new Product(title,description,price,discountPercentage,rating,stock,brand,category,thumb,X);
+        productRepository.save(product);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
+    }
 }
