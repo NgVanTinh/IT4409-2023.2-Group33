@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+
+import { Button, Modal } from "antd"; // import Modal from antd
+
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Box } from '@mui/material'
@@ -8,15 +11,22 @@ import {IconButton} from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import TopHeader from '../../components/TopHeader';
 const OrderPage = () => {
-  const [oders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [order, setOrder] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false); // state để điều khiển việc hiển thị của hộp thoại
 
-  const loadOrder = async () => {
+  const loadOrders = async () => {
       const result = await axios.get(`http://localhost:8080/api/movie/`);
       setOrders(result.data);
   }
 
+  const loadOrder = async (id) => {
+      const result = await axios.get(`http://localhost:8080/api/movie/${id}`);
+      setOrder(result.data);
+  }
+
   useEffect(() => {
-      loadOrder();
+      loadOrders();
   }, []);
 
   // const deleteProduct = async (id) => {
@@ -61,11 +71,16 @@ const OrderPage = () => {
       renderCell: params => {
         return (
           <Box>
-            <Link to={`/admin/view-order/${params.row.id}`}>
-              <IconButton aria-label="view" color="primary">
-                < VisibilityOutlinedIcon />
-              </IconButton> 
-            </Link>
+            <IconButton aria-label="view" color="primary"
+              onClick={() => {
+                // let id = params.row.id ? params.row.id : null;
+                
+                loadOrder(params.row.id);
+                setModalVisible(true);
+              }}
+            >
+              < VisibilityOutlinedIcon />
+            </IconButton> 
             
             {/* <IconButton aria-label="delete" color="error"
               onClick={() => deleteProduct(params.row.id)}
@@ -124,11 +139,25 @@ const OrderPage = () => {
             }}
           >
             <DataGrid
-              rows={oders}
+              rows={orders}
               columns={columns}
             />
           </Box>
         </Box>
+
+        <Modal
+            title="Order Information" // Tiêu đề của hộp thoại
+            visible={modalVisible} // State để điều khiển việc hiển thị của hộp thoại
+            onCancel={() => setModalVisible(false)} // Callback khi hủy bỏ hộp thoại
+            footer={[ // Các nút chức năng
+              <Button key="back" onClick={() => setModalVisible(false)}>Close</Button>
+            ]}
+          >
+            {/* Nội dung của hộp thoại */}
+            <p><b>Name:</b> {order ? order.movieName : null}</p>
+            <p><b>Directors:</b> {order ? order.directors : null}</p>
+            <p><b>Actors:</b> {order ? order.actors : null}</p>
+          </Modal>
     </>
     
   )

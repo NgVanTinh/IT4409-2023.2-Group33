@@ -1,36 +1,29 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd"; // import Modal from antd
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const ViewOrder = () => {
   const navigate = useNavigate();
-  const [order, setOrder] = useState(null); // Changed from const {order, setOrder} = useState(); to const [order, setOrder] = useState(null);
+  const [order, setOrder] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false); // state để điều khiển việc hiển thị của hộp thoại
   const config = {
     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   };
   const { id } = useParams();
 
   useEffect(() => {
-    console.log('4');
     loadOrder();
-    // if (localStorage.getItem('token') == null) {
-    //         navigate("/");
-    // }
-  }, []); // Added [] as the second argument to useEffect to ensure it runs only once on component mount
+  }, []);
 
   const loadOrder = async () => {
     try {
       const result = await axios.get(`http://localhost:8080/api/movie/${id}`, config);
-      console.log('2');
       setOrder(result.data);
     } catch (error) {
-      console.log('3');
       console.error('Error fetching order:', error);
     }
   };
-
-  console.log(order);
 
   return (
     <div className="container">
@@ -40,29 +33,44 @@ const ViewOrder = () => {
 
           <div className="card">
             <div className="card-header">
-              Details of order : {order ? order.id : null} {/* Added null check */}
+              Details of order : {order ? order.id : null}
               <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                   <b>Name:</b>
-                  {order ? order.movieName : null} {/* Added null check */}
+                  {order ? order.movieName : null}
                 </li>
                 <li className="list-group-item">
                   <b>Directors:</b>
-                  {order ? order.directors : null} {/* Added null check */}
+                  {order ? order.directors : null}
                 </li>
                 <li className="list-group-item">
                   <b>Actors:</b>
-                  {order ? order.actors : null} {/* Added null check */}
+                  {order ? order.actors : null}
                 </li>
               </ul>
             </div>
           </div>
-          <Link
+          <Button
             className="btn btn-primary my-2"
-            to="/admin/orders"
+            onClick={() => setModalVisible(true)} // Khi nút được bấm, hiển thị hộp thoại bằng cách set state là true
           >
-            Back 
-          </Link>
+            Show Info
+          </Button>
+
+          {/* Modal component */}
+          <Modal
+            title="Order Information" // Tiêu đề của hộp thoại
+            visible={modalVisible} // State để điều khiển việc hiển thị của hộp thoại
+            onCancel={() => setModalVisible(false)} // Callback khi hủy bỏ hộp thoại
+            footer={[ // Các nút chức năng
+              <Button key="back" onClick={() => setModalVisible(false)}>Close</Button>
+            ]}
+          >
+            {/* Nội dung của hộp thoại */}
+            <p><b>Name:</b> {order ? order.movieName : null}</p>
+            <p><b>Directors:</b> {order ? order.directors : null}</p>
+            <p><b>Actors:</b> {order ? order.actors : null}</p>
+          </Modal>
         </div>
       </div>
     </div>

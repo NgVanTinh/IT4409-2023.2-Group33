@@ -26,7 +26,7 @@ function App() {
           <Route path='add-product' element={<AddProduct />}/>
           <Route path='users' element={<UserPage/>}/>
           <Route path='orders' element={<OrderPage/>}/>
-          <Route path='view-order/:id' element={<ViewOrder/>}/>
+          {/* <Route path='view-order/:id' element={<ViewOrder/>}/> */}
         </Route>
         
       </Routes>
