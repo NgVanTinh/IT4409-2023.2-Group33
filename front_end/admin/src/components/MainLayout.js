@@ -8,15 +8,12 @@ import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import { Button, Layout, Menu, theme } from 'antd';
+
 const { Header, Sider, Content } = Layout;
 
-
-const MainLayout = () => {
-  
+const MainLayout = () => {  
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+
   const navigate = useNavigate();
 
   
@@ -79,7 +76,6 @@ const MainLayout = () => {
           className="d-flex justify-content-between ps-1 pe-5"
           style={{
             padding: 0,
-            background: colorBgContainer,
           }}
         >
           <Button
@@ -94,40 +90,44 @@ const MainLayout = () => {
           />
           
           <div className='d-flex gap-3 align-items-center'>
-            <div></div>
-            <div className='d-flex gap-3 align-items-center'>
-              {/* <div
-              role="button"
+            <div>
+              
+            </div>
+            <div theme="light" className='d-flex gap-3 align-items-center'>
+              <div
+                role="button"
                 id="dropdownMenuLink"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                style={{
+                  fontSize: '30px',
+                  width: 64,
+                  height: 64,
+                }}
               >
-                <img src='https://th.bing.com/th/id/R.a9722907a8d589d382e5138e48edc2b7?rik=KV0nur0qipcHnA&pid=ImgRaw&r=0' alt=''></img>
-                
-              </div> */}
-              <div>
-                <h5>ADMIN</h5>
+                  
+                    <UserOutlined/>
+                  
               </div>
+              
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                   <Link
-                    className="dropdown-item py-1 mb-1"
-                    style={{ height: "auto", lineHeight: "20px" }}
+                    className="dropdown-item"
+                    style={{height: "auto", lineHeight: "15px" }}
                     to="/"
                   >
                     Signout
                   </Link>
               </div>
             </div>
-
-          </div>
+          </div> 
         </Header>
+
         <Content
           style={{
             margin: '24px 16px',
             padding: 24,
             minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
           }}
         >
           <Outlet/>
@@ -137,3 +137,4 @@ const MainLayout = () => {
   );
 };
 export default MainLayout;
+

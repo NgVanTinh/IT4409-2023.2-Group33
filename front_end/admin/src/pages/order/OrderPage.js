@@ -90,7 +90,7 @@ const OrderPage = () => {
   ]
   return (
     <>
-      <Header title="USERS" subtitle="Managing all users information" />
+      <Header title="ORDERS" subtitle="Managing all orders" />
         <Box m="20px">
           <Box
             m="40px 0 0 0"

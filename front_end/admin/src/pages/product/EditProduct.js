@@ -33,7 +33,7 @@ const EditProduct = ({params, rowId, setRowId}) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     await axios.put(`http://localhost:8080/products/${id}`, product);
-    navigate("/admin/products");
+    navigate(`/admin/view-product/${id}`);
   };
 
   const loadProduct = async () => {

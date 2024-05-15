@@ -1,23 +1,45 @@
 import { useState, useEffect } from "react";
+import { Link , useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Box } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, Button, Typography } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material";
 import Header from "../../components/Header";
-
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import IconButton from "@mui/material/IconButton";
+// import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+// import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+// import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+// import IconButton from '@mui/material/IconButton';
 
 const UserPage = () => {
   const theme = useTheme();
+  const navigate = useNavigate()
   const colors = tokens(theme.palette.mode);
-    const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [isLocked, setIsLocked] = useState(false);
+    const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    };
 
     const loadUsers = async () => {
-        const result = await axios.get(`http://localhost:8080/api/user/`);
+        const result = await axios.get(`http://localhost:8080/api/user/`, config);
         setUsers(result.data);
+        //  InstanceAxios.get('/user/', config)
+        //     .then(function (response) {
+        //         setUsers(response.data);
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     })
+        
     }
 
     useEffect(() => {
+        if (localStorage.getItem('token') == null) {
+            navigate("/login");
+        }
         loadUsers();
     }, []);
 
@@ -53,32 +75,36 @@ const UserPage = () => {
       headerName: "Email",
       flex: 1,
     },
-    // {
-    //   field: "Action",
-    //   headerName: "Action",
-    //   flex: 1,
-    //   cellClassName: "action-column--cell",
-    //   renderCell: params => {
-    //     return (
-    //       <Box>
-    //         <IconButton aria-label="view" color="primary">
-    //           < VisibilityOutlinedIcon />
-    //         </IconButton> 
-    //         <IconButton aria-label="delete" color="error"
-    //           onClick={() => deleteUser(params.row.id)}
-    //         >
-    //           <DeleteOutlinedIcon />
-    //         </IconButton> 
-    //         <Link to={`/edit-product/`}>
-    //           <IconButton aria-label="edit" color="success">
-    //           <EditOutlinedIcon />
-    //         </IconButton> 
-    //         </Link>
-    //       </Box>
-    //     );
-    //   },
-      
-    // }
+    {
+    field: "action",
+      headerName: "Action",
+      flex: 1,
+      cellClassName: "action-column--cell",
+      renderCell: params => {
+        return (
+          <Button
+            // onClick={() => handleActive(params.row.id)}
+          >
+            <Box
+            width="100%"
+            m="0 auto"
+            p="5px"
+            display="flex"
+            justifyContent="center"
+            backgroundColor = {colors.greenAccent[500]}
+            borderRadius="4px"
+          >
+                <LockOutlinedIcon color={colors.grey[200]} />
+             
+            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
+              Lock
+            </Typography>
+          </Box>
+          </Button>
+          
+        );
+      },
+    }
   ];
 
   return (
@@ -124,7 +150,6 @@ const UserPage = () => {
           <DataGrid
             rows={users}
             columns={columns}
-            components={{ Toolbar: GridToolbar }}
           />
         </Box>
       </Box>

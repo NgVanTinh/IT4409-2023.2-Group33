@@ -18,11 +18,23 @@ const OrderPage = () => {
 
   const [product, setProduct] = useState([]);
 
-  const loadProduct = async () => {
-      const result = await axios.get(`http://localhost:8080/api/movie/`);
-      setProduct(result.data);
-  }
+  // const loadProduct = async () => {
+  //     const result = await axios.get(`https://dummyjson.com/products`);
+  //     setProduct(result.data);
+  // }
 
+  const loadProduct = async () => {
+    try {
+      const response = await fetch('https://dummyjson.com/products?limit=10');
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setProduct(data);
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
   useEffect(() => {
       loadProduct();
   }, []);
@@ -36,21 +48,21 @@ const OrderPage = () => {
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     {
-      field: "movieName",
-      headerName: "Movie Name",
+      field: "title",
+      headerName: "Title",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "categories",
-      headerName: "Categories",
+      field: "brand",
+      headerName: "Brand",
       flex: 1,
     },
     {
-      field: "directors",
-      headerName: "Directors",
+      field: "price",
+      headerName: "Price",
       headerAlign: "left",
-      cellClassName: "director-column--cell",
+      cellClassName: "price-column--cell",
       align: "left",
     },
     {
@@ -66,22 +78,24 @@ const OrderPage = () => {
       renderCell: params => {
         return (
           <Box>
-            <Link to={`/admin/view-product/${params.row.id}`}>
-              <IconButton aria-label="view" color="primary">
-                < VisibilityOutlinedIcon />
-              </IconButton> 
-            </Link>
-            
             <IconButton aria-label="delete" color="error"
               onClick={() => deleteProduct(params.row.id)}
             >
               <DeleteOutlinedIcon />
             </IconButton> 
+
+            <Link to={`/admin/view-product/${params.row.id}`}>
+              <IconButton aria-label="view" color="primary">
+                < VisibilityOutlinedIcon />
+              </IconButton> 
+            </Link>
+
             <Link to={`/edit-product/`}>
               <IconButton aria-label="edit" color="success">
               <EditOutlinedIcon />
             </IconButton> 
             </Link>
+
           </Box>
         );
       },
@@ -90,7 +104,7 @@ const OrderPage = () => {
   ]
   return (
     <>
-      <Header title="USERS" subtitle="Managing all users information" />
+      <Header title="PRODUCTS" subtitle="Managing all products " />
       <Box m="20px">
         <Box
           m="40px 0 0 0"
