@@ -1,43 +1,36 @@
+import { Button } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate  } from "react-router-dom";
-import InstanceAxios from "../../api/axios";
+import { useParams, useNavigate, Link } from "react-router-dom";
+
 const ViewOrder = () => {
-
-  const navigate = useNavigate()
-  const {order, setOrder} = useState({
-  });
+  const navigate = useNavigate();
+  const [order, setOrder] = useState(null); // Changed from const {order, setOrder} = useState(); to const [order, setOrder] = useState(null);
   const config = {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    };
-  const {linkid} = useParams();
-
-  // const loadOrder = async () => {
-    
-  //   const result = await axios.get(`http://localhost:8080/user/${id}`);
-  //   setOrder(result.data);
-  // };
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  };
+  const { id } = useParams();
 
   useEffect(() => {
-    // loadOrder();
-    if (localStorage.getItem('token') == null) {
-            navigate("/");
-        }
+    console.log('4');
+    loadOrder();
+    // if (localStorage.getItem('token') == null) {
+    //         navigate("/");
+    // }
+  }, []); // Added [] as the second argument to useEffect to ensure it runs only once on component mount
 
-    // InstanceAxios.get(`/movie/${linkid}`, config)
-    //     .then(function (response) {
-    //         setOrder(response.data)
-    //         console.log(response.data);
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    const getData = async() => {
-    const result = await axios.get(`http://localhost:8080/api/movie/${linkid}`)
-    setOrder(result.data);
+  const loadOrder = async () => {
+    try {
+      const result = await axios.get(`http://localhost:8080/api/movie/${id}`, config);
+      console.log('2');
+      setOrder(result.data);
+    } catch (error) {
+      console.log('3');
+      console.error('Error fetching order:', error);
+    }
   };
-})
 
+  console.log(order);
 
   return (
     <div className="container">
@@ -47,30 +40,33 @@ const ViewOrder = () => {
 
           <div className="card">
             <div className="card-header">
-              {/* Details of order : {order.id} */}
+              Details of order : {order ? order.id : null} {/* Added null check */}
               <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                   <b>Name:</b>
-                  {/* {order.movieName} */}
+                  {order ? order.movieName : null} {/* Added null check */}
                 </li>
                 <li className="list-group-item">
                   <b>Directors:</b>
-                  {/* {order.directors} */}
+                  {order ? order.directors : null} {/* Added null check */}
                 </li>
                 <li className="list-group-item">
                   <b>Actors:</b>
-                  {/* {order.actors} */}
+                  {order ? order.actors : null} {/* Added null check */}
                 </li>
               </ul>
             </div>
           </div>
-          <Link className="btn btn-primary my-2" to={"/admin/orders"}>
-            Back to Home
+          <Link
+            className="btn btn-primary my-2"
+            to="/admin/orders"
+          >
+            Back 
           </Link>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ViewOrder;

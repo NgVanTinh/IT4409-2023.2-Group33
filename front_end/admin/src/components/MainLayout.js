@@ -7,7 +7,7 @@ import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, 
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
-import { Button, Layout, Menu, theme } from 'antd';
+import { Button, Layout, Menu } from 'antd';
 
 const { Header, Sider, Content } = Layout;
 
@@ -19,11 +19,15 @@ const MainLayout = () => {
   
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider theme='dark' trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" > 
            <h2 className='fs-7 text-center py-3 mb-0'> 
-                <span className='lg-logo'>Bucky <span className='text-white'>Tank</span> </span>
-                <span className='sm-logo 50px'>B<span className='text-white'>T</span></span>
+           {!collapsed 
+           ? 
+              <span className='lg-logo'>Bucky <span className='text-white'>Tank</span> </span>
+           :
+              <span className='sm-logo 50px'>B<span className='text-white'>T</span></span>
+           }    
            </h2>
         </div>
         <Menu
@@ -73,6 +77,7 @@ const MainLayout = () => {
       </Sider>
       <Layout>
         <Header
+        theme = "default"
           className="d-flex justify-content-between ps-1 pe-5"
           style={{
             padding: 0,
@@ -137,4 +142,3 @@ const MainLayout = () => {
   );
 };
 export default MainLayout;
-

@@ -6,13 +6,8 @@ import { Box } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid' 
 import {IconButton} from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import Header from '../../components/Header';
-import { tokens } from "../../theme";
-import { useTheme } from "@mui/material";
+import TopHeader from '../../components/TopHeader';
 const OrderPage = () => {
-
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const [oders, setOrders] = useState([]);
 
   const loadOrder = async () => {
@@ -90,7 +85,7 @@ const OrderPage = () => {
   ]
   return (
     <>
-      <Header title="ORDERS" subtitle="Managing all orders" />
+      <TopHeader title="ORDERS" subtitle="Managing all orders" />
         <Box m="20px">
           <Box
             m="40px 0 0 0"
@@ -103,28 +98,28 @@ const OrderPage = () => {
                 borderBottom: "none",
               },
               "& .name-column--cell": {
-                color: colors.greenAccent[300],
+                color:  "#94e2cd",
               },
               "& .phone-column--cell": {
-                color: colors.blueAccent[400],
+                color:  "#868dfb",
               },
               "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: colors.blueAccent[700],
+                backgroundColor: "#3e4396",
                 borderBottom: "none",
               },
               "& .MuiDataGrid-virtualScroller": {
-                backgroundColor: colors.primary[400],
+                backgroundColor: "#fff",
               },
               "& .MuiDataGrid-footerContainer": {
                 borderTop: "none",
                 display: "inline-block",
-                backgroundColor: colors.blueAccent[700],
+                backgroundColor: "#1890ff",
               },
               "& .MuiCheckbox-root": {
-                color: `${colors.greenAccent[200]} !important`,
+                color: `#b7ebde !important`,
               },
               "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `${colors.grey[100]} !important`,
+                color: `#e0e0e0 !important`,
               },
             }}
           >

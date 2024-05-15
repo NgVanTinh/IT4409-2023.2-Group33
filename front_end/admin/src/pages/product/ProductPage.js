@@ -8,14 +8,9 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
-import Header from "../../components/Header";
+import TopHeader from "../../components/TopHeader";
 
-import { tokens } from "../../theme";
-import { useTheme } from "@mui/material";
 const OrderPage = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
   const [product, setProduct] = useState([]);
 
   // const loadProduct = async () => {
@@ -104,7 +99,7 @@ const OrderPage = () => {
   ]
   return (
     <>
-      <Header title="PRODUCTS" subtitle="Managing all products " />
+      <TopHeader title="PRODUCTS" subtitle="Managing all products " />
       <Box m="20px">
         <Box
           m="40px 0 0 0"
@@ -117,28 +112,28 @@ const OrderPage = () => {
               borderBottom: "none",
             },
             "& .name-column--cell": {
-              color: colors.greenAccent[300],
+              color: "#94e2cd",
             },
             "& .phone-column--cell": {
-              color: colors.blueAccent[400],
+              color: "#868dfb",
             },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
+              backgroundColor: "#3e4396",
               borderBottom: "none",
             },
             "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
+              backgroundColor: "#f2f0f0",
             },
             "& .MuiDataGrid-footerContainer": {
               borderTop: "none",
               display: "inline-block",
-              backgroundColor: colors.blueAccent[700],
+              backgroundColor: "#1890ff",
             },
             "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
+              color: "#b7ebde !important",
             },
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
+              color: `"#e0e0e0" !important`,
             },
           }}
         >

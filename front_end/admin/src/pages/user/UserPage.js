@@ -1,22 +1,17 @@
 import { useState, useEffect } from "react";
-import { Link , useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
-import { useTheme } from "@mui/material";
-import Header from "../../components/Header";
+import TopHeader from "../../components/TopHeader";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import IconButton from "@mui/material/IconButton";
 // import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 // import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 // import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 // import IconButton from '@mui/material/IconButton';
 
 const UserPage = () => {
-  const theme = useTheme();
   const navigate = useNavigate()
-  const colors = tokens(theme.palette.mode);
   const [users, setUsers] = useState([]);
   const [isLocked, setIsLocked] = useState(false);
     const config = {
@@ -24,7 +19,7 @@ const UserPage = () => {
     };
 
     const loadUsers = async () => {
-        const result = await axios.get(`http://localhost:8080/api/user/`, config);
+        const result = await axios.get(`http://localhost:8080/api/user/`);
         setUsers(result.data);
         //  InstanceAxios.get('/user/', config)
         //     .then(function (response) {
@@ -91,12 +86,12 @@ const UserPage = () => {
             p="5px"
             display="flex"
             justifyContent="center"
-            backgroundColor = {colors.greenAccent[500]}
+            backgroundColor = "#4cceac"
             borderRadius="4px"
           >
-                <LockOutlinedIcon color={colors.grey[200]} />
+                <LockOutlinedIcon color="#c2c2c2" />
              
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
+            <Typography color="#e0e0e0" sx={{ ml: "5px" }}>
               Lock
             </Typography>
           </Box>
@@ -109,7 +104,7 @@ const UserPage = () => {
 
   return (
     <>
-      <Header title="USERS" subtitle="Managing all users information" />
+      <TopHeader title="USERS" subtitle="Managing all users information" />
       <Box m="20px">
         <Box
           m="40px 0 0 0"
@@ -122,28 +117,28 @@ const UserPage = () => {
               borderBottom: "none",
             },
             "& .name-column--cell": {
-              color: colors.greenAccent[300],
+              color: "#a3a3a3",
             },
             "& .phone-column--cell": {
-              color: colors.blueAccent[400],
+              color: "#868dfb",
             },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
+              backgroundColor: "#3e4396",
               borderBottom: "none",
             },
             "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
+              backgroundColor: "#fff",
             },
             "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
+              // borderTop: "none",
               display: "inline-block",
-              backgroundColor: colors.blueAccent[700],
+              backgroundColor: "#1890ff",
             },
             "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
+              color: `#b7ebde !important`,
             },
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
+              color: `#e0e0e0 !important`,
             },
           }}
         >

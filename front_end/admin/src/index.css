@@ -2,30 +2,32 @@
 
 body,
 html,
-#root, .content, .app {
+#root,
+.content,
+.app {
   height: 100%;
   width: 100%;
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-app{
+app {
   display: flex;
   position: relative;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   width: 10px;
 }
 
-::-webkit-scrollbar-track{
+::-webkit-scrollbar-track {
   background: #e0e0e0;
 }
 
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   background: #888;
 }
 
-::-webkit-scrollbar-track:hover{
+::-webkit-scrollbar-track:hover {
   background: #555;
 }
 
@@ -95,6 +97,9 @@ main::-webkit-scrollbar {
 
 .ant-menu-title-content {
   font-size: 16px;
+}
+.ant-layout-header{
+  background-color: #ffff;
 }
 
 .ant-layout-header h5 {
