@@ -18,6 +18,7 @@ import {
   getCartItemsCount,
   getCartTotal,
 } from "../../store/cartSlice";
+import CartModal from "../CartModal/CartModal";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -84,6 +85,7 @@ export default function Navbar() {
           <Link to="/cart" className="cart-btn">
             <FaCartShopping />
             <div className="cart-items-value">{itemsCount}</div>
+            <CartModal carts={carts} />
           </Link>
         </div>
       </div>
