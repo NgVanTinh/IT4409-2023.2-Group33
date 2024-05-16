@@ -4,93 +4,108 @@ import { Link } from "react-router-dom";
 import { useEffect } from 'react'
 import { Box } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid' 
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import TopHeader from "../../components/TopHeader";
+import { Button, Modal } from 'antd';
+import { Carousel } from 'antd';
+import { Image } from 'antd';
+import { Space, Typography } from 'antd';
+const { Text } = Typography;
 
 const OrderPage = () => {
   const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false); 
 
-  // const loadProduct = async () => {
-  //     const result = await axios.get(`https://dummyjson.com/products`);
-  //     setProduct(result.data);
-  // }
-
-  const loadProduct = async () => {
-    try {
-      const response = await fetch('https://dummyjson.com/products?limit=10');
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      const data = await response.json();
-      setProduct(data);
-    } catch (error) {
-      console.error('Error fetching data:', error.message);
-    }
+  const loadProducts = async () => {
+        const result = await axios.get(`https://dummyjson.com/products?limit=50`);
+        const {products} = result.data;
+        setProducts(products);
   };
+
+  const loadProduct = async (id) => {
+        const result = await axios.get(`https://dummyjson.com/products/${id}`);
+        // const {dataProduct } = result.data;
+        setProduct(result.data);
+  }
+
   useEffect(() => {
-      loadProduct();
+      loadProducts();
   }, []);
 
   const deleteProduct = async (id) => {
-    await axios.delete(`http://localhost:8080/api/movie/${id}`);
-    loadProduct();
-
+    await axios.delete(`https://dummyjson.com/products/${id}`);
+    loadProducts();
   }
 
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
+    { 
+      field: "id",
+      key: "id",
+      headerName: "ID", 
+      flex: 0.5 },
     {
       field: "title",
+      key: "title",
       headerName: "Title",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "brand",
+      key: "brand",
       headerName: "Brand",
       flex: 1,
     },
     {
+      field: "category",
+      key: "category",
+      headerName: "Category",
+      flex: 1,
+    },
+    {
       field: "price",
+      key: "price",
       headerName: "Price",
       headerAlign: "left",
       cellClassName: "price-column--cell",
       align: "left",
     },
     {
-      field: "description",
-      headerName: "Description",
-      
-      flex: 1,
-    },
-    {
       headerName: "Action",
+      key: "action",
       flex: 1,
       cellClassName: "action-column--cell",
       renderCell: params => {
+        // console.log(params.row.id);
         return (
           <Box>
-            <IconButton aria-label="delete" color="error"
-              onClick={() => deleteProduct(params.row.id)}
+            <IconButton aria-label="view" color="primary"
+              
+              onClick={() => {
+                // console.log(params.row.id);
+                loadProduct(params.row.id);
+                setModalVisible(true);
+              }} 
             >
-              <DeleteOutlinedIcon />
+              < VisibilityIcon />
             </IconButton> 
-
-            <Link to={`/admin/view-product/${params.row.id}`}>
-              <IconButton aria-label="view" color="primary">
-                < VisibilityOutlinedIcon />
-              </IconButton> 
-            </Link>
 
             <Link to={`/edit-product/`}>
               <IconButton aria-label="edit" color="success">
-              <EditOutlinedIcon />
+              <EditIcon />
             </IconButton> 
             </Link>
-
+            <IconButton aria-label="delete" color="error"
+              onClick={() => {
+                  deleteProduct(params.row.id);
+                }} 
+            >
+              <DeleteIcon />
+            </IconButton> 
           </Box>
         );
       },
@@ -112,7 +127,7 @@ const OrderPage = () => {
               borderBottom: "none",
             },
             "& .name-column--cell": {
-              color: "#94e2cd",
+              color: "#12509C",
             },
             "& .phone-column--cell": {
               color: "#868dfb",
@@ -138,11 +153,45 @@ const OrderPage = () => {
           }}
         >
           <DataGrid
-            rows={product}
+            rows={products}
             columns={columns}
           />
         </Box>
       </Box>
+
+      <Modal
+            // title="Product Information"
+            visible={modalVisible}
+            onCancel={() => setModalVisible(false)} 
+            footer={[ 
+              <Button className="btn btn-primary py-1" key="back" onClick={() => setModalVisible(false)}>
+                  Close
+              </Button>
+            ]}
+          >
+            {/* Nội dung của hộp thoại */}
+            <Carousel arrows infinite={false} dotWidth={20}>
+                {product.images && product.images.map((imageUrl, index) => (
+                  <Image
+                    key={index} 
+                    width={476}
+                    height={300}
+                    src={imageUrl}
+                    alt={`Product Image ${index + 1}`}
+                  />
+                ))}
+            </Carousel>
+            <br/>
+            <Space direction="vertical">
+              <Text type="secondary">ID: <Text strong>{product ? product.id : null}</Text></Text>
+              <Text type="secondary">TITLE: <Text strong>{product ? product.title : null}</Text></Text>
+              <Text type="secondary">BRAND: <Text strong>{product ? product.brand : null}</Text></Text>
+              <Text type="secondary">CATEGORY: <Text strong>{product ? product.category : null}</Text></Text>
+              <Text type="secondary">DESCRIPTION: <Text strong>{product ? product.description : null}</Text></Text>
+              <Text type="secondary">STOCK: <Text strong>{product ? product.stock : null}</Text></Text>
+              <Text type="secondary">PRICE: <Text strong>{product ? product.price : null} $</Text></Text>
+            </Space>
+          </Modal>
     </>
   )
 }

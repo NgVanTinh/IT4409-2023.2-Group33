@@ -29,11 +29,7 @@ const OrderPage = () => {
       loadOrders();
   }, []);
 
-  // const deleteProduct = async (id) => {
-  //   await axios.delete(`http://localhost:8080/api/movie/${id}`);
-  //   loadOrder();
-
-  // }
+  
   const columns = [
     { field: "id", id:"id", headerName: "ID", flex: 0.5 },
     {
@@ -146,11 +142,13 @@ const OrderPage = () => {
         </Box>
 
         <Modal
-            title="Order Information" // Tiêu đề của hộp thoại
-            visible={modalVisible} // State để điều khiển việc hiển thị của hộp thoại
-            onCancel={() => setModalVisible(false)} // Callback khi hủy bỏ hộp thoại
-            footer={[ // Các nút chức năng
-              <Button key="back" onClick={() => setModalVisible(false)}>Close</Button>
+            title="Order Information"
+            visible={modalVisible}
+            onCancel={() => setModalVisible(false)} 
+            footer={[ 
+              <Button className="btn btn-primary py-1" key="back" onClick={() => setModalVisible(false)}>
+                  Close
+              </Button>
             ]}
           >
             {/* Nội dung của hộp thoại */}

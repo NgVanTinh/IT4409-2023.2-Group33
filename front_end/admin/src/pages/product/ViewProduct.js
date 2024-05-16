@@ -56,7 +56,7 @@ const ViewProduct = () => {
           </div>
           <Link
             className="btn btn-primary my-2"
-            to="/admin/orders"
+            to="/admin/products"
           >
             Back 
           </Link>

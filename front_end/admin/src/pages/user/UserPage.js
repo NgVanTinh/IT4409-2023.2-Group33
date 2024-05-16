@@ -5,6 +5,8 @@ import { Box, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import TopHeader from "../../components/TopHeader";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+
 // import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 // import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 // import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -14,29 +16,23 @@ const UserPage = () => {
   const navigate = useNavigate()
   const [users, setUsers] = useState([]);
   const [isLocked, setIsLocked] = useState(false);
-    const config = {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    };
+    // const config = {
+    //     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    // };
 
     const loadUsers = async () => {
-        const result = await axios.get(`http://localhost:8080/api/user/`);
-        setUsers(result.data);
-        //  InstanceAxios.get('/user/', config)
-        //     .then(function (response) {
-        //         setUsers(response.data);
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     })
+        const result = await axios.get(`https://dummyjson.com/users?limit=50`);
+        const {users} = result.data;
+        setUsers(users);
         
     }
 
-    useEffect(() => {
-        if (localStorage.getItem('token') == null) {
-            navigate("/login");
-        }
-        loadUsers();
-    }, []);
+  useEffect(() => {
+      if (localStorage.getItem('token') == null) {
+          navigate("/login");
+      }
+      loadUsers();
+  }, []);
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
@@ -53,6 +49,12 @@ const UserPage = () => {
       cellClassName: "name-column--cell",
     },
     {
+      field: "username",
+      headerName: "UserName",
+      flex: 1,
+      cellClassName: "username-column--cell",
+    },
+    {
       field: "age",
       headerName: "Age",
       type: "number",
@@ -60,14 +62,20 @@ const UserPage = () => {
       align: "left",
     },
     {
-      field: "phoneNumber",
+      field: "phone",
       headerName: "Phone Number",
-      cellClassName: "phone-column--cell",
+      cellClassName: "name-column--cell",
       flex: 1,
     },
     {
       field: "email",
       headerName: "Email",
+      flex: 1,
+    },
+     {
+      field: "status",
+      cellClassName: "status-column--cell",
+      headerName: "Status",
       flex: 1,
     },
     {
@@ -86,15 +94,23 @@ const UserPage = () => {
             p="5px"
             display="flex"
             justifyContent="center"
-            backgroundColor = "#4cceac"
+            {...!isLocked ? {backgroundColor : "#4cceac"} : {backgroundColor : "#E95153"}}
             borderRadius="4px"
-          >
-                <LockOutlinedIcon color="#c2c2c2" />
+            >
+                {isLocked 
+                ? <LockOutlinedIcon
+                    onClick={() =>{setIsLocked(false)}}
+                    color="#c2c2c2"
+                  /> 
+                : <LockOpenOutlinedIcon 
+                    onClick={() =>{setIsLocked(true)}}
+                    color="#E95153" 
+                  />}
              
             <Typography color="#e0e0e0" sx={{ ml: "5px" }}>
-              Lock
+              {isLocked ? "Lock" : "Unlock" }
             </Typography>
-          </Box>
+            </Box>
           </Button>
           
         );
@@ -119,8 +135,14 @@ const UserPage = () => {
             "& .name-column--cell": {
               color: "#a3a3a3",
             },
-            "& .phone-column--cell": {
-              color: "#868dfb",
+            "& .username-column--cell": {
+              color: "#2679E0",
+            },
+            // "& .phone-column--cell": {
+            //   color: "#868dfb",
+            // },
+             "& .status-column--cell": {
+              ...isLocked ? {color: "#DA3B1F"} : {color: "#51E080"},
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#3e4396",

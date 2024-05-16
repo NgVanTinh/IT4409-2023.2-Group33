@@ -33,18 +33,17 @@ const MainLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['']}
-           onClick={({ key }) => {
+          onClick={({ key }) => {
             if (key === "signout") {
             } else {
               navigate(key);
             }
-          }}  
+            }}  
           items={[
             {
               key: '',
               icon: <DashboardOutlined />,
-              label: 'dashboard'
+              label: 'Dashboard'
             },
             {
               label: 'Products',
@@ -77,7 +76,6 @@ const MainLayout = () => {
       </Sider>
       <Layout>
         <Header
-        theme = "default"
           className="d-flex justify-content-between ps-1 pe-5"
           style={{
             padding: 0,
