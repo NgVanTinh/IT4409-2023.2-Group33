@@ -53,7 +53,7 @@ const cartSlice = createSlice({
     },
 
     removeFromCart: (state, action) => {
-      const tempCart = state.carts.filter((item) => item.id === action.payload);
+      const tempCart = state.carts.filter((item) => item.id !== action.payload);
       state.carts = tempCart;
       storeInLocalStorage(state.carts);
     },
