@@ -35,7 +35,7 @@ function App() {
               {/* cart route */}
               <Route path="/cart" element={<Cart />} />
               {/* search products route  */}
-              <Route path="/search/:searchTerm" element={<Search />} />
+              <Route path="/search/:searchKeyword" element={<Search />} />
             </Routes>
             <Footer />
           </BrowserRouter>

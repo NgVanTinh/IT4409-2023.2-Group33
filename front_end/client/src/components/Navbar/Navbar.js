@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.scss";
 import { Link } from "react-router-dom";
 import {
@@ -25,6 +25,12 @@ export default function Navbar() {
   const categories = useSelector(getAllCategories);
   const carts = useSelector(getAllCarts);
   const itemsCount = useSelector(getCartItemsCount);
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleSearchKeyword = (e) => {
+    e.preventDefault();
+    setSearchKeyword(e.target.value);
+  };
 
   useEffect(() => {
     dispatch(getCartTotal());
@@ -57,9 +63,10 @@ export default function Navbar() {
                 type="text"
                 className="form-control fs-14"
                 placeholder="Search your preferred items here"
+                onChange={(e) => handleSearchKeyword(e)}
               />
               <Link
-                to=""
+                to={`search/${searchKeyword}`}
                 className="text-white search-btn flex align-center justify-center"
               >
                 <FaMagnifyingGlass />
