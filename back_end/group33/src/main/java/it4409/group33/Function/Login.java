@@ -5,11 +5,10 @@ import it4409.group33.Repository.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static it4409.group33.Util.Hash.sha256;
+import static it4409.group33.Util.TimeStamp.getTimeStamp;
 
 @RestController
 public class Login {
@@ -49,4 +48,17 @@ public class Login {
             return "{\"code\":200,\"message\":\"Server exception\"}";
         }
     }
+
+//    @GetMapping("/v1/refreshToken")
+//    public String test() {
+//        String timeStamp = getTimeStamp();
+//        String data = "{\"exp\":\"" + timeStamp + "\",\"username\":\"JohnDoe\"}";
+//
+//    }
+
+    @PostMapping("/auth")
+    public String auth(@RequestHeader("Authorization") String authorizationHeader) {
+        return authorizationHeader;
+    }
+
 }

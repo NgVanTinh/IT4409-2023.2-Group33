@@ -19,9 +19,9 @@ public class CloudinaryController {
         try {
             if (cloudinary == null) {
                 cloudinary = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", "",
-                        "api_key", "",
-                        "api_secret", ""));
+                        "cloud_name", "dmqtuqtj6",
+                        "api_key", "759539686196424",
+                        "api_secret", "0IIXvTeeUkSwbjqkKFqtewvO-GA"));
             }
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             return (String) uploadResult.get("url");

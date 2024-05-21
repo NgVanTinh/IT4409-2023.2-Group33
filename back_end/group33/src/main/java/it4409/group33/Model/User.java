@@ -14,6 +14,8 @@ public class User {
     private String address;
     private String phone;
     private String role;
+    private String firstName;
+    private String lastName;
     private int isActived;
     private int deleted;
 
@@ -21,9 +23,11 @@ public class User {
 
     }
 
-    public User(String username, String password, String email, String address, String phone, String role, int deleted, int isActived) {
+    public User(String username, String password,String firstName,String lastName, String email, String address, String phone, String role, int deleted, int isActived) {
         this.username = username;
         this.password = password;
+        this.lastName = lastName;
+        this.firstName = firstName;
         this.deleted = deleted;
         this.email = email;
         this.address = address;
