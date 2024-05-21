@@ -10,7 +10,11 @@ const initialState = {
 const searchSlice = createSlice({
   name: "search",
   initialState,
-  reducers: {},
+  reducers: {
+    clearSearchProducts: (state) => {
+      state.searchProducts = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAsyncSearchProducts.pending, (state, action) => {
@@ -35,7 +39,7 @@ export const fetchAsyncSearchProducts = createAsyncThunk(
   }
 );
 
-export const { setSearchKeyword } = searchSlice.actions;
+export const { clearSearchProducts } = searchSlice.actions;
 export const getAllSearchProducts = (state) => state.search.searchProducts;
 export const getAllSearchProductsStatus = (state) =>
   state.search.searchProductsStatus;

@@ -9,7 +9,7 @@ import {
   getAllSearchProducts,
   getAllSearchProductsStatus,
   fetchAsyncSearchProducts,
-  setSearchKeyword,
+  clearSearchProducts,
 } from "../../store/searchSlice";
 
 export default function SearchPage() {
@@ -19,6 +19,7 @@ export default function SearchPage() {
   const searchProductsStatus = useSelector(getAllSearchProductsStatus);
 
   useEffect(() => {
+    dispatch(clearSearchProducts());
     dispatch(fetchAsyncSearchProducts(searchKeyword));
   }, [searchKeyword]);
 
