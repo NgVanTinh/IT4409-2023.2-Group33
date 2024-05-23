@@ -4,15 +4,18 @@ import it4409.group33.Model.Cart;
 import it4409.group33.Model.Product;
 import it4409.group33.Repository.CartRepository;
 import it4409.group33.Repository.ProductRepository;
+import it4409.group33.Util.JWT;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -25,42 +28,54 @@ public class CartController {
     private ProductRepository productRepository;
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> get1Cart(@PathVariable Long id) {
-        Optional<Cart> cartOptional = cartRepository.findById(id);
-        if (cartOptional.isPresent()) {
-            Cart cart = cartOptional.get();
+    public ResponseEntity<String> get1Cart(@PathVariable Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token)) {
+            if(Objects.equals(JWT.getRole(token), "admin") || Objects.equals(JWT.getUserId(token), String.valueOf(id))) {
+                Optional<Cart> cartOptional = cartRepository.findById(id);
+                if (cartOptional.isPresent()) {
+                    Cart cart = cartOptional.get();
+                    try {
+                        JSONObject cartJSON = X(cart.getJSONArrayObject());
+                        cartJSON.put("userId",cart.getUserId());
+                        cartJSON.put("id",cart.getId());
+                        return new ResponseEntity<>(cartJSON.toString(),HttpStatus.OK);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<String> getAllCart(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token) && Objects.equals(JWT.getRole(token), "admin")) {
+            List<Cart> listAllCart = cartRepository.findAll();
+            JSONObject res = new JSONObject();
             try {
-                JSONObject cartJSON = X(cart.getJSONArrayObject());
-                cartJSON.put("userId",cart.getUserId());
-                cartJSON.put("id",cart.getId());
-                return new ResponseEntity<>(cartJSON.toString(),HttpStatus.OK);
+                JSONArray jsonArray = new JSONArray();
+                for (Cart cart : listAllCart) {
+                    JSONObject jsonObject = XX(cart.getJSONArrayObject(),cart.getUserId(),cart.getId());
+                    jsonArray.put(jsonObject);
+                }
+                res.put("carts",jsonArray);
+                res.put("total",listAllCart.size());
+                res.put("skip",0);
+                res.put("limit",listAllCart.size());
+                return new ResponseEntity<>(res.toString(),HttpStatus.OK);
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
             }
         } else {
-            return null;
-        }
-    }
-
-    @GetMapping
-    public ResponseEntity<String> getAllCart() {
-        List<Cart> listAllCart = cartRepository.findAll();
-        JSONObject res = new JSONObject();
-        try {
-            JSONArray jsonArray = new JSONArray();
-            for (Cart cart : listAllCart) {
-                JSONObject jsonObject = XX(cart.getJSONArrayObject(),cart.getUserId(),cart.getId());
-                jsonArray.put(jsonObject);
-            }
-            res.put("carts",jsonArray);
-            res.put("total",listAllCart.size());
-            res.put("skip",0);
-            res.put("limit",listAllCart.size());
-            return new ResponseEntity<>(res.toString(),HttpStatus.OK);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
 
@@ -94,17 +109,25 @@ public class CartController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<String> getUserCart(@PathVariable Long userId) {
-        Cart cart = cartRepository.findByUserId(userId);
-        if(cart == null) {
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        } else {
-            try {
-                return new ResponseEntity<>(XX(cart.getJSONArrayObject(),cart.getUserId(),cart.getId()).toString(),HttpStatus.OK);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> getUserCart(@PathVariable Long userId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token)) {
+            if(JWT.getUserId(token).equals(String.valueOf(userId))) {
+                Cart cart = cartRepository.findByUserId(userId);
+                if (cart == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                } else {
+                    try {
+                        return new ResponseEntity<>(XX(cart.getJSONArrayObject(), cart.getUserId(), cart.getId()).toString(), HttpStatus.OK);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                }
+            } else {
+                return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
             }
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
 

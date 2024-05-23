@@ -2,10 +2,12 @@ package it4409.group33.Controller;
 
 import it4409.group33.Model.Product;
 import it4409.group33.Repository.ProductRepository;
+import it4409.group33.Util.JWT;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +32,16 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        try {
-            Product newProduct = productRepository.save(product);
-            return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Product> createProduct(@RequestBody Product product, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
+            try {
+                Product newProduct = productRepository.save(product);
+                return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
 
@@ -81,61 +87,69 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
+            Optional<Product> optionalProduct = productRepository.findById(id);
 
-        if (optionalProduct.isPresent()) {
-            Product existingProduct = optionalProduct.get();
-            if (updatedProduct.getTitle() != null) {
-                existingProduct.setTitle(updatedProduct.getTitle());
-            }
-            if (updatedProduct.getDescription() != null) {
-                existingProduct.setDescription(updatedProduct.getDescription());
-            }
-            if (updatedProduct.getPrice() != null) {
-                existingProduct.setPrice(updatedProduct.getPrice());
-            }
-            if (updatedProduct.getDiscountPercentage() != null) {
-                existingProduct.setDiscountPercentage(updatedProduct.getDiscountPercentage());
-            }
-            if (updatedProduct.getRating() != null) {
-                existingProduct.setRating(updatedProduct.getRating());
-            }
-            if (updatedProduct.getStock() != null) {
-                existingProduct.setStock(updatedProduct.getStock());
-            }
-            if (updatedProduct.getBrand() != null) {
-                existingProduct.setBrand(updatedProduct.getBrand());
-            }
-            if (updatedProduct.getCategory() != null) {
-                existingProduct.setCategory(updatedProduct.getCategory());
-            }
-            if (updatedProduct.getThumbnail() != null) {
-                existingProduct.setThumbnail(updatedProduct.getThumbnail());
-            }
-            if (updatedProduct.getImages() != null) {
-                existingProduct.setImages(updatedProduct.getImages());
-            }
+            if (optionalProduct.isPresent()) {
+                Product existingProduct = optionalProduct.get();
+                if (updatedProduct.getTitle() != null) {
+                    existingProduct.setTitle(updatedProduct.getTitle());
+                }
+                if (updatedProduct.getDescription() != null) {
+                    existingProduct.setDescription(updatedProduct.getDescription());
+                }
+                if (updatedProduct.getPrice() != null) {
+                    existingProduct.setPrice(updatedProduct.getPrice());
+                }
+                if (updatedProduct.getDiscountPercentage() != null) {
+                    existingProduct.setDiscountPercentage(updatedProduct.getDiscountPercentage());
+                }
+                if (updatedProduct.getRating() != null) {
+                    existingProduct.setRating(updatedProduct.getRating());
+                }
+                if (updatedProduct.getStock() != null) {
+                    existingProduct.setStock(updatedProduct.getStock());
+                }
+                if (updatedProduct.getBrand() != null) {
+                    existingProduct.setBrand(updatedProduct.getBrand());
+                }
+                if (updatedProduct.getCategory() != null) {
+                    existingProduct.setCategory(updatedProduct.getCategory());
+                }
+                if (updatedProduct.getThumbnail() != null) {
+                    existingProduct.setThumbnail(updatedProduct.getThumbnail());
+                }
+                if (updatedProduct.getImages() != null) {
+                    existingProduct.setImages(updatedProduct.getImages());
+                }
 
-            Product savedProduct = productRepository.save(existingProduct);
-            return new ResponseEntity<>(savedProduct, HttpStatus.OK);
+                Product savedProduct = productRepository.save(existingProduct);
+                return new ResponseEntity<>(savedProduct, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+    public ResponseEntity<Product> deleteProduct(@PathVariable Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
+            Optional<Product> optionalProduct = productRepository.findById(id);
 
-        if (optionalProduct.isPresent()) {
-            Product existingProduct = optionalProduct.get();
-            existingProduct.setDeleted(true);
-            existingProduct.setDeleteOn(getTimestamp());
-            Product deletedProduct = productRepository.save(existingProduct);
-            return new ResponseEntity<>(deletedProduct, HttpStatus.OK);
+            if (optionalProduct.isPresent()) {
+                Product existingProduct = optionalProduct.get();
+                existingProduct.setDeleted(true);
+                existingProduct.setDeleteOn(getTimestamp());
+                Product deletedProduct = productRepository.save(existingProduct);
+                return new ResponseEntity<>(deletedProduct, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
 
@@ -255,25 +269,31 @@ public class ProductController {
                                                  @RequestParam("rating") Double rating,
                                                  @RequestParam("stock") Integer stock,
                                                  @RequestParam("brand") String brand,
-                                                 @RequestParam("category") String category
+                                                 @RequestParam("category") String category,
+                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token
     ){
 
-        List<String> X = new ArrayList<>();
+        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
 
-        String thumb = uploadAndGetUrl(thumbnail);
-        if(thumb.equals("Upload failed")) {
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            List<String> X = new ArrayList<>();
 
-        for (MultipartFile image : images) {
-            String tmp = uploadAndGetUrl(image);
-            if(!tmp.equals("Upload failed")) {
-                X.add(tmp);
+            String thumb = uploadAndGetUrl(thumbnail);
+            if (thumb.equals("Upload failed")) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        }
 
-        Product product = new Product(title,description,price,discountPercentage,rating,stock,brand,category,thumb,X);
-        productRepository.save(product);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+            for (MultipartFile image : images) {
+                String tmp = uploadAndGetUrl(image);
+                if (!tmp.equals("Upload failed")) {
+                    X.add(tmp);
+                }
+            }
+
+            Product product = new Product(title, description, price, discountPercentage, rating, stock, brand, category, thumb, X);
+            productRepository.save(product);
+            return new ResponseEntity<>(product, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
     }
 }

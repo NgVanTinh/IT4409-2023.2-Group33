@@ -3,6 +3,7 @@ package it4409.group33.Function;
 
 import it4409.group33.Model.User;
 import it4409.group33.Repository.UserRepository;
+import it4409.group33.Util.JWT;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,9 @@ public class SignUp {
                         userRepository.save(user);
                         response.put("message","Sign Up complete");
                         response.put("username",jsonBody.getString("username"));
-                        response.put("token",genToken(jsonBody.getString("username"),sha256(jsonBody.getString("password"))));
-                        response.put("firstName",jsonBody.getString("firstName"));
+                        String jwt = JWT.createJWT(String.valueOf(user.getId()),jsonBody.getString("username"),jsonBody.getString("role"));
+                        response.put("token",jwt);
+                        response.put("firstName",jsonBody.getString("firstname"));
                         response.put("lastName",jsonBody.getString("lastname"));
                         return new ResponseEntity<>(response.toString(), HttpStatus.CREATED);
                     } else {
@@ -67,8 +69,8 @@ public class SignUp {
             }
             response.put("username","");
             response.put("token","");
-            response.put("firstName","");
-            response.put("lastName","");
+            response.put("firstname","");
+            response.put("lastname","");
 
         } catch (JSONException e) {
             e.printStackTrace();
