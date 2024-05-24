@@ -1,13 +1,15 @@
 package it4409.group33.Util;
 
+import it4409.group33.Repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 import java.util.Objects;
-
 public class JWT {
     private static final String SECRET_KEY = "5a14345e0beabc059a0478ad735c40114d7eb8d96776c22b5538ed6a6a95a24b";
-    private static final long EXPIRATION_TIME = 3600000;
+    private static final long EXPIRATION_TIME = 36000000;
 
     public static String createJWT(String userId, String userName, String role) {
         try {
@@ -46,20 +48,15 @@ public class JWT {
             }
             String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
             String signature = parts[2];
-
-            // Verify Signature
             String headerPayload = parts[0] + "." + parts[1];
             Mac hmacSHA256 = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
             hmacSHA256.init(secretKey);
             String calculatedSignature = Base64.getUrlEncoder().withoutPadding()
                     .encodeToString(hmacSHA256.doFinal(headerPayload.getBytes()));
-
             if (!calculatedSignature.equals(signature)) {
                 return false;
             }
-
-            // Parse Payload
             String[] payloadParts = payload.replace("{", "").replace("}", "").split(",");
             long exp = 0;
             for (String part : payloadParts) {
@@ -68,8 +65,6 @@ public class JWT {
                     exp = Long.parseLong(keyValue[1].trim());
                 }
             }
-
-            // Check expiration
             long currentTimeMillis = System.currentTimeMillis() / 1000;
             return currentTimeMillis <= exp;
         } catch (Exception e) {

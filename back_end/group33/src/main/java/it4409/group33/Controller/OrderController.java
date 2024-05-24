@@ -47,20 +47,25 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/orders/user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Long userId, @RequestParam(required = false) Order.OrderStatus status) {
-        List<Order> orders;
-        if(status != null) {
-            orders = orderService.getOrdersByUserIdAndStatus(userId,status);
+    @GetMapping("/orders/user")
+    public ResponseEntity<List<Order>> getOrdersByUserId(@RequestParam(required = false) Order.OrderStatus status,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token)) {
+            Long userId = Long.valueOf(JWT.getUserId(token));
+            List<Order> orders;
+            if (status != null) {
+                orders = orderService.getOrdersByUserIdAndStatus(userId, status);
+            } else {
+                orders = orderService.getOrdersByUserId(userId);
+            }
+            return ResponseEntity.ok(orders);
         } else {
-            orders = orderService.getOrdersByUserId(userId);
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
-        return ResponseEntity.ok(orders);
     }
 
     @PutMapping("/orders/{orderId}/pay")
     public ResponseEntity<Order> updateOrderStatusToPaid(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isUser(token)) {
+        if(token != null && JWT.validateJWT(token) && JWT.isUserOrAdmin(token)) {
             Order order;
             try {
                 order = orderService.updateOrderStatusToPaid(orderId);

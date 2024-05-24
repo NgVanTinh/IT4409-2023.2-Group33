@@ -6,6 +6,8 @@ import it4409.group33.Model.Cart;
 import it4409.group33.Model.Order;
 import it4409.group33.Repository.CartRepository;
 import it4409.group33.Repository.OrderRepository;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,13 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Transactional
-    public Order createOrderFromCart(Long userId, String addressJSON) {
+    public Order createOrderFromCart(Long userId, String addressJSON) throws JSONException {
+
+        JSONObject X = new JSONObject(addressJSON);
+        String address = X.toString();
+        if(address == null) {
+            throw new NullPointerException("address null");
+        }
         Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
             throw new RuntimeException("Cart not found for user id: " + userId);
@@ -38,6 +46,7 @@ public class OrderService {
         order.setTotalProducts(cart.getTotalProducts());
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Order.OrderStatus.CREATED);
+        order.setAddressJSON(address);
         orderRepository.save(order);
         cartRepository.delete(cart);
         return order;

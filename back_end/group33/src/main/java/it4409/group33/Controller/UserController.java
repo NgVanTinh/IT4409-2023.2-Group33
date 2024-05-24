@@ -10,15 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static it4409.group33.Util.Hash.sha256;
 import static it4409.group33.Util.TimeStamp.genOTP;
 
 @RestController
-@RequestMapping("/auth")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
@@ -26,7 +27,7 @@ public class UserController {
     @Autowired
     private EmailSender emailSender;
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<String> auth(@RequestBody Map<String, String> requestBody) {
         String username = requestBody.get("username");
         String password = requestBody.get("password");
@@ -54,7 +55,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/me")
+    @GetMapping("/auth/me")
     public ResponseEntity<String> currentAuthUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
         if(JWT.validateJWT(jwt)) {
             String payload = JWT.getPayload(jwt);
@@ -77,7 +78,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/auth/refresh")
     public ResponseEntity<String> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
         if(JWT.validateJWT(jwt)) {
             String payload = JWT.getPayload(jwt);
@@ -103,7 +104,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/getOTP")
+    @PostMapping("/auth/getOTP")
     public ResponseEntity<String> getOTP(@RequestParam String toEmail) {
         User user = userRepository.findByEmail(toEmail);
         if(user != null) {
@@ -120,7 +121,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/active")
+    @PostMapping("/auth/active")
     private ResponseEntity<String> verifyAccount(@RequestParam String toEmail, @RequestParam String OTP) {
         String otp=genOTP(toEmail);
         User user = userRepository.findByEmail(toEmail);
@@ -147,7 +148,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/auth/signup")
     public ResponseEntity<String> signUp(@RequestBody String requestBody) {
         JSONObject jsonBody;
         User user;
@@ -199,4 +200,15 @@ public class UserController {
         }
         return new ResponseEntity<>(response.toString(),HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
+            List<User> users = userRepository.findAll();
+            return new ResponseEntity<>(users,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+    }
+
 }
