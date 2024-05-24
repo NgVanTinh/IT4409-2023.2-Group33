@@ -1,17 +1,13 @@
-package it4409.group33.Controller;
+package it4409.group33.Service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
 
-@RestController
-public class CloudinaryController {
+public class CloudinaryService {
 
     private static Cloudinary cloudinary;
 
@@ -31,9 +27,5 @@ public class CloudinaryController {
         }
     }
 
-    @PostMapping("/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
-        return uploadAndGetUrl(file);
-    }
 }
 

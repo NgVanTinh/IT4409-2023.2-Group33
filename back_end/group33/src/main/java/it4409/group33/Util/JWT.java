@@ -3,6 +3,7 @@ package it4409.group33.Util;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
+import java.util.Objects;
 
 public class JWT {
     private static final String SECRET_KEY = "5a14345e0beabc059a0478ad735c40114d7eb8d96776c22b5538ed6a6a95a24b";
@@ -43,8 +44,6 @@ public class JWT {
             if (parts.length != 3) {
                 return false;
             }
-
-            String header = new String(Base64.getUrlDecoder().decode(parts[0]));
             String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
             String signature = parts[2];
 
@@ -72,11 +71,7 @@ public class JWT {
 
             // Check expiration
             long currentTimeMillis = System.currentTimeMillis() / 1000;
-            if (currentTimeMillis > exp) {
-                return false;
-            }
-
-            return true;
+            return currentTimeMillis <= exp;
         } catch (Exception e) {
             return false;
         }
@@ -93,6 +88,7 @@ public class JWT {
     public static String getUserId(String token) {
         String payload = getPayload(token);
         // Assuming payload format: {"userId":"123","userName":"john_doe","role":"admin","iat":1622194531,"exp":1622198131}
+        assert payload != null;
         String[] parts = payload.split(",");
         for (String part : parts) {
             if (part.contains("\"userId\"")) {
@@ -104,6 +100,7 @@ public class JWT {
 
     public static String getUserName(String token) {
         String payload = getPayload(token);
+        assert payload != null;
         String[] parts = payload.split(",");
         for (String part : parts) {
             if (part.contains("\"userName\"")) {
@@ -115,6 +112,7 @@ public class JWT {
 
     public static String getRole(String token) {
         String payload = getPayload(token);
+        assert payload != null;
         String[] parts = payload.split(",");
         for (String part : parts) {
             if (part.contains("\"role\"")) {
@@ -122,6 +120,18 @@ public class JWT {
             }
         }
         return null;
+    }
+
+    public static boolean isUserOrAdmin(String token) {
+        return Objects.requireNonNull(getRole(token)).equals("admin") || Objects.requireNonNull(getRole(token)).equals("user");
+    }
+
+    public static boolean isUser(String token) {
+        return Objects.requireNonNull(getRole(token)).equals("user");
+    }
+
+    public static boolean isAdmin(String token) {
+        return Objects.requireNonNull(getRole(token)).equals("admin");
     }
 
 }

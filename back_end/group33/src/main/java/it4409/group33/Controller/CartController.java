@@ -29,25 +29,21 @@ public class CartController {
 
     @GetMapping("/{id}")
     public ResponseEntity<String> get1Cart(@PathVariable Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token)) {
-            if(Objects.equals(JWT.getRole(token), "admin") || Objects.equals(JWT.getUserId(token), String.valueOf(id))) {
-                Optional<Cart> cartOptional = cartRepository.findById(id);
-                if (cartOptional.isPresent()) {
-                    Cart cart = cartOptional.get();
-                    try {
-                        JSONObject cartJSON = X(cart.getJSONArrayObject());
-                        cartJSON.put("userId",cart.getUserId());
-                        cartJSON.put("id",cart.getId());
-                        return new ResponseEntity<>(cartJSON.toString(),HttpStatus.OK);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
-                } else {
-                    return null;
+        if(token != null && JWT.validateJWT(token) && JWT.isUserOrAdmin(token)) {
+            Optional<Cart> cartOptional = cartRepository.findById(id);
+            if (cartOptional.isPresent()) {
+                Cart cart = cartOptional.get();
+                try {
+                    JSONObject cartJSON = X(cart.getJSONArrayObject());
+                    cartJSON.put("userId",cart.getUserId());
+                    cartJSON.put("id",cart.getId());
+                    return new ResponseEntity<>(cartJSON.toString(),HttpStatus.OK);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
             }
         } else {
             return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
@@ -56,7 +52,7 @@ public class CartController {
 
     @GetMapping
     public ResponseEntity<String> getAllCart(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && Objects.equals(JWT.getRole(token), "admin")) {
+        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
             List<Cart> listAllCart = cartRepository.findAll();
             JSONObject res = new JSONObject();
             try {
@@ -80,38 +76,41 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody String requestBody) {
-        try {
-            JSONObject req = new JSONObject(requestBody);
-            Long userId = req.getLong("userId");
-            JSONArray products = req.getJSONArray("products");
-            Cart cart = cartRepository.findByUserId(userId);
+    public ResponseEntity<String> add(@RequestBody String requestBody,@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token)) {
+            try {
+                Long userId = Long.valueOf(JWT.getUserId(token));
+                JSONObject req = new JSONObject(requestBody);
+                JSONArray products = req.getJSONArray("products");
+                Cart cart = cartRepository.findByUserId(userId);
 
-            JSONObject X = new JSONObject();
-            if(cart == null) {
-                X = X(products);
-                cart = new Cart(userId,products.toString(),X.getDouble("total"),X.getDouble("discountedTotal"),X.getInt("totalQuantity"),X.getInt("totalProducts"));
-                cartRepository.save(cart);
-                X.put("userId",userId);
-                X.put("id",cart.getId());
-                return new ResponseEntity<>(X.toString(), HttpStatus.CREATED);
-            } else {
-                X = X(cart.getJSONArrayObject());
-                X.put("userId",userId);
-                X.put("id",cart.getId());
-                return new ResponseEntity<>(X.toString(), HttpStatus.OK);
+                JSONObject X = new JSONObject();
+                if(cart == null) {
+                    X = X(products);
+                    cart = new Cart(userId,products.toString(),X.getDouble("total"),X.getDouble("discountedTotal"),X.getInt("totalQuantity"),X.getInt("totalProducts"));
+                    cartRepository.save(cart);
+                    X.put("userId",userId);
+                    X.put("id",cart.getId());
+                    return new ResponseEntity<>(X.toString(), HttpStatus.CREATED);
+                } else {
+                    X = X(cart.getJSONArrayObject());
+                    X.put("userId",userId);
+                    X.put("id",cart.getId());
+                    return new ResponseEntity<>(X.toString(), HttpStatus.OK);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
-
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<String> getUserCart(@PathVariable Long userId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if(token != null && JWT.validateJWT(token)) {
-            if(JWT.getUserId(token).equals(String.valueOf(userId))) {
+            if(JWT.getUserId(token).equals(String.valueOf(userId)) || JWT.isAdmin(token)) {
                 Cart cart = cartRepository.findByUserId(userId);
                 if (cart == null) {
                     return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -132,31 +131,35 @@ public class CartController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCart(@PathVariable Long id,@RequestBody String requestBody) {
-        try {
-            JSONObject req = new JSONObject(requestBody);
-            boolean merge = req.getBoolean("merge");
-            JSONArray updateArray = req.getJSONArray("products");
-            Optional<Cart> cartOptional = cartRepository.findById(id);
-            if (cartOptional.isPresent() && merge) {
-                Cart cart = cartOptional.get();
-                JSONArray oldArray = minimizeProductArray(cart.getJSONArrayObject());
+    public ResponseEntity<String> updateCart(@PathVariable Long id,@RequestBody String requestBody,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token) && JWT.isUserOrAdmin(token)) {
+            try {
+                JSONObject req = new JSONObject(requestBody);
+                boolean merge = req.getBoolean("merge");
+                JSONArray updateArray = req.getJSONArray("products");
+                Optional<Cart> cartOptional = cartRepository.findById(id);
+                if (cartOptional.isPresent() && merge) {
+                    Cart cart = cartOptional.get();
+                    JSONArray oldArray = minimizeProductArray(cart.getJSONArrayObject());
 
-                JSONObject res = XX(merge(updateArray,oldArray),cart.getUserId(),cart.getId());
-                cart.setJSONArrayObject(res.getJSONArray("products"));
-                cart.setTotal(res.getDouble("total"));
-                cart.setDiscountedPrice(res.getDouble("discountedTotal"));
-                cart.setTotalQuantity(res.getInt("totalQuantity"));
-                cart.setTotalProducts(res.getInt("totalProducts"));
-                cartRepository.save(cart);
-                return new ResponseEntity<>(res.toString(),HttpStatus.OK);
-            } else {
+                    JSONObject res = XX(merge(updateArray, oldArray), cart.getUserId(), cart.getId());
+                    cart.setJSONArrayObject(res.getJSONArray("products"));
+                    cart.setTotal(res.getDouble("total"));
+                    cart.setDiscountedPrice(res.getDouble("discountedTotal"));
+                    cart.setTotalQuantity(res.getInt("totalQuantity"));
+                    cart.setTotalProducts(res.getInt("totalProducts"));
+                    cartRepository.save(cart);
+                    return new ResponseEntity<>(res.toString(), HttpStatus.OK);
+                } else {
+                    return null;
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
                 return null;
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
 
     }

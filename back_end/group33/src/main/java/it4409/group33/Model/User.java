@@ -11,7 +11,6 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private String address;
     private String phone;
     private String role;
     private String firstName;
@@ -23,16 +22,39 @@ public class User {
 
     }
 
-    public User(String username, String password,String firstName,String lastName, String email, String address, String phone, String role, int deleted, int isActived) {
+    public User(String username, String password,String firstName,String lastName, String email, String phone, String role, int deleted, int isActived) {
         this.username = username;
         this.password = password;
         this.lastName = lastName;
         this.firstName = firstName;
         this.deleted = deleted;
         this.email = email;
-        this.address = address;
         this.phone = phone;
         this.role = role;
+        this.isActived = isActived;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public int getIsActived() {
+        return isActived;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setIsActived(int isActived) {
         this.isActived = isActived;
     }
 
@@ -58,10 +80,6 @@ public class User {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public void setEmail(String email) {
@@ -90,10 +108,6 @@ public class User {
 
     public String getPhone() {
         return phone;
-    }
-
-    public String getAddress() {
-        return address;
     }
 
     public int getDeleted() {

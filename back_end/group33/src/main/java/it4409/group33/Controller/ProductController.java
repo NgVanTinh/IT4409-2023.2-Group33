@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static it4409.group33.Controller.CloudinaryController.uploadAndGetUrl;
+import static it4409.group33.Service.CloudinaryService.uploadAndGetUrl;
 import static it4409.group33.Util.TimeStamp.getTimestamp;
 
 @RestController

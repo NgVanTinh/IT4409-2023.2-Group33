@@ -25,10 +25,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    private String addressJSON;
+
     public Order() {
     }
 
-    public Order(String productJsonArray, Long userId, double total, double discountedPrice, int totalQuantity, int totalProducts, LocalDateTime orderDate, OrderStatus status) {
+    public Order(String productJsonArray, Long userId, double total, double discountedPrice, int totalQuantity, int totalProducts, LocalDateTime orderDate, OrderStatus status, String addressJSON) {
         this.productJsonArray = productJsonArray;
         this.userId = userId;
         this.total = total;
@@ -37,6 +39,7 @@ public class Order {
         this.totalProducts = totalProducts;
         this.orderDate = orderDate;
         this.status = status;
+        this.addressJSON = addressJSON;
     }
 
     public OrderStatus getStatus() {
@@ -73,6 +76,14 @@ public class Order {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public void setAddressJSON(String addressJSON) {
+        this.addressJSON = addressJSON;
+    }
+
+    public String getAddressJSON() {
+        return addressJSON;
     }
 
     public Long getId() {

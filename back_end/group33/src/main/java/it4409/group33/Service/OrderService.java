@@ -1,5 +1,7 @@
-package it4409.group33;
+package it4409.group33.Service;
 
+import it4409.group33.Exception.InvalidOrderStatusException;
+import it4409.group33.Exception.OrderNotFoundException;
 import it4409.group33.Model.Cart;
 import it4409.group33.Model.Order;
 import it4409.group33.Repository.CartRepository;
@@ -22,7 +24,7 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Transactional
-    public Order createOrderFromCart(Long userId) {
+    public Order createOrderFromCart(Long userId, String addressJSON) {
         Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
             throw new RuntimeException("Cart not found for user id: " + userId);
@@ -65,10 +67,10 @@ public class OrderService {
                 order.setStatus(Order.OrderStatus.AWAITING_SHIPMENT);
                 return orderRepository.save(order);
             } else {
-                throw new RuntimeException("Order status is not 'CREATED', cannot be updated to 'PAID'.");
+                throw new InvalidOrderStatusException("Only for CREATED status");
             }
         } else {
-            throw new RuntimeException("Order not found with ID: " + orderId);
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
         }
     }
 
@@ -80,10 +82,10 @@ public class OrderService {
                 order.setStatus(Order.OrderStatus.SHIPPING);
                 return orderRepository.save(order);
             } else {
-                throw new RuntimeException("Order status is not 'AWAITING_SHIPMENT', cannot be updated to 'SHIPPING'.");
+                throw new InvalidOrderStatusException("Only for AWAITING_SHIPMENT status");
             }
         } else {
-            throw new RuntimeException("Order not found with ID: " + orderId);
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
         }
     }
 
@@ -95,10 +97,10 @@ public class OrderService {
                 order.setStatus(Order.OrderStatus.DELIVERED);
                 return orderRepository.save(order);
             } else {
-                throw new RuntimeException("Order status is not 'SHIPPING', cannot be updated to 'DELIVERED'.");
+                throw new InvalidOrderStatusException("Only for SHIPPING status");
             }
         } else {
-            throw new RuntimeException("Order not found with ID: " + orderId);
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
         }
     }
 
@@ -110,45 +112,44 @@ public class OrderService {
                 order.setStatus(Order.OrderStatus.COMPLETED);
                 return orderRepository.save(order);
             } else {
-                throw new RuntimeException("Order status is not 'DELIVERED', cannot be updated to 'COMPLETED'.");
+                throw new InvalidOrderStatusException("Only for DELIVERED status");
             }
         } else {
-            throw new RuntimeException("Order not found with ID: " + orderId);
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
         }
     }
 
+    //Only CREATED -> CANCELLED
     public Order updateOrderStatusToCancelled(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             Order.OrderStatus currentStatus = order.getStatus();
-            if (currentStatus == Order.OrderStatus.CREATED ||
-                    currentStatus == Order.OrderStatus.AWAITING_SHIPMENT ||
-                    currentStatus == Order.OrderStatus.SHIPPING ||
-                    currentStatus == Order.OrderStatus.DELIVERED) {
+            if (currentStatus == Order.OrderStatus.CREATED) {
                 order.setStatus(Order.OrderStatus.CANCELLED);
                 return orderRepository.save(order);
             } else {
-                throw new RuntimeException("Order status is not eligible for cancellation.");
+                throw new InvalidOrderStatusException("Only for CREATED status");
             }
         } else {
-            throw new RuntimeException("Order not found with ID: " + orderId);
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
         }
     }
 
+    //Only AWAITING_SHIPMENT, DELIVERED -> REFUNDED
     public Order updateOrderStatusToRefunded(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             Order.OrderStatus currentStatus = order.getStatus();
-            if (currentStatus == Order.OrderStatus.DELIVERED || currentStatus == Order.OrderStatus.CANCELLED) {
+            if (currentStatus == Order.OrderStatus.DELIVERED || currentStatus == Order.OrderStatus.AWAITING_SHIPMENT) {
                 order.setStatus(Order.OrderStatus.REFUNDED);
                 return orderRepository.save(order);
             } else {
-                throw new RuntimeException("Order status is not eligible for refund.");
+                throw new InvalidOrderStatusException("Only for DELIVERED and AWAITING_SHIPMENT status");
             }
         } else {
-            throw new RuntimeException("Order not found with ID: " + orderId);
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
         }
     }
 }

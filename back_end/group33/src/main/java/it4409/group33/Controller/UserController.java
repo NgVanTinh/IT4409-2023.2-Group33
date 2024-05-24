@@ -58,7 +58,7 @@ public class UserController {
     public ResponseEntity<String> currentAuthUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
         if(JWT.validateJWT(jwt)) {
             String payload = JWT.getPayload(jwt);
-            JSONObject payloadJSON = null;
+            JSONObject payloadJSON;
             JSONObject response = new JSONObject();
             try {
                 payloadJSON = new JSONObject(payload);
@@ -81,7 +81,7 @@ public class UserController {
     public ResponseEntity<String> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
         if(JWT.validateJWT(jwt)) {
             String payload = JWT.getPayload(jwt);
-            JSONObject payloadJSON = null;
+            JSONObject payloadJSON;
             JSONObject response = new JSONObject();
             try {
                 payloadJSON = new JSONObject(payload);
@@ -129,7 +129,18 @@ public class UserController {
         } else {
             if(OTP.equals(otp)) {
                 userRepository.setActiveStatusByEmail(toEmail,1);
-                return new ResponseEntity<>("Verify account completed", HttpStatus.OK);
+                String jwtToken = JWT.createJWT(String.valueOf(user.getId()),user.getUsername() ,user.getRole());
+                JSONObject response = new JSONObject();
+                try {
+                    response.put("token", jwtToken);
+                    response.put("id",String.valueOf(user.getId()));
+                    response.put("username",user.getUsername());
+                    response.put("role",user.getRole());
+                    return ResponseEntity.ok(response.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+                }
             } else {
                 return new ResponseEntity<>("Fail, try again", HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -138,7 +149,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody String requestBody) {
-        JSONObject jsonBody = null;
+        JSONObject jsonBody;
         User user;
         JSONObject response = new JSONObject();
 
@@ -158,7 +169,6 @@ public class UserController {
                                 jsonBody.getString("firstname"),
                                 jsonBody.getString("lastname"),
                                 jsonBody.getString("email"),
-                                jsonBody.getString("address"),
                                 jsonBody.getString("phone"),
                                 jsonBody.getString("role"),
                                 0, 0);
