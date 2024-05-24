@@ -9,7 +9,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import TopHeader from "../../components/TopHeader";
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import { Carousel } from 'antd';
 import { Image } from 'antd';
 import { Space, Typography } from 'antd';
@@ -161,11 +161,11 @@ const OrderPage = () => {
 
       <Modal
             // title="Product Information"
+           
             visible={modalVisible}
             onCancel={() => setModalVisible(false)} 
             footer={[ ]}
           >
-            {/* Nội dung của hộp thoại */}
             <Carousel arrows infinite={false} dotWidth={20}>
                 {product.images && product.images.map((imageUrl, index) => (
                   <Image
