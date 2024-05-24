@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 const ViewOrder = () => {
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false); // state để điều khiển việc hiển thị của hộp thoại
+  const [modalVisible, setModalVisible] = useState(false); 
   const config = {
     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   };
@@ -17,12 +17,7 @@ const ViewOrder = () => {
   }, []);
 
   const loadOrder = async () => {
-    try {
-      const result = await axios.get(`http://localhost:8080/api/movie/${id}`, config);
-      setOrder(result.data);
-    } catch (error) {
-      console.error('Error fetching order:', error);
-    }
+    
   };
 
   return (
@@ -52,16 +47,16 @@ const ViewOrder = () => {
           </div>
           <Button
             className="btn btn-primary my-2"
-            onClick={() => setModalVisible(true)} // Khi nút được bấm, hiển thị hộp thoại bằng cách set state là true
+            onClick={() => setModalVisible(true)} 
           >
             Show Info
           </Button>
 
           {/* Modal component */}
           <Modal
-            title="Order Information" // Tiêu đề của hộp thoại
-            visible={modalVisible} // State để điều khiển việc hiển thị của hộp thoại
-            onCancel={() => setModalVisible(false)} // Callback khi hủy bỏ hộp thoại
+            title="Order Information" 
+            visible={modalVisible} 
+            // onCancel={() => setModalVisible(false)} // 
             footer={[ // Các nút chức năng
               <Button key="back" onClick={() => setModalVisible(false)}>Close</Button>
             ]}

@@ -7,7 +7,7 @@ import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, 
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
-import { Button, Layout, Menu } from 'antd';
+import { Button, Layout, Menu, Avatar, Typography } from 'antd';
 
 const { Header, Sider, Content } = Layout;
 
@@ -104,12 +104,18 @@ const MainLayout = () => {
                 aria-expanded="false"
                 style={{
                   fontSize: '30px',
-                  width: 64,
-                  height: 64,
+                  // width: 64,
+                  // height: 64,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
                 }}
               >
                   
-                    <UserOutlined/>
+                     <Avatar size={40} icon={<UserOutlined />} />
+                     <Typography style={{marginLeft: '10px', fontSize: '25px'}} >Admin</Typography>
                   
               </div>
               

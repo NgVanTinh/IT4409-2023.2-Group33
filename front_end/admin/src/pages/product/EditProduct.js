@@ -1,9 +1,31 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const EditProduct = ({params, rowId, setRowId}) => {
-  let navigate = useNavigate();
+import { UploadOutlined } from '@ant-design/icons';
+import { Button } from "@mui/material";
+import { Typography, Upload } from 'antd';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import TopHeader from "../../components/TopHeader";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+const EditProduct = () => {
+  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -12,7 +34,6 @@ const EditProduct = ({params, rowId, setRowId}) => {
     description: "",
     price: "",
     discountPercentage: "",
-    rating: "",
     stock: "",
     brand: "",
     category: "",
@@ -20,135 +41,115 @@ const EditProduct = ({params, rowId, setRowId}) => {
     images: ""
   });
 
-  const { title, description, price, discountPercentage, rating, stock, brand, category, thumbnail, images } = product;
-
   const onInputChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    loadProduct();
-  });
+  // useEffect(() => {
+  //   loadProduct();
+  // },[]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8080/products/${id}`, product);
+    await axios.put(`https://dummyjson.com/products/${id}`, product);
     navigate(`/admin/view-product/${id}`);
   };
 
   const loadProduct = async () => {
-    const result = await axios.get(`http://localhost:8080/products/${id}`);
+    const result = await axios.get(`https://dummyjson.com/products/${id}`);
     setProduct(result.data);
   };
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-          <h2 className="text-center m-4">Edit Product</h2>
+    
+    <>
+    <TopHeader title="PRODUCTS" subtitle="Updating product" />
+    <Box component="form"  onSubmit={onSubmit} >
+      <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
+        <Grid item sm={8}>
+          <TextField
+            name="title"
+            required
+            fullWidth
+            id="title"
+            label="Tilte"
+            autoFocus
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+          />
+        </Grid>
 
-          <form onSubmit={(e) => onSubmit(e)}>
-            <div className="mb-3">
-              <label htmlFor="Title" className="form-label">
-                Title
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Input title of the product"
-                name="title"
-                value={title}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="Price" className="form-label">
-                Price
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Input price of the product"
-                name="price"
-                value={price}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="discountPercentage" className="form-label">
-                Discount Percentage
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Input discount percentage of the product"
-                name="discountPercentage"
-                value={discountPercentage}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="rating" className="form-label">
-                Rating
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Input price of the product"
-                name="rating"
-                value={rating}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="stock" className="form-label">
-                Stock
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Input price of the product"
-                name="stock"
-                value={stock}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="brand" className="form-label">
-                Brand
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Input price of the product"
-                name="brand"
-                value={brand}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="category" className="form-label">
-                Category
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Input price of the product"
-                name="category"
-                value={category}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <button type="submit" className="btn btn-outline-primary">
-              Submit
-            </button>
-            <Link className="btn btn-outline-danger mx-2" to="/admin/products">
-              Cancel
-            </Link>
-          </form>
-        </div>
-      </div>
-    </div>
+        <Grid item sm={8}>
+          <TextField
+            required
+            fullWidth
+            id="description"
+            label="Description"
+            name="description"
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+          />
+        </Grid>
+
+        <Grid item sm={8}>
+          <TextField
+            required
+            fullWidth
+            id="category"
+            label="Category"
+            name="category"
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+          />
+        </Grid>
+
+        <Grid item sm={8}>
+          <TextField
+            required
+            fullWidth
+            id="brand"
+            label="Brand"
+            name="brand"
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+          />
+        </Grid>
+        <Grid item sm={8}>
+          <TextField
+            required
+            fullWidth
+            name="stock"
+            label="Stock"
+            id="stock"
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+          />
+        </Grid>
+        <Grid item sm={8}>
+          <TextField
+            required
+            fullWidth
+            name="price"
+            label="Price (USD)"
+            id="price"
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+          />
+        </Grid>
+      </Grid>
+        
+      <Button 
+        type="submit"
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',          
+        }}
+      >
+        Submit
+      </Button>
+      
+    </Box>
+    </>
   );
 }
 

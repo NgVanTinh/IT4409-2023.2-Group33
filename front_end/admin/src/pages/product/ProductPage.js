@@ -94,7 +94,7 @@ const OrderPage = () => {
               < VisibilityIcon />
             </IconButton> 
 
-            <Link to={`/edit-product/`}>
+            <Link to={`/admin/edit-product/${params.row.id}`}>
               <IconButton aria-label="edit" color="success">
               <EditIcon />
             </IconButton> 
@@ -163,11 +163,7 @@ const OrderPage = () => {
             // title="Product Information"
             visible={modalVisible}
             onCancel={() => setModalVisible(false)} 
-            footer={[ 
-              <Button className="btn btn-primary py-1" key="back" onClick={() => setModalVisible(false)}>
-                  Close
-              </Button>
-            ]}
+            footer={[ ]}
           >
             {/* Nội dung của hộp thoại */}
             <Carousel arrows infinite={false} dotWidth={20}>

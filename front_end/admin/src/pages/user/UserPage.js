@@ -28,9 +28,9 @@ const UserPage = () => {
     }
 
   useEffect(() => {
-      if (localStorage.getItem('token') == null) {
-          navigate("/login");
-      }
+      // if (localStorage.getItem('token') == null) {
+      //     navigate("/login");
+      // }
       loadUsers();
   }, []);
 
