@@ -33,7 +33,7 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestBody Product product, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
+        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
             try {
                 Product newProduct = productRepository.save(product);
                 return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
@@ -88,7 +88,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
+        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
             Optional<Product> optionalProduct = productRepository.findById(id);
 
             if (optionalProduct.isPresent()) {
@@ -136,7 +136,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
+        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
             Optional<Product> optionalProduct = productRepository.findById(id);
 
             if (optionalProduct.isPresent()) {
@@ -273,7 +273,7 @@ public class ProductController {
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String token
     ){
 
-        if(token != null && JWT.validateJWT(token) && JWT.getRole(token).equals("admin")) {
+        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
 
             List<String> X = new ArrayList<>();
 

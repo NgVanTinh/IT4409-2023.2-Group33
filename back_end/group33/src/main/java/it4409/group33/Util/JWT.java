@@ -1,8 +1,5 @@
 package it4409.group33.Util;
 
-import it4409.group33.Repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
@@ -13,11 +10,9 @@ public class JWT {
 
     public static String createJWT(String userId, String userName, String role) {
         try {
-            // Create Header
             String header = Base64.getUrlEncoder().withoutPadding()
                     .encodeToString("{\"alg\":\"HS256\",\"typ\":\"JWT\"}".getBytes());
 
-            // Create Payload
             long currentTimeMillis = System.currentTimeMillis();
             long expirationMillis = currentTimeMillis + EXPIRATION_TIME;
             String payload = String.format("{\"userId\":\"%s\",\"userName\":\"%s\",\"role\":\"%s\",\"iat\":%d,\"exp\":%d}",
@@ -25,7 +20,6 @@ public class JWT {
             String base64Payload = Base64.getUrlEncoder().withoutPadding()
                     .encodeToString(payload.getBytes());
 
-            // Create Signature
             String headerPayload = header + "." + base64Payload;
             Mac hmacSHA256 = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
@@ -33,7 +27,6 @@ public class JWT {
             String signature = Base64.getUrlEncoder().withoutPadding()
                     .encodeToString(hmacSHA256.doFinal(headerPayload.getBytes()));
 
-            // Combine Header, Payload, and Signature
             return header + "." + base64Payload + "." + signature;
         } catch (Exception e) {
             throw new RuntimeException("Error while creating JWT", e);
@@ -82,7 +75,6 @@ public class JWT {
 
     public static String getUserId(String token) {
         String payload = getPayload(token);
-        // Assuming payload format: {"userId":"123","userName":"john_doe","role":"admin","iat":1622194531,"exp":1622198131}
         assert payload != null;
         String[] parts = payload.split(",");
         for (String part : parts) {
