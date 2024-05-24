@@ -21,13 +21,10 @@ public class OrderService {
 
     @Transactional
     public Order createOrderFromCart(Long userId) {
-        // Find the cart by userId
         Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
             throw new RuntimeException("Cart not found for user id: " + userId);
         }
-
-        // Create a new Order from the Cart data
         Order order = new Order();
         order.setProductJsonArray(cart.getProductJsonArray());
         order.setUserId(cart.getUserId());
@@ -36,14 +33,11 @@ public class OrderService {
         order.setTotalQuantity(cart.getTotalQuantity());
         order.setTotalProducts(cart.getTotalProducts());
         order.setOrderDate(LocalDateTime.now());
-
-        // Save the Order
+        order.setStatus(Order.OrderStatus.CREATED);
         orderRepository.save(order);
-
-        // Clear the cart (optional)
-        cartRepository.delete(cart);
-
+        //cartRepository.delete(cart);
         return order;
     }
+
 }
 
