@@ -41,6 +41,26 @@ public class Cart {
         }
     }
 
+    public double getTotal() {
+        return total;
+    }
+
+    public double getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public int getTotalProducts() {
+        return totalProducts;
+    }
+
+    public String getProductJsonArray() {
+        return productJsonArray;
+    }
+
     public void setJSONArrayObject(JSONArray jsonArray) {
         this.productJsonArray = jsonArray.toString();
     }
