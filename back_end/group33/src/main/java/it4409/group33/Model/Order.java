@@ -109,9 +109,8 @@ public class Order {
 
     public enum OrderStatus {
         CREATED,
-        PAID,
         AWAITING_SHIPMENT,
-        SHIPPED,
+        SHIPPING,
         DELIVERED,
         COMPLETED,
         CANCELLED,
