@@ -1,6 +1,7 @@
 import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault";
-import Login from "../pages/Login";
+import Login from "../pages/Login/Login";
+import Logout from "../pages/Logout/Logout";
 import {
   Home,
   Cart,
@@ -18,15 +19,6 @@ export const routes = [
         path: "/",
         element: <Home />,
       },
-
-      // {
-      //   path: "register",
-      //   element: <Register />,
-      // },
-      // {
-      //   path: "logout",
-      //   element: <Logout />,
-      // },
       {
         path: "product/:id",
         element: <ProductSingle />,
@@ -48,5 +40,13 @@ export const routes = [
   {
     path: "login",
     element: <Login />,
+  },
+  // {
+  //   path: "register",
+  //   element: <Register />,
+  // },
+  {
+    path: "logout",
+    element: <Logout />,
   },
 ];
