@@ -2,6 +2,7 @@ import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault";
 import Login from "../pages/Login/Login";
 import Logout from "../pages/Logout/Logout";
+import Register from "../pages/Register/Register";
 import {
   Home,
   Cart,
@@ -41,10 +42,10 @@ export const routes = [
     path: "login",
     element: <Login />,
   },
-  // {
-  //   path: "register",
-  //   element: <Register />,
-  // },
+  {
+    path: "register",
+    element: <Register />,
+  },
   {
     path: "logout",
     element: <Logout />,

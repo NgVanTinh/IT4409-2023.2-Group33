@@ -69,6 +69,25 @@ export const register = createAsyncThunk(
   }
 );
 
+// Kiểm tra xem người dùng đã tồn tại chưa
+export const checkExist = createAsyncThunk(
+  "user/checkExist",
+  async ({ key, value }, { rejectWithValue }) => {
+    try {
+      const response = await get(`users?${key}=${value}`);
+      if (response.length > 0) {
+        // Nếu tìm thấy người dùng với email này, trả về thông tin người dùng
+        return response[0];
+      } else {
+        // Nếu không tìm thấy, trả về null
+        return null;
+      }
+    } catch (error) {
+      return rejectWithValue(error.response);
+    }
+  }
+);
+
 export const { logout } = userSlice.actions;
 
 export default userSlice.reducer;

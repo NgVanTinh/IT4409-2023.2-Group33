@@ -1,0 +1,159 @@
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { setCookie } from "../../helpers/cookie";
+import { useDispatch } from "react-redux";
+import { Button, Checkbox, Form, Input, Modal } from "antd";
+import "./Register.scss";
+import { useState } from "react";
+import { checkExist, register } from "../../store/userSlice";
+const { TextArea } = Input;
+
+function Register() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
+  const handleOnFinishRegister = async (values) => {
+    // check exist
+    const checkEmailExist = await checkExist("email", values.email);
+    if (checkEmailExist.length > 0) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Email already exist",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    } else {
+      // call api register
+      const actionResult = await dispatch(register(values));
+      const response = actionResult.payload;
+      if (response) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Register success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setIsModalOpen(false);
+        navigate("/login");
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Register failed",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    }
+  };
+
+  return (
+    <>
+      <Modal
+        title="Register"
+        centered={true}
+        footer={null}
+        width={400}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <Form
+          name="login-form"
+          className="login-form"
+          initialValues={{
+            remember: true,
+          }}
+          layout="vertical"
+          onFinish={handleOnFinishRegister}
+        >
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Email!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Password!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Full name"
+            name="fullName"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Full name!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Phone Number"
+            name="phone"
+            rules={[
+              {
+                required: true,
+                message: "Please input your phone!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Address"
+            name="address"
+            rules={[
+              {
+                required: false,
+                message: "Please input your address!",
+              },
+            ]}
+          >
+            <TextArea
+              showCount
+              maxLength={100}
+              style={{
+                height: 100,
+                resize: "none",
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item style={{ textAlign: "center" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+            >
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
+}
+export default Register;
