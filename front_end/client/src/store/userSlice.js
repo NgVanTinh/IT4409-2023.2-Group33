@@ -2,6 +2,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../utils/apiURL";
 import { STATUS } from "../utils/status";
+import { get, post, edit, del } from "../utils/request";
 
 const initialState = {
   user: null,
@@ -47,32 +48,24 @@ const userSlice = createSlice({
 // Đăng nhập
 export const login = createAsyncThunk(
   "user/login",
-  async ({ username, password }) => {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await response.json();
-    return data;
+  async ({ email, password }) => {
+    const response = await get(`users?email=${email}&password=${password}`);
+
+    return response;
   }
 );
 
 // Đăng ký
 export const register = createAsyncThunk(
   "user/register",
-  async ({ username, password }) => {
-    const response = await fetch(`${BASE_URL}/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await response.json();
-    return data;
+  async (records, { rejectWithValue }) => {
+    try {
+      const response = await post(`users`, records);
+
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response);
+    }
   }
 );
 

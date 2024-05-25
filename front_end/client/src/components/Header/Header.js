@@ -11,7 +11,7 @@ import {
 import { getCookie } from "../../helpers/cookie";
 
 export default function Header() {
-  const username = getCookie("username");
+  const token = getCookie("token");
 
   return (
     <header className="header text-white">
@@ -55,7 +55,7 @@ export default function Header() {
                   </Link>
                 </li>
                 <li className="vert-line"></li>
-                {username ? (
+                {token ? (
                   <li>
                     <Link to={"/logout"}>
                       <span className="top-link-itm-txt">Logout</span>

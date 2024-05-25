@@ -12,12 +12,12 @@ function Login() {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(true);
 
-  const handleOnFinishLogin = (values) => {
-    const { username, password } = values;
-
+  const handleOnFinishLogin = async (values) => {
     // call api login
-    const response = login(username, password);
-    if (response) {
+    const actionResult = await dispatch(login(values));
+    const response = actionResult.payload;
+    console.log(response);
+    if (response.length > 0) {
       Swal.fire({
         position: "center",
         icon: "success",
@@ -25,7 +25,7 @@ function Login() {
         showConfirmButton: false,
         timer: 1500,
       });
-      setCookie("username", username, 1);
+      setCookie("token", response[0].token, 1);
       setIsModalOpen(false);
       navigate("/");
     } else {
@@ -58,17 +58,17 @@ function Login() {
           onFinish={handleOnFinishLogin}
         >
           <Form.Item
-            name="username"
+            name="email"
             rules={[
               {
                 required: true,
-                message: "Please input your Username!",
+                message: "Please input your Email!",
               },
             ]}
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Username"
+              placeholder="Email"
             />
           </Form.Item>
           <Form.Item
