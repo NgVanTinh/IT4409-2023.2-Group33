@@ -2,11 +2,18 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../helpers/cookie";
 import { useDispatch } from "react-redux";
-import { Button, Checkbox, Form, Input, Modal } from "antd";
+import { Button, Checkbox, ConfigProvider, Form, Input, Modal } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import "./Login.scss";
 import { useState } from "react";
 import { login } from "../../store/userSlice";
+import { TinyColor } from "@ctrl/tinycolor";
+const colors2 = ["#fc6076", "#ff9a44", "#ef9d43", "#e75516"];
+const getHoverColors = (colors) =>
+  colors.map((color) => new TinyColor(color).lighten(5).toString());
+const getActiveColors = (colors) =>
+  colors.map((color) => new TinyColor(color).darken(5).toString());
+
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -102,13 +109,33 @@ function Login() {
           </Form.Item>
 
           <Form.Item style={{ textAlign: "center" }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    colorPrimary: `linear-gradient(90deg,  ${colors2.join(
+                      ", "
+                    )})`,
+                    colorPrimaryHover: `linear-gradient(90deg, ${getHoverColors(
+                      colors2
+                    ).join(", ")})`,
+                    colorPrimaryActive: `linear-gradient(90deg, ${getActiveColors(
+                      colors2
+                    ).join(", ")})`,
+                    lineWidth: 0,
+                  },
+                },
+              }}
             >
-              Log in
-            </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                className="login-form-button"
+              >
+                Login
+              </Button>
+            </ConfigProvider>
             Or{" "}
             <a href="" className="login-form-register">
               register now!
