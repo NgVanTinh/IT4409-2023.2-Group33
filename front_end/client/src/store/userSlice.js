@@ -1,0 +1,81 @@
+// src/features/user/userSlice.js
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { BASE_URL } from "../utils/apiURL";
+import { STATUS } from "../utils/status";
+
+const initialState = {
+  user: null,
+  userStatus: STATUS.IDLE,
+  error: null,
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    logout(state) {
+      state.user = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(login.pending, (state) => {
+        state.userStatus = STATUS.LOADING;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.userStatus = STATUS.SUCCEEDED;
+        state.user = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.userStatus = STATUS.FAILED;
+        state.error = action.error.message;
+      })
+      .addCase(register.pending, (state) => {
+        state.userStatus = STATUS.LOADING;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.userStatus = STATUS.SUCCEEDED;
+        state.user = action.payload;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.userStatus = STATUS.FAILED;
+        state.error = action.error.message;
+      });
+  },
+});
+
+// Đăng nhập
+export const login = createAsyncThunk(
+  "user/login",
+  async ({ username, password }) => {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await response.json();
+    return data;
+  }
+);
+
+// Đăng ký
+export const register = createAsyncThunk(
+  "user/register",
+  async ({ username, password }) => {
+    const response = await fetch(`${BASE_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await response.json();
+    return data;
+  }
+);
+
+export const { logout } = userSlice.actions;
+
+export default userSlice.reducer;

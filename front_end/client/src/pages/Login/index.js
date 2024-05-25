@@ -1,56 +1,122 @@
-// import { login } from "../../services/usersService";
-// import Swal from "sweetalert2";
-// import { useNavigate } from "react-router-dom";
-// import { setCookie } from "../../helpers/cookie";
-// import { useDispatch } from "react-redux";
-// import { checkLogin } from "../../actions/login";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { setCookie } from "../../helpers/cookie";
+import { useDispatch } from "react-redux";
+import { Button, Checkbox, Form, Input, Modal } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import "./Login.scss";
+import { useState } from "react";
+import { login } from "../../store/userSlice";
+function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
-// function Login() {
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
+  const handleOnFinishLogin = (values) => {
+    const { username, password } = values;
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     const email = e.target[0].value;
-//     const password = e.target[1].value;
-//     // query
-//     const response = await login(email, password);
-//     if (response.length > 0) {
-//       // save information in cookies
-//       setCookie("id", response[0].id, 1);
-//       setCookie("fullName", response[0].fullName, 1);
-//       setCookie("email", response[0].email, 1);
-//       setCookie("token", response[0].token, 1);
+    // call api login
+    const response = login(username, password);
+    if (response) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Login success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      setCookie("username", username, 1);
+      setIsModalOpen(false);
+      navigate("/");
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Login failed",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
 
-//       // send dispatch to reducer
-//       dispatch(checkLogin(true));
+  return (
+    <>
+      <Modal
+        title="Login"
+        centered={true}
+        footer={null}
+        width={400}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <Form
+          name="login-form"
+          className="login-form"
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={handleOnFinishLogin}
+        >
+          <Form.Item
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Username!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Username"
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Password!",
+              },
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+            />
+          </Form.Item>
+          <Form.Item style={{ textAlign: "center" }}>
+            <Form.Item
+              className="form-login-remember"
+              name="remember"
+              valuePropName="checked"
+              noStyle
+            >
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
 
-//       // redirect Home
-//       navigate("/");
-//     } else {
-//       Swal.fire({
-//         position: "center",
-//         icon: "error",
-//         title: "Tài khoản hoặc mật khẩu không chính xác!",
-//         showConfirmButton: false,
-//         timer: 1500,
-//       });
-//     }
-//   };
+            <a className="login-form-forgot" href="">
+              Forgot password
+            </a>
+          </Form.Item>
 
-//   return (
-//     <>
-//       <form action="" onSubmit={handleSubmit}>
-//         <h2>Login</h2>
-//         <div>
-//           <input type="email" placeholder="Nhập email" />
-//         </div>
-//         <div>
-//           <input type="password" placeholder="Nhập mật khẩu" />
-//         </div>
-//         <button type="submit">Đăng nhập</button>
-//       </form>
-//     </>
-//   );
-// }
-// export default Login;
+          <Form.Item style={{ textAlign: "center" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+            >
+              Log in
+            </Button>
+            Or{" "}
+            <a href="" className="login-form-register">
+              register now!
+            </a>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
+}
+export default Login;

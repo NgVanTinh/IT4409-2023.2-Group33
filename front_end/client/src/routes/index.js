@@ -1,5 +1,6 @@
 import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault";
+import Login from "../pages/Login";
 import {
   Home,
   Cart,
@@ -17,10 +18,7 @@ export const routes = [
         path: "/",
         element: <Home />,
       },
-      // {
-      //   path: "login",
-      //   element: <Login />,
-      // },
+
       // {
       //   path: "register",
       //   element: <Register />,
@@ -46,5 +44,9 @@ export const routes = [
         element: <Search />,
       },
     ],
+  },
+  {
+    path: "login",
+    element: <Login />,
   },
 ];
