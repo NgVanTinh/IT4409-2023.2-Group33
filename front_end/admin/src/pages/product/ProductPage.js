@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from 'react'
 import { Box } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid' 
@@ -8,14 +8,31 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import PreviewIcon from '@mui/icons-material/Preview';
 import TopHeader from "../../components/TopHeader";
 import { Modal } from 'antd';
 import { Carousel } from 'antd';
 import { Image } from 'antd';
 import { Space, Typography } from 'antd';
+import {GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
+
 const { Text } = Typography;
 
+const CustomGridToolbar = () => {
+  return (
+    <GridToolbarContainer
+      sx={{ backgroundColor: '#1890ff'}}
+    >
+      <GridToolbarColumnsButton/>
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
+
 const OrderPage = () => {
+  const navigate = useNavigate();
   const [product, setProduct] = useState([]);
   const [products, setProducts] = useState([]);
   const [modalVisible, setModalVisible] = useState(false); 
@@ -84,22 +101,31 @@ const OrderPage = () => {
         return (
           <Box>
             <IconButton aria-label="view" color="primary"
-              
+              title="Preview product"
               onClick={() => {
                 // console.log(params.row.id);
                 loadProduct(params.row.id);
                 setModalVisible(true);
               }} 
             >
+              < PreviewIcon />
+            </IconButton> 
+            <IconButton aria-label="view" color="primary"
+              title="View product"
+              onClick={() => {
+                navigate(`/view-product/${params.row.id}`);
+              }} 
+            >
               < VisibilityIcon />
             </IconButton> 
 
-            <Link to={`/admin/edit-product/${params.row.id}`}>
-              <IconButton aria-label="edit" color="success">
+            <Link to={`/edit-product/${params.row.id}`}>
+              <IconButton aria-label="edit" color="success" title="Edit product">
               <EditIcon />
             </IconButton> 
             </Link>
             <IconButton aria-label="delete" color="error"
+              title="Delete product"
               onClick={() => {
                   deleteProduct(params.row.id);
                 }} 
@@ -136,25 +162,29 @@ const OrderPage = () => {
               backgroundColor: "#3e4396",
               borderBottom: "none",
             },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: "#f2f0f0",
-            },
+            
             "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
-              display: "inline-block",
               backgroundColor: "#1890ff",
             },
-            "& .MuiCheckbox-root": {
-              color: "#b7ebde !important",
-            },
+
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `"#e0e0e0" !important`,
+              color: `#e0e0e0 !important`,
             },
           }}
         >
           <DataGrid
             rows={products}
             columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            // pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
+            slots={{ toolbar: CustomGridToolbar }}
           />
         </Box>
       </Box>

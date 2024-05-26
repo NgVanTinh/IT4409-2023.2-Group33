@@ -90,7 +90,7 @@ const AddProduct = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.post(`https://dummyjson.com/products/`, product);
+    await axios.post(`https://buckytank.shop/products/create`, product);
     navigate(`/admin/products`);
   };
 
@@ -132,7 +132,6 @@ const AddProduct = () => {
             InputLabelProps={{ style: { color: 'blue' } }}
             InputProps={{ style: { color: 'grey' } }}
             multiline
-            rows={3}
             onChange={onInputChange}
           />
         </Grid>

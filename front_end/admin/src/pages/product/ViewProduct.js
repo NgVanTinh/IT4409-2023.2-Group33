@@ -1,69 +1,232 @@
-import { Button } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+import { Button } from "@mui/material";
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import TopHeader from "../../components/TopHeader";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const ViewProduct = () => {
   const navigate = useNavigate();
-  const [order, setOrder] = useState(null); // Changed from const {order, setOrder} = useState(); to const [order, setOrder] = useState(null);
-  const config = {
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-  };
+
   const { id } = useParams();
 
-  useEffect(() => {
-    loadOrder();
-    if (localStorage.getItem('token') == null) {
-            navigate("/");
-    }
-  }, []); // Added [] as the second argument to useEffect to ensure it runs only once on component mount
+  const [product, setProduct] = useState({
+    title: "",
+    description: "",
+    price: "",
+    discountPercentage: "",
+    stock: "",
+    brand: "",
+    category: "",
+    thumbnail: "",
+    images: ""
+  });
 
-  const loadOrder = async () => {
-    try {
-      const result = await axios.get(`http://localhost:8080/api/movie/${id}`, config);
-      setOrder(result.data);
-    } catch (error) {
-      console.error('Error fetching order:', error);
-    }
+  useEffect(() => {
+    loadProduct();
+  },[]);
+
+  const loadProduct = async () => {
+    const result = await axios.get(`https://dummyjson.com/products/${id}`);
+    setProduct(result.data);
   };
 
-  console.log(order);
-
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-          <h2 className="text-center m-4">User Details</h2>
+    
+    <>
+    <TopHeader title="PRODUCTS" subtitle="Viewing a product" />
+    <Box sx={{display: 'flex', flexDirection: 'column'}} >
+      <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
+        <Grid item sm={8} >
+          <TextField
+            variant="standard"
+            fullWidth={true}
+            name="title"
+            id="title"
+            label="Tilte"
+            value={product.title}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+            disabled
+          />
+        </Grid>
 
-          <div className="card">
-            <div className="card-header">
-              Details of order : {order ? order.id : null} {/* Added null check */}
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item">
-                  <b>Name:</b>
-                  {order ? order.movieName : null} {/* Added null check */}
-                </li>
-                <li className="list-group-item">
-                  <b>Directors:</b>
-                  {order ? order.directors : null} {/* Added null check */}
-                </li>
-                <li className="list-group-item">
-                  <b>Actors:</b>
-                  {order ? order.actors : null} {/* Added null check */}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <Link
-            className="btn btn-primary my-2"
-            to="/admin/products"
-          >
-            Back 
-          </Link>
-        </div>
-      </div>
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            name="description"
+            fullWidth
+            id="description"
+            label="Description"
+            value={product.description}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+            multiline
+            disabled
+          />
+        </Grid>
+
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            name="category"
+            fullWidth
+            id="category"
+            label="Category"
+            value={product.category}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+            disabled
+          />
+        </Grid>
+
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            name="brand"
+            fullWidth
+            id="brand"
+            label="Brand"
+            value={product.brand}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+            disabled
+          />
+        </Grid>
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            fullWidth
+            name="stock"
+            label="Stock"
+            id="stock"
+            value={product.stock}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+            disabled
+          />
+        </Grid>
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            fullWidth
+            name="price"
+            label="Price (USD)"
+            id="price"
+            value={product.price}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+            disabled
+          />
+        </Grid>
+        <Grid item sm={8}>
+           <TextField
+              variant="standard"
+              disabled
+              fullWidth
+              label="Thumbnail"
+              multiline
+              rows={5}
+              InputLabelProps={{ style: { color: 'blue' } }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                      <img
+                        src={product.thumbnail}
+                        alt="Product Thumbnail"
+                        style={{
+                          width: '100px',
+                          height: '100px',
+                          borderRadius: '10px',
+                          border: '1px solid blue',
+                          marginRight: '10px',
+                          marginBottom: '10px',
+                        }}
+                      /> 
+                  </InputAdornment>
+                ),
+              }}
+            />
+        </Grid>
+
+        <Grid item sm={8}>
+           <TextField
+              variant="standard"
+              disabled
+              fullWidth
+              label="Images"
+              multiline
+              rows={5}
+              InputLabelProps={{ style: { color: 'blue' } }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    {product.images && product.images.map((image, index) => (
+                        <div
+                            style={{position: 'relative', display: 'inline-block'}}
+                        >
+                      
+                          <img
+                            src={image}
+                            alt="Product Thumbnail"
+                            style={{
+                                width: '100px',
+                                height: '100px',
+                                borderRadius: '10px',
+                                border: '1px solid blue',
+                                marginRight: '10px',
+                              }}
+                            />
+                          
+                        </div>
+                      ))}
+                
+                  </InputAdornment>
+                ),
+              }}
+            />
+        </Grid>
+        <ToastContainer/>
+        
+        
+    </Grid>
+    <div
+      style={{
+          display: 'flex',
+          justifyContent: 'flex-end',  
+          marginTop: '20px',
+        }}
+    >
+      <Button
+        sx={{backgroundColor: '#1890ff', color: 'white', borderRadius: '10px', mr:1}}
+        onClick={() => {navigate('/products')}}
+      >
+        <ArrowBackIcon sx={{mr:1}}/>
+        Navigate to product page
+      </Button>
+
+      <Button
+        sx={{backgroundColor: '#1890ff', color: 'white', borderRadius: '10px', marginLeft: 'auto'}}
+        onClick={() => {navigate(`/edit-product/${id}`)}}
+      >
+        Edit product
+        <ArrowForwardIcon sx={{ml:1}}/>
+        
+      </Button>
     </div>
+    </Box>
+    
+      
+  </>
   );
-};
+}
 
 export default ViewProduct;

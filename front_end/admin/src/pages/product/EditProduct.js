@@ -92,8 +92,8 @@ const EditProduct = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`https://dummyjson.com/products/${id}`, product);
-    navigate(`/admin/view-product/${id}`);
+    // await axios.put(`https://dummyjson.com/products/${id}`, product);
+    navigate(`/view-product/${id}`);
   };
 
   const loadProduct = async () => {
@@ -105,7 +105,7 @@ const EditProduct = () => {
     
     <>
     <TopHeader title="PRODUCTS" subtitle="Updating product" />
-    <Box component="form"  onSubmit={onSubmit} sx={{display: 'flex', flexDirection: 'column',  justifyContent: 'center', alignItems: 'center'}} >
+    <Box component="form"  onSubmit={onSubmit} sx={{display: 'flex', flexDirection: 'column'}} >
       <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
         <Grid item sm={8} >
           <TextField
@@ -114,7 +114,6 @@ const EditProduct = () => {
             required
             id="title"
             label="Tilte"
-            autoFocus
             value={product.title}
             InputLabelProps={{ style: { color: 'blue' } }}
             InputProps={{ style: { color: 'grey' } }}
@@ -129,12 +128,11 @@ const EditProduct = () => {
             fullWidth
             id="description"
             label="Description"
-            autoFocus
+            
             value={product.description}
             InputLabelProps={{ style: { color: 'blue' } }}
             InputProps={{ style: { color: 'grey' } }}
             multiline
-            rows={3}
             onChange={onInputChange}
           />
         </Grid>
@@ -279,7 +277,7 @@ const EditProduct = () => {
                             style={{
                                 width: '100px',
                                 height: '100px',
-                                borderRadius: '20px',
+                                borderRadius: '10px',
                                 border: '1px solid blue',
                                 marginRight: '10px',
                               }}
@@ -291,25 +289,13 @@ const EditProduct = () => {
                         <div
                           style={{position: 'relative', display: 'inline-block'}}
                         >
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDeleteImage(index)}
-                            style={{
-                              position: 'absolute',
-                              bottom: '80%',
-                              right: '0',
-                              color: 'grey',
-                            }}
-                          >
-                            <CancelSharpIcon />
-                          </IconButton>
                           <img
                             src={URL.createObjectURL(image)}
                             alt="Product Thumbnail"
                             style={{
                               width: '100px',
                               height: '100px',
-                              borderRadius: '20px',
+                              borderRadius: '10px',
                               border: '1px solid blue',
                               marginRight: '10px',
                             }}
@@ -339,26 +325,23 @@ const EditProduct = () => {
         
     </Grid>
         
-       <div
+    <div
       style={{
           display: 'flex',
           justifyContent: 'flex-end',  
           marginTop: '20px',
-          marginBottom: '20px',
-          marginRight: '20px',
-          marginLeft: '600px',
         }}
     >
       <Button
         sx={{backgroundColor: 'red', color: 'white', borderRadius: '10px', mr:1}}
-        onClick={() => {navigate('/admin/products')}}
+        onClick={() => {navigate('/products')}}
       >
         <CancelPresentationOutlinedIcon sx={{mr:1}}/>
         Cancel
       </Button>
       <Button 
         type="submit"
-        sx={{backgroundColor: '#2686CB', color: 'white', borderRadius: '10px', marginLeft: 'auto'}}
+        sx={{backgroundColor: '#2686CB', color: 'white', borderRadius: '10px', mr: 20}}
       >
         <SendOutlinedIcon sx={{mr:1}} />
         Submit

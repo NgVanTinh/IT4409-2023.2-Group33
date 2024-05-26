@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
-import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined } from '@ant-design/icons'
+import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined, BarChartOutlined } from '@ant-design/icons'
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
@@ -13,10 +13,21 @@ const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {  
   const [collapsed, setCollapsed] = useState(false);
-
+  const [selectedKey, setSelectedKey] = useState('');
   const navigate = useNavigate();
-
+  const location = useLocation();
   
+  useEffect(() => {
+    let pathName;
+    const path = location.pathname;
+    if(path === '/products') pathName = 'products';
+    else if(path === '/add-product') pathName = 'add-product';
+    else if(path === '/') pathName = '';
+    else pathName = path;
+    // console.log(path);
+    setSelectedKey(pathName);
+  }, [location.pathname]);
+
   return (
     <Layout>
       <Sider theme='dark' trigger={null} collapsible collapsed={collapsed}>
@@ -33,11 +44,10 @@ const MainLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
+          selectedKeys={selectedKey}
+          defaultOpenKeys={['/']}
           onClick={({ key }) => {
-            if (key === "signout") {
-            } else {
               navigate(key);
-            }
             }}  
           items={[
             {
@@ -48,6 +58,7 @@ const MainLayout = () => {
             {
               label: 'Products',
               icon: <ProductOutlined/>,
+              key: '/',
               children: [
                 {
                   label: 'View all products',
@@ -64,12 +75,17 @@ const MainLayout = () => {
             {
               label: 'Users',
               icon: <UserOutlined/>,
-              key: 'users'
+              key: '/users'
             },
             {
               label: 'Orders',
               icon: <OrderedListOutlined/>,
-              key: 'orders'
+              key: '/orders'
+            },
+            {
+              label: 'Statistics',
+              icon:<BarChartOutlined />,
+              key: '/statistics'
             }
           ]}
         />

@@ -1,31 +1,38 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import TopHeader from "../../components/TopHeader";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+import {GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 
-// import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-// import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-// import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-// import IconButton from '@mui/material/IconButton';
+const CustomGridToolbar = () => {
+  return (
+    <GridToolbarContainer
+      sx={{ backgroundColor: '#1890ff'}}
+    >
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
 
 const UserPage = () => {
-  const navigate = useNavigate()
   const [users, setUsers] = useState([]);
   const [isLocked, setIsLocked] = useState(false);
     // const config = {
     //     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     // };
 
-    const loadUsers = async () => {
-        const result = await axios.get(`https://dummyjson.com/users?limit=50`);
-        const {users} = result.data;
-        setUsers(users);
-        
-    }
+  const loadUsers = async () => {
+      const result = await axios.get(`https://dummyjson.com/users?limit=50`);
+      const {users} = result.data;
+      setUsers(users);
+      
+  }
 
   useEffect(() => {
       // if (localStorage.getItem('token') == null) {
@@ -53,13 +60,6 @@ const UserPage = () => {
       headerName: "UserName",
       flex: 1,
       cellClassName: "username-column--cell",
-    },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
     },
     {
       field: "phone",
@@ -148,17 +148,11 @@ const UserPage = () => {
               backgroundColor: "#3e4396",
               borderBottom: "none",
             },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: "#fff",
-            },
+            
             "& .MuiDataGrid-footerContainer": {
-              // borderTop: "none",
-              display: "inline-block",
               backgroundColor: "#1890ff",
             },
-            "& .MuiCheckbox-root": {
-              color: `#b7ebde !important`,
-            },
+            
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `#e0e0e0 !important`,
             },
@@ -167,6 +161,16 @@ const UserPage = () => {
           <DataGrid
             rows={users}
             columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            // pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
+            slots={{ toolbar: CustomGridToolbar }}
           />
         </Box>
       </Box>

@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 
-import Login from './pages/Login'
 import Dashboard from './pages/dashboard/Dashboard'
 import ProductPage from './pages/product/ProductPage';
 import EditProduct from './pages/product/EditProduct';
@@ -11,14 +10,15 @@ import ViewOrder from './pages/order/ViewOrder';
 import ViewProduct from './pages/product/ViewProduct';
 import AddProduct from './pages/product/AddProduct';
 import MainLayout from './components/MainLayout'
+import Chart from './pages/chart/Chart';
 
 function App() {
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path='/' element={<Login/>}/>
-        <Route path='/admin' element={<MainLayout/>}>
+        {/* <Route exact path='/' element={<Login/>}/> */}
+        <Route path='/' element={<MainLayout/>}>
           <Route index element={<Dashboard />} />
           <Route path='products' element={<ProductPage/>}/> 
           <Route path='view-product/:id' element={<ViewProduct/>}/>
@@ -26,7 +26,7 @@ function App() {
           <Route path='add-product' element={<AddProduct />}/>
           <Route path='users' element={<UserPage/>}/>
           <Route path='orders' element={<OrderPage/>}/>
-          {/* <Route path='view-order/:id' element={<ViewOrder/>}/> */}
+          <Route path='statistics' element={<Chart/>}/>
         </Route>
         
       </Routes>

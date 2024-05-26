@@ -1,27 +1,43 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-
-import { Button, Modal } from "antd"; // import Modal from antd
-
-import { Link } from 'react-router-dom'
+import { Modal } from "antd"; 
+import {Button} from '@mui/material/Button'
 import { useEffect } from 'react'
 import { Box } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid' 
 import {IconButton} from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Space, Typography } from 'antd';
 import TopHeader from '../../components/TopHeader';
+import {GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
+
+const CustomGridToolbar = () => {
+  return (
+    <GridToolbarContainer
+      sx={{ backgroundColor: '#1890ff'}}
+    >
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
+
+const { Text } = Typography;
+
 const OrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [order, setOrder] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false); // state để điều khiển việc hiển thị của hộp thoại
+  const [modalVisible, setModalVisible] = useState(false); 
 
   const loadOrders = async () => {
-      const result = await axios.get(`http://localhost:8080/api/movie/`);
+      const result = await axios.get(``);
       setOrders(result.data);
   }
 
   const loadOrder = async (id) => {
-      const result = await axios.get(`http://localhost:8080/api/movie/${id}`);
+      const result = await axios.get(``);
       setOrder(result.data);
   }
 
@@ -33,37 +49,31 @@ const OrderPage = () => {
   const columns = [
     { field: "id", id:"id", headerName: "ID", flex: 0.5 },
     {
-      field: "movieName",
-      id:"movieName",
-      headerName: "Movie Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "categories",
-      id:"categories",
-      headerName: "Categories",
+      field: "createdTime",
+      id:"createdTime",
+      headerName: "Created Time",
       flex: 1,
     },
     {
-      field: "directors",
-      id:"directors",
-      headerName: "Directors",
+      field: "user",
+      id:"user",
+      headerName: "User",
+      cellClassName: "user-column--cell",
+      flex: 1,
+    },
+    {
+      field: "totalPrice",
+      id:"totalPrice",
+      headerName: "Total Price",
       headerAlign: "left",
-      cellClassName: "director-column--cell",
-      align: "left",
-    },
-    {
-      field: "description",
-      id:"description",
-      headerName: "Description",
+      cellClassName: "price-column--cell",
       flex: 1,
     },
     {
-      headerName: "Action",
-      id:"action",
+      headerName: "Status",
+      id:"status",
       flex: 1,
-      cellClassName: "action-column--cell",
+      cellClassName: "status-column--cell",
       renderCell: params => {
         return (
           <Box>
@@ -79,11 +89,11 @@ const OrderPage = () => {
             </IconButton> 
             
             {/* <IconButton aria-label="delete" color="error"
-              onClick={() => deleteProduct(params.row.id)}
+              onClick={() => deleteorder(params.row.id)}
             >
               <DeleteOutlinedIcon />
             </IconButton> 
-            <Link to={`/edit-product/`}>
+            <Link to={`/edit-order/`}>
               <IconButton aria-label="edit" color="success">
               <EditOutlinedIcon/>
             </IconButton> 
@@ -108,10 +118,10 @@ const OrderPage = () => {
               "& .MuiDataGrid-cell": {
                 borderBottom: "none",
               },
-              "& .name-column--cell": {
+              "& .price-column--cell": {
                 color:  "#94e2cd",
               },
-              "& .phone-column--cell": {
+              "& .user-column--cell": {
                 color:  "#868dfb",
               },
               "& .MuiDataGrid-columnHeaders": {
@@ -137,6 +147,16 @@ const OrderPage = () => {
             <DataGrid
               rows={orders}
               columns={columns}
+              initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            // pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
+            slots={{ toolbar: CustomGridToolbar }}
             />
           </Box>
         </Box>
@@ -145,16 +165,18 @@ const OrderPage = () => {
             title="Order Information"
             visible={modalVisible}
             onCancel={() => setModalVisible(false)} 
-            footer={[ 
-              <Button className="btn btn-primary py-1" key="back" onClick={() => setModalVisible(false)}>
-                  Close
-              </Button>
-            ]}
+            footer={[  ]}
           >
-            {/* Nội dung của hộp thoại */}
-            <p><b>Name:</b> {order ? order.movieName : null}</p>
-            <p><b>Directors:</b> {order ? order.directors : null}</p>
-            <p><b>Actors:</b> {order ? order.actors : null}</p>
+            <Space direction="vertical">
+              <Text type="secondary">ID: <Text strong>{order ? order.id : null}</Text></Text>
+              <Text type="secondary">CREATED TIME: <Text strong>{order ? order.title : null}</Text></Text>
+              <Text type="secondary">USER: <Text strong>{order ? order.brand : null}</Text></Text>
+              <Text type="secondary">TOTAL PRICE: <Text strong>{order ? order.category : null}</Text></Text>
+              
+              <Text type="secondary">STOCK: <Text strong>{order ? order.stock : null}</Text></Text>
+              <Text type="secondary">TOTAL PRICE: <Text strong>{order ? order.price : null} $</Text></Text>
+              <Text type="secondary">STATUS: <Text strong>{order ? order.description : null}</Text></Text>
+            </Space>
           </Modal>
     </>
     
