@@ -9,7 +9,7 @@ export default function CartMessage() {
         <img src={correct} alt="" />
       </div>
       <h6 className="text-white fs-14 fw-5">
-        An item has been added to your shopping cart
+        Một sản phẩm đã được thêm vào giỏ hàng
       </h6>
     </div>
   );

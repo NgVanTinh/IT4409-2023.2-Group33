@@ -2,12 +2,7 @@ import React from "react";
 import "./Header.scss";
 import { Link } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
-import {
-  FaFacebook,
-  FaTiktok,
-  FaCircleQuestion,
-  FaQuestion,
-} from "react-icons/fa6";
+import { FaFacebook, FaTiktok, FaQuestion } from "react-icons/fa6";
 import { getCookie } from "../../helpers/cookie";
 
 export default function Header() {
@@ -21,7 +16,7 @@ export default function Header() {
             <div className="header-cnt-top-l">
               <ul className="flex top-links align-center">
                 <li className="flex align-center">
-                  <span fs-13>Follow me</span>
+                  <span fs-13>Nguyễn Quang Thuận</span>
                   <ul className="social-links flex align-center">
                     <li className="mx-2">
                       <a
@@ -58,20 +53,20 @@ export default function Header() {
                 {token ? (
                   <li>
                     <Link to={"/logout"}>
-                      <span className="top-link-itm-txt">Logout</span>
+                      <span className="top-link-itm-txt">Đăng xuất</span>
                     </Link>
                   </li>
                 ) : (
                   <>
                     <li>
                       <Link to={"/register"}>
-                        <span className="top-link-itm-txt">Register</span>
+                        <span className="top-link-itm-txt">Đăng ký</span>
                       </Link>
                     </li>
                     <li className="vert-line"></li>
                     <li>
                       <Link to={"/login"}>
-                        <span className="top-link-itm-txt">Login</span>
+                        <span className="top-link-itm-txt">Đăng nhập</span>
                       </Link>
                     </li>
                   </>

@@ -36,7 +36,7 @@ function Error404() {
               type="primary"
               size="large"
             >
-              Go Back
+              Quay lại
             </Button>
           </ConfigProvider>
         }

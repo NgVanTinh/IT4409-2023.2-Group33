@@ -32,7 +32,7 @@ export default function Sidebar() {
 
       <div className="sidebar-cnt">
         <div className="cat-title fs-17 text-uppercase fw-6 ls-1h">
-          All Categories
+          Tất cả các danh mục
         </div>
         <ul className="cat-list">
           {categories.length > 0 &&

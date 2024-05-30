@@ -18,19 +18,16 @@ export default function CartPage() {
   const carts = useSelector(getAllCarts);
   const { itemsCount, totalAmount } = useSelector((state) => state.cart);
 
-  console.log(carts);
-  console.log(itemsCount, totalAmount);
-
   if (carts.length === 0) {
     return (
       <div className="container my-5">
         <div className="empty-cart flex justify-center align-center flex-column font-manrope">
           <img src={shopping_cart} alt="" />
           <span className="fw-6 fs-15 text-gray">
-            Your shopping cart is empty.
+            Giỏ hàng của bạn đang trống
           </span>
           <Link to={"/"} className="shopping-btn bg-orange text-white fw-5">
-            Go shopping now
+            Mua sắm ngay thôi
           </Link>
         </div>
       </div>
@@ -44,22 +41,25 @@ export default function CartPage() {
           <div className="cart-chead bg-white">
             <div className="cart-ctr fw-6 font-manrope fs-15">
               <div className="cart-cth">
-                <span className="cart-ctxt">S.N.</span>
+                <span className="cart-ctxt">STT</span>
               </div>
               <div className="cart-cth">
-                <span className="cart-ctxt">Product</span>
+                <span className="cart-ctxt">Tên sản phẩm</span>
               </div>
               <div className="cart-cth">
-                <span className="cart-ctxt">Unit Price</span>
+                <span className="cart-ctxt">Hình ảnh</span>
               </div>
               <div className="cart-cth">
-                <span className="cart-ctxt">Quantity</span>
+                <span className="cart-ctxt">Đơn giá</span>
               </div>
               <div className="cart-cth">
-                <span className="cart-ctxt">Total Price</span>
+                <span className="cart-ctxt">Số lượng</span>
               </div>
               <div className="cart-cth">
-                <span className="cart-ctxt">Actions</span>
+                <span className="cart-ctxt">Tổng tiền</span>
+              </div>
+              <div className="cart-cth">
+                <span className="cart-ctxt">Hành động</span>
               </div>
             </div>
           </div>
@@ -72,6 +72,15 @@ export default function CartPage() {
                   </div>
                   <div className="cart-ctd">
                     <span className="cart-ctxt">{cart?.title}</span>
+                  </div>
+                  <div className="cart-ctd">
+                    <span className="cart-ctxt">
+                      <img
+                        src={cart?.thumbnail}
+                        alt=""
+                        style={{ width: 75, height: 75 }}
+                      />
+                    </span>
                   </div>
                   <div className="cart-ctd">
                     <span className="cart-ctxt">
@@ -125,20 +134,20 @@ export default function CartPage() {
                 onClick={() => dispatch(clearCart())}
               >
                 <FaTrashAlt />
-                <span className="mx-1">Clear Cart</span>
+                <span className="mx-1">Xóa toàn bộ sản phẩm</span>
               </button>
             </div>
             <div className="cart-cfoot-r flex flex-column justify-end">
               <div className="total-txt flex align-center justify-end">
                 <div className="font-manrope fw-5">
-                  Total ({itemsCount}) items:{" "}
+                  Tổng cộng ({itemsCount}) sản phẩm:{" "}
                 </div>
                 <span className="text-orange fs-22 mx-2 fw-6">
                   {formatPrice(totalAmount)}
                 </span>
               </div>
               <button className="checkout-btn text-white bg-orange fs-16">
-                Check Out
+                Thanh toán
               </button>
             </div>
           </div>

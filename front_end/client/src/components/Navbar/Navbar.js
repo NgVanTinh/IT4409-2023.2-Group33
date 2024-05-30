@@ -52,7 +52,7 @@ export default function Navbar() {
               <FaBagShopping />
             </span>
             <span className="navbar-brand-txt mx-2">
-              <span className="fw-7">Shopping</span>
+              <span className="fw-7">TShop</span>
             </span>
           </Link>
         </div>

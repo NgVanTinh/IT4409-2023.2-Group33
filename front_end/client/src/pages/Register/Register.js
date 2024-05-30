@@ -168,7 +168,7 @@ function Register() {
               }}
             >
               <Button type="primary" htmlType="submit" size="large">
-                Register
+                Đăng ký
               </Button>
             </ConfigProvider>
           </Form.Item>
