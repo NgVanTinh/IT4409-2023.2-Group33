@@ -21,15 +21,15 @@ export default function SearchPage() {
   useEffect(() => {
     dispatch(clearSearchProducts());
     dispatch(fetchAsyncSearchProducts(searchKeyword));
-  }, [searchKeyword]);
+  }, [searchKeyword, dispatch]);
 
-  if (searchProducts.length === 0) {
-    return (
-      <div className="container">
-        <h3>Không tìm thấy sản phẩm</h3>
-      </div>
-    );
-  }
+  // if (searchProducts.length === 0) {
+  //   return (
+  //     <div className="container">
+  //       <h3>Không tìm thấy sản phẩm</h3>
+  //     </div>
+  //   );
+  // }
 
   return (
     <main>

@@ -120,7 +120,7 @@ export default function CartPage() {
                       className="delete-btn text-dark"
                       onClick={() => dispatch(removeFromCart(cart?.id))}
                     >
-                      Delete
+                      Xóa
                     </button>
                   </div>
                 </div>

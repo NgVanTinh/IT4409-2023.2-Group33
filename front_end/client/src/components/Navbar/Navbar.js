@@ -19,22 +19,21 @@ import {
   getCartTotal,
 } from "../../store/cartSlice";
 import CartModal from "../CartModal/CartModal";
+import SearchBar from "../SearchBar/SearchBar";
+import SearchResultList from "../SearchResultList/SearchResultList";
 
 export default function Navbar() {
   const dispatch = useDispatch();
   const categories = useSelector(getAllCategories);
   const carts = useSelector(getAllCarts);
   const itemsCount = useSelector(getCartItemsCount);
-  const [searchKeyword, setSearchKeyword] = useState("");
 
-  const handleSearchKeyword = (e) => {
-    e.preventDefault();
-    setSearchKeyword(e.target.value);
-  };
+  const [results, setResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     dispatch(getCartTotal());
-  }, [carts]);
+  }, [carts, dispatch]);
 
   return (
     <nav className="navbar">
@@ -59,19 +58,17 @@ export default function Navbar() {
         <div className="navbar-collapse w-100">
           <div className="navbar-search bg-white">
             <div className="flex align-center">
-              <input
-                type="text"
-                className="form-control fs-14"
-                placeholder="Search your preferred items here"
-                onChange={(e) => handleSearchKeyword(e)}
+              <SearchBar
+                setResults={setResults}
+                setShowResults={setShowResults}
               />
-              <Link
-                to={`search/${searchKeyword}`}
-                className="text-white search-btn flex align-center justify-center"
-              >
-                <FaMagnifyingGlass />
-              </Link>
             </div>
+            {showResults && (
+              <SearchResultList
+                results={results}
+                setShowResults={setShowResults}
+              />
+            )}
           </div>
           <ul className="navbar-nav flex align-center fs-12 fw-4 font-manrope">
             {/* taking only first 8 categories */}
