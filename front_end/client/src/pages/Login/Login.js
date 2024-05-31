@@ -47,103 +47,114 @@ function Login() {
   };
 
   return (
-    <>
-      <Modal
-        title="Login"
-        centered={true}
-        footer={null}
-        width={400}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+    <div className="body">
+      {/* <Form
+        name="login-form"
+        className="login-form"
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={handleOnFinishLogin}
       >
-        <Form
-          name="login-form"
-          className="login-form"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={handleOnFinishLogin}
+        <Form.Item
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Email!",
+            },
+          ]}
         >
-          <Form.Item
-            name="email"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Email!",
-              },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Email"
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Password!",
-              },
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Item>
-          <Form.Item style={{ textAlign: "center" }}>
-            <Form.Item
-              className="form-login-remember"
-              name="remember"
-              valuePropName="checked"
-              noStyle
-            >
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
+          <Input
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="Email"
+          />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Password!",
+            },
+          ]}
+        >
+          <Input.Password
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="password"
+            placeholder="Password"
+          />
+        </Form.Item>
 
-            <a className="login-form-forgot" href="">
-              Forgot password
-            </a>
-          </Form.Item>
+        <Form.Item style={{ textAlign: "right" }}>
+          <a className="login-form-forgot" href="">
+            Quên mật khẩu
+          </a>
+        </Form.Item>
 
-          <Form.Item style={{ textAlign: "center" }}>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(90deg,  ${colors2.join(
-                      ", "
-                    )})`,
-                    colorPrimaryHover: `linear-gradient(90deg, ${getHoverColors(
-                      colors2
-                    ).join(", ")})`,
-                    colorPrimaryActive: `linear-gradient(90deg, ${getActiveColors(
-                      colors2
-                    ).join(", ")})`,
-                    lineWidth: 0,
-                  },
+        <Form.Item style={{ textAlign: "center" }}>
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  colorPrimary: `linear-gradient(90deg,  ${colors2.join(
+                    ", "
+                  )})`,
+                  colorPrimaryHover: `linear-gradient(90deg, ${getHoverColors(
+                    colors2
+                  ).join(", ")})`,
+                  colorPrimaryActive: `linear-gradient(90deg, ${getActiveColors(
+                    colors2
+                  ).join(", ")})`,
+                  lineWidth: 0,
                 },
-              }}
+              },
+            }}
+          >
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              className="login-form-button"
             >
-              <Button
-                type="primary"
-                htmlType="submit"
-                size="large"
-                className="login-form-button"
-              >
-                Login
-              </Button>
-            </ConfigProvider>
-            Or{" "}
-            <a href="" className="login-form-register">
-              register now!
+              Đăng nhập
+            </Button>
+          </ConfigProvider>
+        </Form.Item>
+
+        <Form.Item>
+          Bạn chưa có tài khoản{" "}
+          <a href="/register" className="login-form-register">
+            Đăng ký ngay!
+          </a>
+        </Form.Item>
+      </Form> */}
+
+      <div class="form-login">
+        <div class="left">
+          <h2>Đăng nhập</h2>
+          <form action="" onFinish={handleOnFinishLogin}>
+            <input type="text" placeholder="Email" required />
+            <input type="text" placeholder="Password" required />
+            <a href="/forgot-password" className="forgot-password">
+              Quên mật khẩu?
             </a>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </>
+            <button type="submit">Đăng nhập</button>
+          </form>
+        </div>
+        <div class="right">
+          <h3>TShop</h3>
+          <p>
+            Chào mừng quý khách hàng đến với TShop. Điểm đến lý tưởng cho những
+            ai đam mê công nghệ và đang tìm kiếm những sản phẩm công nghệ tiên
+            tiến nhất.
+            <br />
+            Nếu bạn chưa có tài khoản hãy bấm nút đăng ký ở phía dưới!
+          </p>
+          <a href="/register">Đăng ký</a>
+        </div>
+      </div>
+    </div>
   );
 }
 export default Login;

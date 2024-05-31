@@ -146,9 +146,14 @@ export default function CartPage() {
                   {formatPrice(totalAmount)}
                 </span>
               </div>
-              <button className="checkout-btn text-white bg-orange fs-16">
-                Thanh toán
-              </button>
+              <div>
+                <button className="checkout-btn text-white bg-orange fs-16 mx-3">
+                  Thanh toán qua VNPay
+                </button>
+                <button className="checkout-btn text-white bg-orange fs-16">
+                  Đặt hàng
+                </button>
+              </div>
             </div>
           </div>
         </div>

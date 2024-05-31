@@ -58,7 +58,7 @@ function Register() {
   };
 
   return (
-    <>
+    <div className="body">
       <Modal
         title="Register"
         centered={true}
@@ -174,7 +174,7 @@ function Register() {
           </Form.Item>
         </Form>
       </Modal>
-    </>
+    </div>
   );
 }
 export default Register;
