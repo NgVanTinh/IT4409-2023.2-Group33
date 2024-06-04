@@ -54,7 +54,6 @@ const ViewProduct = () => {
             label="Tilte"
             value={product.title}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
             disabled
           />
         </Grid>
@@ -68,7 +67,6 @@ const ViewProduct = () => {
             label="Description"
             value={product.description}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
             multiline
             disabled
           />
@@ -83,7 +81,6 @@ const ViewProduct = () => {
             label="Category"
             value={product.category}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
             disabled
           />
         </Grid>
@@ -97,7 +94,6 @@ const ViewProduct = () => {
             label="Brand"
             value={product.brand}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
             disabled
           />
         </Grid>
@@ -110,7 +106,6 @@ const ViewProduct = () => {
             id="stock"
             value={product.stock}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
             disabled
           />
         </Grid>
@@ -123,7 +118,6 @@ const ViewProduct = () => {
             id="price"
             value={product.price}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
             disabled
           />
         </Grid>

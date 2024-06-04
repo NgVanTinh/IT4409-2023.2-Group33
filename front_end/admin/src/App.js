@@ -27,6 +27,7 @@ function App() {
           <Route path='users' element={<UserPage/>}/>
           <Route path='orders' element={<OrderPage/>}/>
           <Route path='statistics' element={<Chart/>}/>
+          <Route path='view-order/:id' element={<ViewOrder/>}/>
         </Route>
         
       </Routes>

@@ -127,7 +127,6 @@ const AddProduct = () => {
             fullWidth
             id="description"
             label="Description"
-            autoFocus
             value={product.description}
             InputLabelProps={{ style: { color: 'blue' } }}
             InputProps={{ style: { color: 'grey' } }}
