@@ -69,7 +69,7 @@ const OrderPage = () => {
       flex: 1,
     },
     {
-      field: "discountedTotal ",
+      field: "discountedTotal",
       id: "discountedTotal",
       headerName: "Discounted Total ($)",
       headerAlign: "left",
@@ -132,9 +132,9 @@ const OrderPage = () => {
               "& .MuiDataGrid-cell": {
                 borderBottom: "none",
               },
-              "& .price-column--cell": {
-                color:  "#94e2cd",
-              },
+              // "& .price-column--cell": {
+              //   color:  "#94e2cd",
+              // },
               "& .user-column--cell": {
                 color:  "#868dfb",
               },

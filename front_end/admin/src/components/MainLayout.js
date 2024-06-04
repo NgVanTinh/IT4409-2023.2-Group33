@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
-import { DashboardOutlined, ProductOutlined, UserOutlined, OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined, BarChartOutlined } from '@ant-design/icons'
+import { DashboardOutlined, ProductOutlined, UserOutlined, BellOutlined,
+        OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined, BarChartOutlined } from '@ant-design/icons'
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
@@ -114,6 +115,21 @@ const MainLayout = () => {
             </div>
             <div theme="light" className='d-flex gap-3 align-items-center'>
               <div
+                style={{
+                  fontSize: '30px',
+                  // width: 64,
+                  // height: 64,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <BellOutlined style={{marginRight: '10px'}} />
+              </div>
+              
+              <div
                 role="button"
                 id="dropdownMenuLink"
                 data-bs-toggle="dropdown"
@@ -129,9 +145,8 @@ const MainLayout = () => {
                   cursor: 'pointer',
                 }}
               >
-                  
-                     <Avatar size={40} icon={<UserOutlined />} />
-                     <Typography style={{marginLeft: '10px', fontSize: '25px'}} >Admin</Typography>
+                    <UserOutlined />
+                    {/* <Typography style={{marginLeft: '10px', fontSize: '25px'}} >Admin</Typography> */}
                   
               </div>
               

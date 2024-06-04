@@ -1,7 +1,15 @@
-import * as React from 'react';
+import React from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 import { PieChart } from '@mui/x-charts/PieChart';
 
 const Chart = () => {
+
+  const [categories, setCategories] = useState()
+  const loadCategories = async() =>{
+    const result = await axios.get(`https://dummyjson.com/carts`)
+    setCategories(result.data)
+  }
   return (
     <PieChart
       series={[
