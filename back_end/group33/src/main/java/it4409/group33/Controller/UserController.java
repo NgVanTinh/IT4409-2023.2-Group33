@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -198,13 +200,22 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
-            List<User> users = userRepository.findAll();
-            return new ResponseEntity<>(users,HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+    public ResponseEntity<List<Map<String, Object>>> getAllUser() {
+        List<Object[]> users = userRepository.getAllUsersExceptPassword();
+
+        List<Map<String, Object>> userDicts = new ArrayList<>();
+        for (Object[] user : users) {
+            Map<String, Object> userDict = new HashMap<>();
+            userDict.put("id", user[0]);
+            userDict.put("address", user[1]);
+            userDict.put("email", user[2]);
+            userDict.put("name", user[3]);
+            userDict.put("phone", user[4]);
+            userDict.put("role", user[5]);
+            userDict.put("username", user[6]);
+            userDicts.add(userDict);
         }
+        return new ResponseEntity<>(userDicts,HttpStatus.OK);
     }
 
 }
