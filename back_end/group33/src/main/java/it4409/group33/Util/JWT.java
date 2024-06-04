@@ -85,18 +85,6 @@ public class JWT {
         return null;
     }
 
-    public static String getUserName(String token) {
-        String payload = getPayload(token);
-        assert payload != null;
-        String[] parts = payload.split(",");
-        for (String part : parts) {
-            if (part.contains("\"userName\"")) {
-                return part.split(":")[1].replaceAll("\"", "").trim();
-            }
-        }
-        return null;
-    }
-
     public static String getRole(String token) {
         String payload = getPayload(token);
         assert payload != null;

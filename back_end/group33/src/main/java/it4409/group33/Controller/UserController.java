@@ -37,7 +37,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
 
-        if(user.isActived() == 0) {
+        if(!user.isActived()) {
             return new ResponseEntity<>("Account is not actived",HttpStatus.FORBIDDEN);
         }
 
@@ -129,7 +129,9 @@ public class UserController {
             return new ResponseEntity<>("Not found account", HttpStatus.NOT_FOUND);
         } else {
             if(OTP.equals(otp)) {
-                userRepository.setActiveStatusByEmail(toEmail,1);
+                System.out.println("OTP: " + OTP);
+                user.setActived(true);
+                userRepository.save(user);
                 String jwtToken = JWT.createJWT(String.valueOf(user.getId()),user.getUsername() ,user.getRole());
                 JSONObject response = new JSONObject();
                 try {
@@ -167,19 +169,16 @@ public class UserController {
                     if(user == null) {
                         user = new User(jsonBody.getString("username"),
                                 sha256(jsonBody.getString("password")),
-                                jsonBody.getString("firstname"),
-                                jsonBody.getString("lastname"),
+                                jsonBody.getString("fullname"),
                                 jsonBody.getString("email"),
                                 jsonBody.getString("phone"),
-                                jsonBody.getString("role"),
-                                0, 0);
+                                jsonBody.getString("address"));
 
                         userRepository.save(user);
                         response.put("id",user.getId());
                         response.put("message","Sign Up complete");
                         response.put("username",jsonBody.getString("username"));
-                        response.put("firstName",jsonBody.getString("firstname"));
-                        response.put("lastName",jsonBody.getString("lastname"));
+                        response.put("fullname",jsonBody.getString("fullname"));
                         return new ResponseEntity<>(response.toString(), HttpStatus.CREATED);
                     } else {
                         response.put("message","Invalid phone");
@@ -190,10 +189,6 @@ public class UserController {
             } else {
                 response.put("message","Invalid Username");
             }
-            response.put("username","");
-            response.put("token","");
-            response.put("firstname","");
-            response.put("lastname","");
         } catch (JSONException e) {
             e.printStackTrace();
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);

@@ -8,54 +8,34 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String username;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String phone;
-    private String role;
-    private String firstName;
-    private String lastName;
-    private int isActived;
-    private int deleted;
 
-    public User() {
+    private String role = "user";
+    @Column(nullable = false)
+    private String fullName;
+    @Column(nullable = false)
+    private boolean isActived = true;
+    @Column(nullable = false)
+    private boolean deleted = false;
+    private String address;
 
-    }
-
-    public User(String username, String password,String firstName,String lastName, String email, String phone, String role, int deleted, int isActived) {
+    public User(String username, String password,String fullName, String email, String phone, String address) {
         this.username = username;
         this.password = password;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.deleted = deleted;
+        this.fullName = fullName;
         this.email = email;
         this.phone = phone;
-        this.role = role;
-        this.isActived = isActived;
+        this.address = address;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public int getIsActived() {
-        return isActived;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setIsActived(int isActived) {
-        this.isActived = isActived;
+    public User() {
     }
 
     public void setId(Long id) {
@@ -70,52 +50,16 @@ public class User {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setDeleted(int deleted) {
-        this.deleted = deleted;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public int isActived() {
+    public boolean isActived() {
         return isActived;
     }
 
-    public void setActived(int actived) {
+    public void setActived(boolean actived) {
         isActived = actived;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public int getDeleted() {
-        return deleted;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public String getRole() {

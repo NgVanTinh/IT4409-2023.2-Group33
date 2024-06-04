@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByPhone(String phone);
     Optional<User> findById(Long id);
     @Transactional
-    default void setActiveStatusByEmail(String email, int activeStatus) {
+    default void setActiveStatusByEmail(String email, boolean activeStatus) {
         User user = findByEmail(email);
         if (user != null) {
             user.setActived(activeStatus);
