@@ -10,6 +10,7 @@ import {
 } from "../../store/categorySlice";
 import Loader from "../../components/Loader/Loader";
 import { STATUS } from "../../utils/status";
+import HeaderSlider from "../../components/Slider/HeaderSlider";
 
 export default function CategoryProductPage() {
   const dispatch = useDispatch();
@@ -22,24 +23,29 @@ export default function CategoryProductPage() {
   }, [dispatch, category]);
 
   return (
-    <div className="cat-products py-5 bg-whitesmoke">
-      <div className="container">
-        <div className="cat-products-content">
-          <div className="title-md">
-            <h3>
-              Danh mục{": "}
-              <span className="text-capitalize">
-                {category.replace("-", " ")}
-              </span>
-            </h3>
+    <>
+      <div className="slider-wrapper">
+        <HeaderSlider />
+      </div>
+      <div className="cat-products py-5 bg-whitesmoke">
+        <div className="container">
+          <div className="cat-products-content">
+            <div className="title-md">
+              <h3>
+                Danh mục{": "}
+                <span className="text-capitalize">
+                  {category.replace("-", " ")}
+                </span>
+              </h3>
+            </div>
+            {categoryProductsStatus === STATUS.LOADING ? (
+              <Loader />
+            ) : (
+              <ProductList products={productsOfCategory} />
+            )}
           </div>
-          {categoryProductsStatus === STATUS.LOADING ? (
-            <Loader />
-          ) : (
-            <ProductList products={productsOfCategory} />
-          )}
         </div>
       </div>
-    </div>
+    </>
   );
 }

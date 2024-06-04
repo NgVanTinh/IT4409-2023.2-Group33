@@ -9,7 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 export default function HeaderSlider() {
   var settings = {
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 2000,
     arrows: false,
     dots: true,
     infinite: true,
@@ -28,6 +28,27 @@ export default function HeaderSlider() {
             </div>
             <div className="slider-item">
               <img src={sliderImgs[1]} alt="" />
+            </div>
+            <div className="slider-item">
+              <img src={sliderImgs[2]} alt="" />
+            </div>
+            <div className="slider-item">
+              <img src={sliderImgs[3]} alt="" />
+            </div>
+            <div className="slider-item">
+              <img src={sliderImgs[4]} alt="" />
+            </div>
+            <div className="slider-item">
+              <img src={sliderImgs[5]} alt="" />
+            </div>
+            <div className="slider-item">
+              <img src={sliderImgs[6]} alt="" />
+            </div>
+            <div className="slider-item">
+              <img src={sliderImgs[7]} alt="" />
+            </div>
+            <div className="slider-item">
+              <img src={sliderImgs[8]} alt="" />
             </div>
           </Slider>
         </div>
