@@ -296,4 +296,15 @@ public class ProductController {
             return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
+
+    @GetMapping("/brand")
+    public ResponseEntity<List<String>> getAllBrands() {
+        List<String> categories = productRepository.findAll()
+                .stream()
+                .map(Product::getBrand)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
 }
