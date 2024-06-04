@@ -19,6 +19,12 @@ public class TimeStamp {
         char lastChar = hash.charAt(length - 1);
         int asciiSecondLastChar = (int) secondLastChar;
         int asciiLastChar = (int) lastChar;
+        while(asciiSecondLastChar > 99) {
+            asciiSecondLastChar -= 5;
+        }
+        while(asciiLastChar > 99) {
+            asciiLastChar -= 5;
+        }
         return String.valueOf(asciiLastChar) + String.valueOf(asciiSecondLastChar);
     }
 }

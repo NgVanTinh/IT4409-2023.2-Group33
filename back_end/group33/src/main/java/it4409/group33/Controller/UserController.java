@@ -106,7 +106,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/users/forgot-password")
+    @GetMapping("/users/forgot-password")
     public ResponseEntity<String> getOTP(@RequestParam String toEmail) {
         User user = userRepository.findByEmail(toEmail);
         if(user != null) {
@@ -124,7 +124,26 @@ public class UserController {
     }
 
     @PostMapping("/users/reset-password")
-    private ResponseEntity<String> verifyAccount(@RequestParam String toEmail, @RequestParam String OTP, @RequestParam String newPassword) {
+    private ResponseEntity<String> verifyAccount(@RequestBody String requestBody) {
+        String toEmail = null;
+        String OTP = null;
+        String newPassword = null;
+        try {
+            JSONObject req = new JSONObject(requestBody);
+            toEmail = req.getString("email");
+            Long OTPLong = req.getLong("otp");
+            OTP = String.valueOf(OTPLong);
+            newPassword = req.getString("password");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if(toEmail == null || OTP == null || newPassword == null) {
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        }
+
+
         String otp = genOTP(toEmail);
         System.out.println(otp);
         System.out.println(OTP);
@@ -148,7 +167,7 @@ public class UserController {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
                 }
             } else {
-                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
         }
     }
