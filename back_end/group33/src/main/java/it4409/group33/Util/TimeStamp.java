@@ -11,13 +11,14 @@ public class TimeStamp {
         int result = (int) (unixTimestamp / 180) % 1000000;
         return String.valueOf(result);
     }
-    public static String getTimeStamp() {
-        long unixTimestamp = System.currentTimeMillis() / 1000;
-        return String.valueOf(unixTimestamp);
-    }
+
     public static String genOTP(String email) {
         String hash = sha256(email + getTimeX());
-        String otp = hash.substring(0, 6);
-        return otp;
+        int length = hash.length();
+        char secondLastChar = hash.charAt(length - 2);
+        char lastChar = hash.charAt(length - 1);
+        int asciiSecondLastChar = (int) secondLastChar;
+        int asciiLastChar = (int) lastChar;
+        return String.valueOf(asciiLastChar) + String.valueOf(asciiSecondLastChar);
     }
 }

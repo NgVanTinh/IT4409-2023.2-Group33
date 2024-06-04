@@ -104,12 +104,12 @@ public class UserController {
 
     }
 
-    @PostMapping("/auth/getOTP")
+    @PostMapping("/users/forgot-password")
     public ResponseEntity<String> getOTP(@RequestParam String toEmail) {
         User user = userRepository.findByEmail(toEmail);
         if(user != null) {
             String otp = genOTP(toEmail);
-            String subject = "Active your account";
+            String subject = "Reset your password";
             String body = "This is your OTP: " + otp + ".\n The OTP with expire in 3 minutes" ;
             if (emailSender.sendEmail(toEmail, subject, body)) {
                 return new ResponseEntity<>("OTP has been sent to your email", HttpStatus.OK);
@@ -121,16 +121,17 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/active")
-    private ResponseEntity<String> verifyAccount(@RequestParam String toEmail, @RequestParam String OTP) {
-        String otp=genOTP(toEmail);
+    @PostMapping("/users/reset-password")
+    private ResponseEntity<String> verifyAccount(@RequestParam String toEmail, @RequestParam String OTP, @RequestParam String newPassword) {
+        String otp = genOTP(toEmail);
+        System.out.println(otp);
+        System.out.println(OTP);
         User user = userRepository.findByEmail(toEmail);
         if(user == null) {
-            return new ResponseEntity<>("Not found account", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("User not exist", HttpStatus.NOT_FOUND);
         } else {
             if(OTP.equals(otp)) {
-                System.out.println("OTP: " + OTP);
-                user.setActived(true);
+                user.setPassword(sha256(newPassword));
                 userRepository.save(user);
                 String jwtToken = JWT.createJWT(String.valueOf(user.getId()),user.getUsername() ,user.getRole());
                 JSONObject response = new JSONObject();
@@ -145,7 +146,7 @@ public class UserController {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
                 }
             } else {
-                return new ResponseEntity<>("Fail, try again", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
