@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setCookie } from "../../helpers/cookie";
 import { useDispatch } from "react-redux";
 import { Button, Checkbox, ConfigProvider, Form, Input, Modal } from "antd";
@@ -20,51 +20,51 @@ function Register() {
   const [isModalOpen, setIsModalOpen] = useState(true);
 
   const handleOnFinishRegister = async (values) => {
-    // check exist
-    const checkEmailExist = await checkExist("email", values.email);
-    if (checkEmailExist.length > 0) {
+    // call api register
+    console.log(values);
+    const actionResult = await dispatch(register(values));
+    const response = actionResult.payload;
+    console.log(response);
+    if (response) {
       Swal.fire({
         position: "center",
-        icon: "error",
-        title: "Email already exist",
+        icon: "success",
+        title: "Register success",
         showConfirmButton: false,
         timer: 1500,
       });
-      return;
+      setIsModalOpen(false);
+      navigate("/login");
     } else {
-      // call api register
-      const actionResult = await dispatch(register(values));
-      const response = actionResult.payload;
-      if (response) {
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Register success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setIsModalOpen(false);
-        navigate("/login");
-      } else {
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "Register failed",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Register failed",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 
   return (
     <div className="body">
       <Modal
-        title="Register"
+        title={
+          <h2
+            style={{
+              textAlign: "center",
+              color: "#ff6163",
+              marginBottom: "15px",
+            }}
+          >
+            Đăng ký người dùng
+          </h2>
+        }
         centered={true}
         footer={null}
         width={400}
         open={isModalOpen}
+        maskClosable={false}
         onCancel={() => setIsModalOpen(false)}
       >
         <Form
@@ -73,29 +73,59 @@ function Register() {
           initialValues={{
             remember: true,
           }}
-          layout="vertical"
+          layout="horizontal"
           onFinish={handleOnFinishRegister}
         >
+          <Form.Item
+            label="Tên tài khoản"
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập vào tên tài khoản!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Mật khẩu"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập vào mật khẩu!",
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            label="Họ và tên"
+            name="fullname"
+            rules={[
+              {
+                required: true,
+                message: "Xin vui lòng nhập họ và tên!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
           <Form.Item
             label="Email"
             name="email"
             rules={[
               {
                 required: true,
-                message: "Please input your Email!",
+                message: "Xin vui lòng nhập email!",
               },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
               {
-                required: true,
-                message: "Please input your Password!",
+                type: "email",
+                message: "Địa chỉ email không hợp lệ!",
               },
             ]}
           >
@@ -103,25 +133,12 @@ function Register() {
           </Form.Item>
 
           <Form.Item
-            label="Full name"
-            name="fullName"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Full name!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Phone Number"
+            label="Số điện thoại"
             name="phone"
             rules={[
               {
-                required: true,
-                message: "Please input your phone!",
+                pattern: new RegExp(/^(\+84|0)[3|5|7|8|9][0-9]{8}$/),
+                message: "Số điện thoại không hợp lệ!",
               },
             ]}
           >
@@ -129,12 +146,12 @@ function Register() {
           </Form.Item>
 
           <Form.Item
-            label="Address"
+            label="Địa chỉ"
             name="address"
             rules={[
               {
                 required: false,
-                message: "Please input your address!",
+                message: "Vui lòng nhập vào địa chỉ!",
               },
             ]}
           >
@@ -173,6 +190,13 @@ function Register() {
             </ConfigProvider>
           </Form.Item>
         </Form>
+
+        <p style={{ textAlign: "center" }}>
+          Đã có tài khoản ?{" "}
+          <Link to="/login" style={{ color: "#ff6163" }}>
+            Đăng nhập
+          </Link>
+        </p>
       </Modal>
     </div>
   );

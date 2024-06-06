@@ -1,7 +1,13 @@
-const API_DOMAIN = "http://localhost:3002/";
+const API_DOMAIN = "https://buckytank.shop/";
 
 export const get = async (path) => {
-  const response = await fetch(API_DOMAIN + path);
+  const response = await fetch(API_DOMAIN + path, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
   const result = await response.json();
   return result;
 };

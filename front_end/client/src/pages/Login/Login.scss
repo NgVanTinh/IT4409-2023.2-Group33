@@ -33,7 +33,7 @@ a {
 .form-login {
   background: #fff;
   width: 50%;
-  height: 60%;
+  height: 65%;
   display: flex;
   border-radius: 8px;
 }
@@ -46,20 +46,20 @@ a {
 
 .form-login .left h2 {
   font-size: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
-.form-login .left input {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  background-color: #ebebeb;
-  border: none;
-  margin-bottom: 10px;
-}
+// .form-login .left input {
+//   display: block;
+//   width: 100%;
+//   padding: 12px;
+//   background-color: #ebebeb;
+//   border: none;
+//   margin-bottom: 10px;
+// }
 
 .form-login .left a {
-  font-size: 12px;
+  font-size: 13px;
   display: block;
   color: #999;
   margin: 20px 0;
@@ -68,7 +68,7 @@ a {
 .form-login .left button {
   background-color: #ff402e;
   color: #fff;
-  padding: 12px 28px;
+  padding: 10px 15px;
   border-radius: 30px;
   border: none;
 }
@@ -76,7 +76,7 @@ a {
 .form-login .left button:hover {
   background-color: #fff;
   color: #ff402e;
-  padding: 12px 28px;
+  padding: 10px 15px;
   border-radius: 30px;
   border: 1px solid #ff402e;
   cursor: pointer;
@@ -112,4 +112,8 @@ a {
   background-color: #fff;
   padding: 12px 28px;
   border-radius: 30px;
+}
+
+.login-form-forgot {
+  text-align: right;
 }

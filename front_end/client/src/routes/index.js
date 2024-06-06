@@ -1,8 +1,10 @@
 import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault";
+import GetOtpPage from "../pages/GetOtpPage/GetOtpPage";
 import Login from "../pages/Login/Login";
 import Logout from "../pages/Logout/Logout";
 import Register from "../pages/Register/Register";
+import ResetPassword from "../pages/ResetPassword/ResetPassword";
 import {
   Home,
   Cart,
@@ -49,5 +51,13 @@ export const routes = [
   {
     path: "logout",
     element: <Logout />,
+  },
+  {
+    path: "forgot-password",
+    element: <GetOtpPage />,
+  },
+  {
+    path: "reset-password/:email",
+    element: <ResetPassword />,
   },
 ];

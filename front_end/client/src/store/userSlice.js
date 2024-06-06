@@ -1,6 +1,5 @@
 // src/features/user/userSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "../utils/apiURL";
 import { STATUS } from "../utils/status";
 import { get, post, edit, del } from "../utils/request";
 
@@ -41,6 +40,28 @@ const userSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.userStatus = STATUS.FAILED;
         state.error = action.error.message;
+      })
+      .addCase(sendOTP.pending, (state) => {
+        state.userStatus = STATUS.LOADING;
+      })
+      .addCase(sendOTP.fulfilled, (state, action) => {
+        state.userStatus = STATUS.SUCCEEDED;
+        // Xử lý dữ liệu trả về từ action.payload nếu cần
+      })
+      .addCase(sendOTP.rejected, (state, action) => {
+        state.userStatus = STATUS.FAILED;
+        state.error = action.error.message;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.userStatus = STATUS.LOADING;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.userStatus = STATUS.SUCCEEDED;
+        // xử lý nào ở đây sau khi reset password thành công
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.userStatus = STATUS.FAILED;
+        state.error = action.error.message;
       });
   },
 });
@@ -48,10 +69,13 @@ const userSlice = createSlice({
 // Đăng nhập
 export const login = createAsyncThunk(
   "user/login",
-  async ({ email, password }) => {
-    const response = await get(`users?email=${email}&password=${password}`);
-
-    return response;
+  async (records, { rejectWithValue }) => {
+    try {
+      const response = await post("auth/login", records);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response);
+    }
   }
 );
 
@@ -60,10 +84,41 @@ export const register = createAsyncThunk(
   "user/register",
   async (records, { rejectWithValue }) => {
     try {
-      const response = await post(`users`, records);
-
+      const response = await post("auth/signup", records);
       return response;
     } catch (error) {
+      return rejectWithValue(error.response);
+    }
+  }
+);
+
+// gửi OTP đến email
+export const sendOTP = createAsyncThunk(
+  "user/sendOTP",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await post(`users/forgot-password`, { email });
+      return response;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response);
+    }
+  }
+);
+
+// Gửi yêu cầu reset password
+export const resetPassword = createAsyncThunk(
+  "user/resetPassword",
+  async ({ otp, email, password }, { rejectWithValue }) => {
+    try {
+      const response = await post("users/reset-password", {
+        otp,
+        email,
+        password,
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
       return rejectWithValue(error.response);
     }
   }
