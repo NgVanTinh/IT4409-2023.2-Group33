@@ -1,0 +1,119 @@
+@import "../../App.scss";
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.body {
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(to bottom, #ff9767, #ff6163);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input,
+button {
+  font-family: "Roboto";
+}
+
+a {
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  color: #ff402e;
+}
+
+.form-login {
+  background: #fff;
+  width: 50%;
+  height: 65%;
+  display: flex;
+  border-radius: 8px;
+}
+
+.form-login .left {
+  width: 50%;
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.form-login .left h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+// .form-login .left input {
+//   display: block;
+//   width: 100%;
+//   padding: 12px;
+//   background-color: #ebebeb;
+//   border: none;
+//   margin-bottom: 10px;
+// }
+
+.form-login .left a {
+  font-size: 13px;
+  display: block;
+  color: #999;
+  margin: 20px 0;
+}
+
+.form-login .left button {
+  background-color: #ff402e;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 30px;
+  border: none;
+}
+
+.form-login .left button:hover {
+  background-color: #fff;
+  color: #ff402e;
+  padding: 10px 15px;
+  border-radius: 30px;
+  border: 1px solid #ff402e;
+  cursor: pointer;
+}
+
+.form-login .right {
+  width: 50%;
+  padding: 40px 32px;
+  background-color: #ff402e;
+  color: #fff;
+  text-align: center;
+  border-radius: 0 8px 8px 0;
+}
+
+.form-login .right h3 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.form-login .right p {
+  margin-bottom: 32px;
+}
+
+.form-login .right a {
+  border: 1px solid #ddd;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 30px;
+}
+
+.form-login .right a:hover {
+  color: #ff402e;
+  background-color: #fff;
+  padding: 12px 28px;
+  border-radius: 30px;
+}
+
+.login-form-forgot {
+  text-align: right;
+}

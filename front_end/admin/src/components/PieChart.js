@@ -1,30 +1,60 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PieChart } from '@mui/x-charts/PieChart';
+const PieCharts = () => {
+  // const [categories, setCategories] = useState([]);
 
-const Chart = () => {
+  // useEffect(() => {
+  //   loadCategories();
+  // }, []);
 
-  const [categories, setCategories] = useState()
-  const loadCategories = async() =>{
-    const result = await axios.get(`https://dummyjson.com/carts`)
-    setCategories(result.data)
-  }
+  // const loadCategories = async () => {
+  //   try {
+  //     const result = await axios.get(`https://dummyjson.com/carts`);
+  //     setCategories(result.data);
+  //   } catch (error) {
+  //     console.error('Error loading categories:', error);
+  //   }
+  // };
+  const categories = [
+    {
+      title: 'Category 1',
+      quantity: 10,
+    },
+    {
+      title: 'Category 2',
+      quantity: 20,
+    },
+    {
+      title: 'Category 3',
+      quantity: 30,
+    },
+    {
+      title: 'Category 4',
+      quantity: 40,
+    }
+  ]
+  const prepareDataForPieChart = () => {
+    return categories.map((category, index) => ({
+      id: index,
+      value: category.quantity, 
+      label: category.title, 
+    }));
+  };
+
   return (
-    <PieChart
-      series={[
-        {
-          data: [
-            { id: 0, value: 10, label: 'series A' },
-            { id: 1, value: 15, label: 'series B' },
-            { id: 2, value: 20, label: 'series C' },
-          ],
-        },
-      ]}
-      width={400}
-      height={200}
-    />
+    <div>
+      <PieChart
+        series={[
+          {
+            data: prepareDataForPieChart(),
+          },
+        ]}
+        width={400}
+        height={200}
+      />
+    </div>
   );
 }
 
-export default Chart;
+export default PieCharts;

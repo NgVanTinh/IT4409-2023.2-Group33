@@ -1,0 +1,13 @@
+.get-otp-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Sử dụng full chiều cao của viewport */
+  padding: 20px; /* Thêm padding nếu cần */
+}
+
+.get-otp-page .ant-form {
+  max-width: 600px; /* Hoặc bất kỳ chiều rộng nào bạn muốn */
+  width: 100%;
+}
