@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { resetPassword } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../helpers/cookie";
+import Swal from "sweetalert2";
 
 export default function ResetPassword() {
   const { email } = useParams();
@@ -15,12 +16,25 @@ export default function ResetPassword() {
     try {
       const actionResult = await dispatch(resetPassword(values));
       const response = actionResult.payload;
+      console.log(response);
       if (response) {
-        console.log("Success");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Đổi mật khẩu thành công!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         setCookie("token", response.token, 1);
         navigate("/");
       } else {
-        console.log("Failed");
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Đổi mật khẩu thất bại",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -33,9 +47,9 @@ export default function ResetPassword() {
         className="reset-password-form"
         layout="vertical"
         onFinish={handleFinishForm}
-        initialValues={{ toEmail: decodeURIComponent(email) }}
+        initialValues={{ email: decodeURIComponent(email) }}
       >
-        <Form.Item label="Email" name="toEmail">
+        <Form.Item label="Email" name="email">
           <Input disabled />
         </Form.Item>
         <Form.Item
