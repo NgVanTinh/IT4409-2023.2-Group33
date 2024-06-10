@@ -9,7 +9,7 @@ import slider_img_8 from "../assets/images/638527979344858417_F-C1_1200x300@2x.w
 import slider_img_9 from "../assets/images/638527974043790197_F-C1_1200x300.webp";
 import shopping_cart from "../assets/images/shopping_cart.png";
 import correct from "../assets/images/correct.png";
-import loader from "../assets/images/loader.svg";
+import loader from "../assets/images/loader1.svg";
 
 const sliderImgs = [
   slider_img_1,

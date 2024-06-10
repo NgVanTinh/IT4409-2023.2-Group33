@@ -20,7 +20,7 @@
     right: 2rem;
     transition: $transition-ease;
     &:hover {
-      color: $clr-orange;
+      color: $clr-green;
     }
   }
   .cat-list {
@@ -32,12 +32,12 @@
       border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
       .cat-list-link {
         font-size: 14px;
-        font-family: $font-family-manrope;
+        font-family: $font-family-roboto;
         letter-spacing: 0.3px;
         transition: $transition-ease;
 
         &:hover {
-          color: $clr-orange;
+          color: $clr-green;
           margin-left: 10px;
         }
       }
@@ -52,8 +52,8 @@
     }
     &::-webkit-scrollbar-thumb {
       border-radius: 10px;
-      background-color: lighten($clr-light-orange, 5%);
-      outline: 1px solid $clr-light-orange;
+      background-color: lighten($clr-light-green, 5%);
+      outline: 1px solid $clr-light-green;
     }
   }
 }

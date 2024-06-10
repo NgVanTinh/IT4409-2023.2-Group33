@@ -8,7 +8,7 @@ import { useState } from "react";
 import { checkExist, register } from "../../store/userSlice";
 import { TinyColor } from "@ctrl/tinycolor";
 const { TextArea } = Input;
-const colors2 = ["#fc6076", "#ff9a44", "#ef9d43", "#e75516"];
+const colors2 = ["rgb(62, 190, 62)", "rgb(57, 195, 57)"];
 const getHoverColors = (colors) =>
   colors.map((color) => new TinyColor(color).lighten(5).toString());
 const getActiveColors = (colors) =>
@@ -53,7 +53,7 @@ function Register() {
           <h2
             style={{
               textAlign: "center",
-              color: "#ff6163",
+              color: "rgb(62, 190, 62)",
               marginBottom: "15px",
             }}
           >
@@ -193,7 +193,7 @@ function Register() {
 
         <p style={{ textAlign: "center" }}>
           Đã có tài khoản ?{" "}
-          <Link to="/login" style={{ color: "#ff6163" }}>
+          <Link to="/login" style={{ color: "rgb(62, 190, 62)" }}>
             Đăng nhập
           </Link>
         </p>
