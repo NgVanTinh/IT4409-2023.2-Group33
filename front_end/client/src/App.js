@@ -5,8 +5,8 @@ function App() {
   return (
     <>
       <div className="App">
-        <AllRoute />
-        {/* <Admin /> */}
+        {/* <AllRoute /> */}
+         <Admin />
       </div>
     </>
   );

@@ -26,6 +26,7 @@ function Login() {
         timer: 1500,
       });
       setCookie("token", response.token, 1);
+      console.log(response);
       navigate("/");
     } else {
       Swal.fire({

@@ -32,12 +32,15 @@ const ViewOrder = () => {
 
   useEffect(() => {
     loadOrder();
-  },[]);
+  });
 
   const loadOrder = async () => {
     const result = await axios.get(`https://dummyjson.com/carts/${id}`);
+    console.log(result.data);
     setOrder(result.data);
   };
+
+  // const productsInfo = order.products.map(product => `${product.title} x ${product.quantity}`) ;
 
   return (
     
@@ -49,11 +52,25 @@ const ViewOrder = () => {
           <TextField
             variant="standard"
             fullWidth={true}
-            name="user"
-            id="user"
-            label="User"
-            value={order.userId}
+            name="id"
+            id="id"
+            label="ID"
+            value={order.id}
             InputLabelProps={{ style: { color: 'blue' } }}
+            disabled
+          />
+        </Grid>
+
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            name="user"
+            fullWidth
+            id="user"
+            label="user"
+            value={order && order.userId}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            multiline
             disabled
           />
         </Grid>
@@ -65,21 +82,7 @@ const ViewOrder = () => {
             fullWidth
             id="products"
             label="Products"
-            value={order.products}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            multiline
-            disabled
-          />
-        </Grid>
-
-        <Grid item sm={8}>
-          <TextField
-            variant="standard"
-            name="total"
-            fullWidth
-            id="total"
-            label="Total"
-            value={order.total}
+            value={order && order.products ? order.products.map(product => `${product.title} x ${product.quantity}`).join('\n') : ''}
             InputLabelProps={{ style: { color: 'blue' } }}
             disabled
           />
@@ -88,11 +91,11 @@ const ViewOrder = () => {
         <Grid item sm={8}>
           <TextField
             variant="standard"
-            name="discountedTotal"
+            name="brand"
             fullWidth
-            id="discountedTotal"
-            label="Discounted Total"
-            value={order.discountedTotal}
+            id="brand"
+            label="Brand"
+            value={order.brand}
             InputLabelProps={{ style: { color: 'blue' } }}
             disabled
           />
@@ -101,9 +104,9 @@ const ViewOrder = () => {
           <TextField
             variant="standard"
             fullWidth
-            name="totalProducts"
-            label="Total Products"
-            id="totalProducts"
+            name="stock"
+            label="Stock"
+            id="stock"
             value={order.stock}
             InputLabelProps={{ style: { color: 'blue' } }}
             disabled
@@ -113,89 +116,20 @@ const ViewOrder = () => {
           <TextField
             variant="standard"
             fullWidth
-            name="totalQuantity"
-            label="Total Quantity"
-            id="totalQuantity"
+            name="price"
+            label="Price (USD)"
+            id="price"
             value={order.price}
             InputLabelProps={{ style: { color: 'blue' } }}
             disabled
           />
         </Grid>
-        <Grid item sm={8}>
-           <TextField
-              variant="standard"
-              disabled
-              fullWidth
-              label="Thumbnail"
-              multiline
-              rows={5}
-              InputLabelProps={{ style: { color: 'blue' } }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                      <img
-                        src={order.thumbnail}
-                        alt="order Thumbnail"
-                        style={{
-                          width: '100px',
-                          height: '100px',
-                          borderRadius: '10px',
-                          border: '1px solid blue',
-                          marginRight: '10px',
-                          marginBottom: '10px',
-                        }}
-                      /> 
-                  </InputAdornment>
-                ),
-              }}
-            />
-        </Grid>
-
-        <Grid item sm={8}>
-           <TextField
-              variant="standard"
-              disabled
-              fullWidth
-              label="Images"
-              multiline
-              rows={5}
-              InputLabelProps={{ style: { color: 'blue' } }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    {order.images && order.images.map((image, index) => (
-                        <div
-                            style={{position: 'relative', display: 'inline-block'}}
-                        >
-                      
-                          <img
-                            src={image}
-                            alt="order Thumbnail"
-                            style={{
-                                width: '100px',
-                                height: '100px',
-                                borderRadius: '10px',
-                                border: '1px solid blue',
-                                marginRight: '10px',
-                              }}
-                            />
-                          
-                        </div>
-                      ))}
-                
-                  </InputAdornment>
-                ),
-              }}
-            />
-        </Grid>
-        <ToastContainer/>
-        
-        
+  
     </Grid>
     <div
       style={{
           display: 'flex',
-          justifyContent: 'flex-end',  
+          justifyContent: 'flex-start',  
           marginTop: '20px',
         }}
     >
