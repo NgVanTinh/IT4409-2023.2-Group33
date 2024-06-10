@@ -12,7 +12,26 @@ const initialState = {
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+    sortProducts: (state, action) => {
+      switch (action.payload) {
+        case "name-asc":
+          state.products.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case "name-desc":
+          state.products.sort((a, b) => b.title.localeCompare(a.title));
+          break;
+        case "price-asc":
+          state.products.sort((a, b) => a.price - b.price);
+          break;
+        case "price-desc":
+          state.products.sort((a, b) => b.price - a.price);
+          break;
+        default:
+          break;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAsyncProducts.pending, (state, action) => {
@@ -62,6 +81,9 @@ export const fetchAsyncProductSingle = createAsyncThunk(
 export const getAllProducts = (state) => state.product.products;
 export const getAllProductsStatus = (state) => state.product.productsStatus;
 export const getProductSingle = (state) => state.product.productSingle;
+
+export const { sortProducts } = productSlice.actions;
+
 export const getProductSingleStatus = (state) =>
   state.product.productSingleStatus;
 

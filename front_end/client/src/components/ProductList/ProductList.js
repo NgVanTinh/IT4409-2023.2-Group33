@@ -4,7 +4,7 @@ import Product from "../Product/Product";
 
 export default function ProductList({ products }) {
   return (
-    <div className="product-lists grid bg-whitesmoke my-3">
+    <div className="product-lists grid  my-3">
       {products.map((product) => {
         let discountedPrice = (
           product.price *

@@ -11,6 +11,7 @@ import {
   fetchAsyncSearchProducts,
   clearSearchProducts,
 } from "../../store/searchSlice";
+import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
 
 export default function SearchPage() {
   const dispatch = useDispatch();
@@ -33,7 +34,15 @@ export default function SearchPage() {
 
   return (
     <main>
-      <div className="search-content bg-whitesmoke">
+      <div className="search-content ">
+        <div className="container">
+          <BreadcrumbComponent
+            breadcrumbItems={[
+              { title: "Home", href: "/" },
+              { title: searchKeyword, href: `/search/${searchKeyword}` },
+            ]}
+          />
+        </div>
         <div className="container">
           <div className="py-5">
             <div className="title-md">

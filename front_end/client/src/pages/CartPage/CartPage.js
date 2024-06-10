@@ -12,6 +12,7 @@ import {
   getCartTotal,
 } from "../../store/cartSlice";
 import { FaMinus, FaPlus, FaTrashAlt } from "react-icons/fa";
+import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="cart bg-whitesmoke">
+    <div className="cart">
       <div className="container">
         <div className="cart-ctable">
           <div className="cart-chead bg-white">

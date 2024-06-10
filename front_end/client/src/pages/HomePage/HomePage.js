@@ -11,10 +11,13 @@ import {
 } from "../../store/productSlice";
 import Loader from "../../components/Loader/Loader";
 import { STATUS } from "../../utils/status";
+import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
+import Filter from "../../components/Filter/Filter";
 
 export default function HomePage() {
   const dispatch = useDispatch();
   const categories = useSelector(getAllCategories);
+  const sortedProducts = useSelector(getAllProducts);
 
   useEffect(() => {
     dispatch(fetchAsyncProducts(50));
@@ -53,11 +56,21 @@ export default function HomePage() {
 
   return (
     <main>
+      <div className="container">
+        <BreadcrumbComponent breadcrumbItems={[{ title: "Home", href: "/" }]} />
+      </div>
       <div className="slider-wrapper">
         <HeaderSlider />
       </div>
-      <div className="main-content bg-whitesmoke">
+      <div className="main-content ">
         <div className="container">
+          <div className="categories py-5">
+            <div className="title-md">
+              <h3>Tiêu chí tìm kiếm</h3>
+            </div>
+            <Filter />
+          </div>
+
           <div className="categories py-5">
             <div className="categories-item">
               <div className="title-md">
@@ -67,7 +80,7 @@ export default function HomePage() {
                 {productsStatus === STATUS.LOADING ? (
                   <Loader />
                 ) : (
-                  <ProductList products={tempProducts} />
+                  <ProductList products={sortedProducts} />
                 )}
               </div>
             </div>

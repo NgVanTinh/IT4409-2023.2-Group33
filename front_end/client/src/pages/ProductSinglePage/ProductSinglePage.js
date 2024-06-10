@@ -20,6 +20,7 @@ import {
   setCartMessageOn,
 } from "../../store/cartSlice";
 import CartMessage from "../../components/CartMessage/CartMessage";
+import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
 
 export default function ProductSinglePage() {
   const { id } = useParams();
@@ -92,7 +93,15 @@ export default function ProductSinglePage() {
   };
 
   return (
-    <main className="py-5 bg-whitesmoke">
+    <main>
+      <div className="container">
+        <BreadcrumbComponent
+          breadcrumbItems={[
+            { title: "Home", href: "/" },
+            { title: product.title, href: `/product/${id}` },
+          ]}
+        />
+      </div>
       <div className="product-single">
         <div className="container">
           <div className="product-single-content bg-white grid">
