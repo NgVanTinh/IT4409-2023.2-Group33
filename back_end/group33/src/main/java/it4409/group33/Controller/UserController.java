@@ -106,8 +106,21 @@ public class UserController {
 
     }
 
-    @GetMapping("/users/forgot-password")
-    public ResponseEntity<String> getOTP(@RequestParam String toEmail) {
+    @PostMapping("/users/forgot-password")
+    public ResponseEntity<String> getOTP(@RequestBody String rbody) {
+        String toEmail = null;
+        try {
+            JSONObject req = new JSONObject(rbody);
+            toEmail = req.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if(toEmail == null) {
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        }
+
         User user = userRepository.findByEmail(toEmail);
         if(user != null) {
             String otp = genOTP(toEmail);
@@ -145,8 +158,6 @@ public class UserController {
 
 
         String otp = genOTP(toEmail);
-        System.out.println(otp);
-        System.out.println(OTP);
         User user = userRepository.findByEmail(toEmail);
         if(user == null) {
             return new ResponseEntity<>("User not exist", HttpStatus.NOT_FOUND);
