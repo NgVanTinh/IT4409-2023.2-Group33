@@ -1,22 +1,27 @@
 import React from "react";
 import { Select } from "antd";
 import { useDispatch } from "react-redux";
-import { sortProducts } from "../../store/productSlice";
+import { resetSort, setSort, sortProducts } from "../../store/productSlice";
 const { Option } = Select;
 
 export default function FilterSort() {
   const dispatch = useDispatch();
 
   const handleSortChange = (value) => {
-    dispatch(sortProducts(value));
+    if (value) {
+      dispatch(setSort(value));
+    } else {
+      dispatch(resetSort());
+    }
   };
 
   return (
     <>
       <Select
-        defaultValue="Sắp xếp"
+        placeholder="Sắp xếp"
         style={{ width: 120 }}
         onChange={handleSortChange}
+        allowClear
       >
         <Option value="name-asc">Tên A-Z</Option>
         <Option value="name-desc">Tên Z-A</Option>

@@ -4,10 +4,55 @@ import { STATUS } from "../utils/status";
 
 const initialState = {
   products: [],
+  originalProducts: [],
+  filters: {
+    price: null,
+    category: null,
+    rating: null,
+  },
+  currentSort: null,
   productsStatus: STATUS.IDLE,
   productSingle: [],
   productSingleStatus: STATUS.IDLE,
 };
+
+// Hàm áp dụng bộ lọc
+function applyFilters(products, filters) {
+  let filteredProducts = products;
+  if (filters.price) {
+    filteredProducts = filteredProducts.filter(
+      (product) =>
+        product.price >= filters.price.min && product.price <= filters.price.max
+    );
+  }
+  if (filters.category) {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.category === filters.category
+    );
+  }
+  if (filters.rating) {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.rating >= filters.rating
+    );
+  }
+  return filteredProducts;
+}
+
+// Hàm áp dụng sắp xếp
+function applySort(products, sortOption) {
+  switch (sortOption) {
+    case "name-asc":
+      return products.sort((a, b) => a.title.localeCompare(b.title));
+    case "name-desc":
+      return products.sort((a, b) => b.title.localeCompare(a.title));
+    case "price-asc":
+      return products.sort((a, b) => a.price - b.price);
+    case "price-desc":
+      return products.sort((a, b) => b.price - a.price);
+    default:
+      return products;
+  }
+}
 
 const productSlice = createSlice({
   name: "product",
@@ -31,6 +76,41 @@ const productSlice = createSlice({
           break;
       }
     },
+    filterProductsByPriceRange: (state, action) => {
+      const { minPrice, maxPrice } = action.payload;
+      state.products = state.products.filter((product) => {
+        return product.price >= minPrice && product.price <= maxPrice;
+      });
+    },
+    setFilter: (state, action) => {
+      const { filterType, value } = action.payload;
+      state.filters[filterType] = value; // Cập nhật trạng thái bộ lọc
+      let filteredProducts = applyFilters(
+        state.originalProducts,
+        state.filters
+      );
+      state.products = applySort(filteredProducts, state.currentSort); // Áp dụng lại cả sắp xếp
+    },
+    resetFilter: (state, action) => {
+      const { filterType } = action.payload;
+      state.filters[filterType] = null; // Đặt lại bộ lọc cụ thể
+      let filteredProducts = applyFilters(
+        state.originalProducts,
+        state.filters
+      );
+      state.products = applySort(filteredProducts, state.currentSort); // Áp dụng lại cả sắp xếp
+    },
+    setSort: (state, action) => {
+      state.currentSort = action.payload; // Cập nhật trạng thái sắp xếp
+      let sortedProducts = applySort([...state.products], state.currentSort); // Áp dụng sắp xếp trên danh sách hiện tại
+      state.products = sortedProducts;
+    },
+    resetSort: (state) => {
+      state.currentSort = null; // Đặt lại trạng thái sắp xếp
+      // Không cần áp dụng lại sắp xếp vì đã đặt lại nó
+      // Đảm bảo danh sách sản phẩm là danh sách đã lọc gần nhất
+      state.products = applyFilters(state.originalProducts, state.filters);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -38,6 +118,7 @@ const productSlice = createSlice({
         state.productStatus = STATUS.LOADING;
       })
       .addCase(fetchAsyncProducts.fulfilled, (state, action) => {
+        state.originalProducts = action.payload;
         state.products = action.payload;
         state.productsStatus = STATUS.SUCCEEDED;
       })
@@ -82,7 +163,15 @@ export const getAllProducts = (state) => state.product.products;
 export const getAllProductsStatus = (state) => state.product.productsStatus;
 export const getProductSingle = (state) => state.product.productSingle;
 
-export const { sortProducts } = productSlice.actions;
+export const {
+  sortProducts,
+  filterProductsByPriceRange,
+  resetFiltersAndSorting,
+  setFilter,
+  resetFilter,
+  setSort,
+  resetSort,
+} = productSlice.actions;
 
 export const getProductSingleStatus = (state) =>
   state.product.productSingleStatus;
