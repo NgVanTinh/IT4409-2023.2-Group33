@@ -31,9 +31,15 @@ function applyFilters(products, filters) {
     );
   }
   if (filters.rating) {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.rating >= filters.rating
-    );
+    const minRating = parseFloat(filters.rating);
+    const maxRating = minRating + 1;
+
+    console.log(minRating, maxRating);
+
+    filteredProducts = filteredProducts.filter((product) => {
+      const productRating = parseFloat(product.rating);
+      return productRating >= minRating && productRating < maxRating;
+    });
   }
   return filteredProducts;
 }
@@ -58,30 +64,6 @@ const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
-    sortProducts: (state, action) => {
-      switch (action.payload) {
-        case "name-asc":
-          state.products.sort((a, b) => a.title.localeCompare(b.title));
-          break;
-        case "name-desc":
-          state.products.sort((a, b) => b.title.localeCompare(a.title));
-          break;
-        case "price-asc":
-          state.products.sort((a, b) => a.price - b.price);
-          break;
-        case "price-desc":
-          state.products.sort((a, b) => b.price - a.price);
-          break;
-        default:
-          break;
-      }
-    },
-    filterProductsByPriceRange: (state, action) => {
-      const { minPrice, maxPrice } = action.payload;
-      state.products = state.products.filter((product) => {
-        return product.price >= minPrice && product.price <= maxPrice;
-      });
-    },
     setFilter: (state, action) => {
       const { filterType, value } = action.payload;
       state.filters[filterType] = value; // Cập nhật trạng thái bộ lọc
