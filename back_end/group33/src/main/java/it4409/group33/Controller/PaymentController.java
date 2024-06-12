@@ -7,6 +7,8 @@ import it4409.group33.Service.VnpayService;
 import it4409.group33.Util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +41,7 @@ public class PaymentController {
     }
 
     @GetMapping("/vnpay_return")
-    public String paymentReturn(HttpServletRequest request) {
+    public ResponseEntity<String> paymentReturn(HttpServletRequest request) {
         Map<String, String> vnp_Params = new HashMap<>();
         Map<String, String[]> requestParams = request.getParameterMap();
 
@@ -49,28 +51,11 @@ public class PaymentController {
             System.out.println(entry.getKey() + " = " + entry.getValue()[0]);
         }
 
-        String vnp_SecureHash = request.getParameter("vnp_SecureHash");
-        if (vnp_SecureHash != null) {
-            vnp_Params.remove("vnp_SecureHash");
-        }
-
-        // Kiểm tra chữ ký
-        String hashData = vnp_Params.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(entry -> entry.getKey() + "=" + entry.getValue()) // URLDecoder.decode(entry.getValue(), StandardCharsets.US_ASCII))
-                .reduce((entry1, entry2) -> entry1 + "&" + entry2)
-                .orElse("");
-
-        String vnp_HashSecret = vnpayConfig.getVnpHashSecret();
-        String secureHash = VNPayUtil.hmacSHA512(vnp_HashSecret, hashData);
-
-        System.out.println("Computed secure hash: " + secureHash);
-        System.out.println("Received secure hash: " + vnp_SecureHash);
-
-        if (secureHash.equals(vnp_SecureHash)) {
-            return "1";
+        String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
+        if ("00".equals(vnp_ResponseCode)) {
+            return new ResponseEntity<>("Completed", HttpStatus.OK);
         } else {
-            return "0";
+            return new ResponseEntity<>("Failure", HttpStatus.BAD_REQUEST);
         }
     }
 }

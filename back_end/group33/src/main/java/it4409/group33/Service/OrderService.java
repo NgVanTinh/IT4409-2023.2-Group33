@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -161,5 +160,42 @@ public class OrderService {
             throw new OrderNotFoundException("Order not found with ID: " + orderId);
         }
     }
+
+    public Map<String, Long> getTotalQuantityByBrand() {
+        List<Object[]> results = orderRepository.findTotalQuantityByBrand();
+        Map<String, Long> brandQuantityMap = new HashMap<>();
+        for (Object[] result : results) {
+            String brand = (String) result[0];
+            Long totalQuantity = ((Number) result[1]).longValue();
+            brandQuantityMap.put(brand, totalQuantity);
+        }
+        return brandQuantityMap;
+    }
+
+    public List<Map<String, Object>> getProductsByBrand(String brand) {
+        List<Object[]> results = orderRepository.findProductsByBrand(brand);
+        List<Map<String, Object>> productList = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> productMap = new HashMap<>();
+            productMap.put("title", result[0]);
+            productMap.put("quantity", result[1]);
+            productList.add(productMap);
+        }
+        return productList;
+    }
+
+    public List<Map<String, Object>> getProductsTotalQuantitySold() {
+        List<Object[]> results = orderRepository.findProductsTotalQuantitySold();
+        List<Map<String, Object>> productList = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> productMap = new HashMap<>();
+            productMap.put("product_id", result[0]);
+            productMap.put("product_title", result[1]);
+            productMap.put("total_quantity_sold",result[2]);
+            productList.add(productMap);
+        }
+        return productList;
+    }
+
 }
 

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -195,6 +196,20 @@ public class OrderController {
             return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
-    
+
+    @GetMapping("/orders/test")
+    public Map<String, Long> getTotalQuantityByBrand() {
+        return orderService.getTotalQuantityByBrand();
+    }
+
+    @GetMapping("/orders/test2")
+    public List<Map<String, Object>> getProductsByBrand(@RequestParam String brand) {
+        return orderService.getProductsByBrand(brand);
+    }
+
+    @GetMapping("/orders/test3")
+    public List<Map<String, Object>> getProductsTotalQuantitySold() {
+        return orderService.getProductsTotalQuantitySold();
+    }
 }
 
