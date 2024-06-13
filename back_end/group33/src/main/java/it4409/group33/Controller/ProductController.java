@@ -123,6 +123,9 @@ public class ProductController {
                 if (updatedProduct.getImages() != null) {
                     existingProduct.setImages(updatedProduct.getImages());
                 }
+                if (updatedProduct.getSpec() != null) {
+                    existingProduct.setSpec(updatedProduct.getSpec());
+                }
 
                 Product savedProduct = productRepository.save(existingProduct);
                 return new ResponseEntity<>(savedProduct, HttpStatus.OK);
@@ -211,6 +214,8 @@ public class ProductController {
                             break;
                         case "deletedOn":
                             productObj.put("deletedOn",product.getDeletedOn());
+                        case "spec":
+                            productObj.put("spec",product.getSpec());
                         default:
                             break;
                     }
@@ -230,6 +235,7 @@ public class ProductController {
                 productObj.put("images", new JSONArray(product.getImages()));
                 productObj.put("isDeleted",product.isDeleted());
                 productObj.put("deleteOn",product.getDeletedOn());
+                productObj.put("spec",product.getSpec());
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -270,6 +276,7 @@ public class ProductController {
                                                  @RequestParam("stock") Integer stock,
                                                  @RequestParam("brand") String brand,
                                                  @RequestParam("category") String category,
+                                                 @RequestParam("spec") String spec,
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String token
     ){
 
@@ -289,7 +296,7 @@ public class ProductController {
                 }
             }
 
-            Product product = new Product(title, description, price, discountPercentage, rating, stock, brand, category, thumb, X);
+            Product product = new Product(title, description, price, discountPercentage, rating, stock, brand, category, thumb, X, spec);
             productRepository.save(product);
             return new ResponseEntity<>(product, HttpStatus.CREATED);
         } else {

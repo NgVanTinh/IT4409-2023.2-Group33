@@ -25,10 +25,12 @@ public class Product {
     private boolean isDeleted;
     private long deletedOn;
 
+    private String spec;
+
     public Product() {
     }
 
-    public Product(String title, String description, double price, double discountPercentage, double rating, int stock, String brand, String category, String thumbnail, List<String> images) {
+    public Product(String title, String description, double price, double discountPercentage, double rating, int stock, String brand, String category, String thumbnail, List<String> images, String spec) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -41,6 +43,15 @@ public class Product {
         this.images = images;
         this.isDeleted = false;
         this.deletedOn = 0;
+        this.spec = spec;
+    }
+
+    public String getSpec() {
+        return spec;
+    }
+
+    public void setSpec(String spec) {
+        this.spec = spec;
     }
 
     public Long getId() {
