@@ -43,29 +43,29 @@ public class PaymentController {
         Map<String, String> vnp_Params = new HashMap<>();
         Map<String, String[]> requestParams = request.getParameterMap();
 
-        // In ra các tham số nhận được từ yêu cầu
-        for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
-            vnp_Params.put(entry.getKey(), entry.getValue()[0]);
-            System.out.println(entry.getKey() + " = " + entry.getValue()[0]);
-        }
-
         String vnp_SecureHash = request.getParameter("vnp_SecureHash");
         if (vnp_SecureHash != null) {
             vnp_Params.remove("vnp_SecureHash");
         }
 
-        // Kiểm tra chữ ký
         String hashData = vnp_Params.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
-                .map(entry -> entry.getKey() + "=" + entry.getValue()) // URLDecoder.decode(entry.getValue(), StandardCharsets.US_ASCII))
+                .map(entry -> {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    if (value.contains(" ")) {
+                        value = value.replace(" ", "+");
+                    }
+                    if (value.contains(":")) {
+                        value = value.replace(":", "%3A");
+                    }
+                    return key + "=" + value;
+                })
                 .reduce((entry1, entry2) -> entry1 + "&" + entry2)
                 .orElse("");
 
         String vnp_HashSecret = vnpayConfig.getVnpHashSecret();
         String secureHash = VNPayUtil.hmacSHA512(vnp_HashSecret, hashData);
-
-        System.out.println("Computed secure hash: " + secureHash);
-        System.out.println("Received secure hash: " + vnp_SecureHash);
 
         if (secureHash.equals(vnp_SecureHash)) {
             return "1";
