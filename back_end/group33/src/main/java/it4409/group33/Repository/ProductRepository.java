@@ -13,6 +13,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String title, String description);
     List<Product> findByCategory(String category);
+    List<Product> findByBrand(String brand);
     @Query("SELECT p FROM Product p WHERE p.id = :productId")
     Product findByProductId(long productId);
 }

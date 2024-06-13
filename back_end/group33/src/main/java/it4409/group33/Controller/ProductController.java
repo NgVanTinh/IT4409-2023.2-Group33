@@ -1,7 +1,9 @@
 package it4409.group33.Controller;
 
+import it4409.group33.Model.Category;
 import it4409.group33.Model.Product;
 import it4409.group33.Repository.ProductRepository;
+import it4409.group33.Service.CategoryService;
 import it4409.group33.Util.JWT;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +32,9 @@ public class ProductController {
     public ProductController(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
+    @Autowired
+    private CategoryService categoryService;
 
     @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestBody Product product, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -75,16 +80,9 @@ public class ProductController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<String>> getProductCategories() {
-        List<String> categories = productRepository.findAll()
-                .stream()
-                .map(Product::getCategory)
-                .distinct()
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+    public List<Object[]> getAllVietnameseNames() {
+        return categoryService.findAll();
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -156,12 +154,14 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<String> getProductsByCategory(@PathVariable String category,@RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "0") int skip,@RequestParam(required = false) String select) {
-        List<Product> products = productRepository.findByCategory(category);
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<String> getProductsByCategory(@PathVariable Long categoryId,@RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "0") int skip,@RequestParam(required = false) String select) {
+        String categoryX = categoryService.getVietnameseNameById(categoryId);
+        List<Product> products = productRepository.findByCategory(categoryX);
         String res = filterListProduct(select,products,limit,skip);
         if (products.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            String string404 = "{\"total\":0,\"limit\":0,\"skip\":0,\"products\":[]}";
+            return new ResponseEntity<>(string404, HttpStatus.NOT_FOUND);
         } else if (res == null) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
