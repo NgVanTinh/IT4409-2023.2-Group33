@@ -78,8 +78,14 @@ public class ProductController {
     }
 
     @GetMapping("/categories")
-    public List<Object[]> getAllVietnameseNames() {
-        return categoryService.findAll();
+    public ResponseEntity<String> getAllVietnameseNames() {
+        try {
+            String res = categoryService.findAll();
+            return new ResponseEntity<>(res,HttpStatus.OK);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{id}")

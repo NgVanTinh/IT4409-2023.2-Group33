@@ -3,6 +3,7 @@ package it4409.group33.Controller;
 import it4409.group33.Config.VnpayConfig;
 import it4409.group33.Model.Order;
 import it4409.group33.Repository.OrderRepository;
+import it4409.group33.Service.OrderService;
 import it4409.group33.Service.VnpayService;
 import it4409.group33.Util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,11 +34,14 @@ public class PaymentController {
     @Autowired
     private VnpayConfig vnpayConfig;
 
+    @Autowired
+    private OrderService orderService;
     @GetMapping("/create")
-    public String createPayment(@RequestParam Long orderId) throws NoSuchAlgorithmException {
+    public ResponseEntity<String> createPayment(@RequestParam Long orderId) throws NoSuchAlgorithmException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
-        return vnpayService.createPaymentUrl(order);
+        String res = "{\"payURL\":\"" + vnpayService.createPaymentUrl(order) + "\",\"total\":" + String.valueOf(order.getTotal()) + "\"}";
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
     @GetMapping("/vnpay_return")
@@ -53,6 +57,9 @@ public class PaymentController {
         if (vnp_SecureHash != null) {
             vnp_Params.remove("vnp_SecureHash");
         }
+
+        String orderIdString = request.getParameter("vnp_OrderInfo");
+        Long orderId = Long.valueOf(orderIdString.substring(21));
 
         String hashData = vnp_Params.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
@@ -75,6 +82,7 @@ public class PaymentController {
 
         if (secureHash.equals(vnp_SecureHash)) {
             String x = "{\"code\":\"00\",\"message\":\"completed\"}";
+            orderService.updateOrderStatusToPaid(orderId);
             return new ResponseEntity<>(x,HttpStatus.OK);
         } else {
             String x = "{\"code\":\"01\",\"message\":\"failure\"}";
