@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Slider, Modal, Button, Row, Col, Space } from "antd";
 import { useDispatch } from "react-redux";
-import { setFilter } from "../../store/productSlice";
+import { resetFilter, setFilter } from "../../store/productSlice";
+import { formatPrice } from "../../utils/helpers";
 
 export default function FilterPrice() {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [priceRange, setPriceRange] = useState([1, 500]);
+  const [priceRange, setPriceRange] = useState([1000, 25000000]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -42,6 +43,15 @@ export default function FilterPrice() {
     handleCancel();
   };
 
+  const resetPriceRange = () => {
+    dispatch(
+      resetFilter({
+        filterType: "price",
+      })
+    );
+    handleCancel();
+  };
+
   return (
     <>
       <Button type="primary" onClick={showModal}>
@@ -52,59 +62,70 @@ export default function FilterPrice() {
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        width={600} // Tăng chiều rộng của Modal để chứa các nút
+        width={700} // Tăng chiều rộng của Modal để chứa các nút
+        footer={[
+          <Button key="reset" onClick={resetPriceRange}>
+            Bỏ chọn
+          </Button>,
+          <Button key="cancel" onClick={handleCancel}>
+            Hủy
+          </Button>,
+          <Button key="ok" type="primary" onClick={handleOk}>
+            OK
+          </Button>,
+        ]}
       >
         <Row gutter={[8, 8]}>
           <Col span={24}>
             <Slider
               range
               marks={{
-                1: "1$",
-                1000: "1000$",
+                1000: formatPrice(1000),
+                25000000: formatPrice(25000000),
               }}
-              step={1}
+              step={1000}
               value={priceRange}
-              min={1}
-              max={1000}
+              min={1000}
+              max={25000000}
               onChange={onSliderChange}
             />
           </Col>
           {/* Các nút cho khoảng giá cố định */}
           <Col span={24}>
-            <Space size="small">
-              <Button onClick={() => setFixedPriceRange([1, 100])}>
-                1$ - 100$
+            <Space size="small" wrap>
+              <Button onClick={() => setFixedPriceRange([1000, 2000000])}>
+                1K - 2 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([100, 200])}>
-                100$ - 200$
+              <Button onClick={() => setFixedPriceRange([2000000, 4000000])}>
+                2 triệu - 4 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([200, 300])}>
-                200$ - 300$
+              <Button onClick={() => setFixedPriceRange([4000000, 6000000])}>
+                4 triệu - 6 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([300, 400])}>
-                300$ - 400$
+              <Button onClick={() => setFixedPriceRange([6000000, 8000000])}>
+                6 triệu - 8 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([400, 500])}>
-                400$ - 500$
+              <Button onClick={() => setFixedPriceRange([8000000, 10000000])}>
+                8 triệu - 10 triệu
               </Button>
             </Space>
           </Col>
           <Col span={24}>
-            <Space size="small">
-              <Button onClick={() => setFixedPriceRange([500, 600])}>
-                500$ - 600$
+            <Space size="small" wrap>
+              <Button onClick={() => setFixedPriceRange([10000000, 12000000])}>
+                10 triệu - 12 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([600, 700])}>
-                600$ - 700$
+              <Button onClick={() => setFixedPriceRange([12000000, 14000000])}>
+                12 triệu - 14 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([700, 800])}>
-                700$ - 800$
+              <Button onClick={() => setFixedPriceRange([14000000, 16000000])}>
+                14 triệu - 16 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([800, 900])}>
-                800$ - 900$
+              <Button onClick={() => setFixedPriceRange([16000000, 18000000])}>
+                16 triệu - 18 triệu
               </Button>
-              <Button onClick={() => setFixedPriceRange([900, 1000])}>
-                900$ - 1000$
+              <Button onClick={() => setFixedPriceRange([18000000, 20000000])}>
+                18 triệu - 20 triệu
               </Button>
             </Space>
           </Col>

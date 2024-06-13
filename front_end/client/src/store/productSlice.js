@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "../utils/apiURL";
+import { BASE_URL, BASE_URL_2 } from "../utils/apiURL";
 import { STATUS } from "../utils/status";
 
 const initialState = {
@@ -20,10 +20,14 @@ const initialState = {
 function applyFilters(products, filters) {
   let filteredProducts = products;
   if (filters.price) {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        product.price >= filters.price.min && product.price <= filters.price.max
-    );
+    filteredProducts = filteredProducts.filter((product) => {
+      const discountedPrice =
+        product.price * (1 - product.discountPercentage / 100);
+      return (
+        discountedPrice >= filters.price.min &&
+        discountedPrice <= filters.price.max
+      );
+    });
   }
   if (filters.category) {
     filteredProducts = filteredProducts.filter(
@@ -33,8 +37,6 @@ function applyFilters(products, filters) {
   if (filters.rating) {
     const minRating = parseFloat(filters.rating);
     const maxRating = minRating + 1;
-
-    console.log(minRating, maxRating);
 
     filteredProducts = filteredProducts.filter((product) => {
       const productRating = parseFloat(product.rating);
@@ -125,7 +127,7 @@ const productSlice = createSlice({
 export const fetchAsyncProducts = createAsyncThunk(
   "products/fetch",
   async (limit) => {
-    const response = await fetch(`${BASE_URL}products?limit=${limit}`);
+    const response = await fetch(`${BASE_URL_2}products?limit=${limit}`);
     const data = await response.json();
     return data.products;
   }
@@ -135,7 +137,7 @@ export const fetchAsyncProducts = createAsyncThunk(
 export const fetchAsyncProductSingle = createAsyncThunk(
   "product-single/fetch",
   async (id) => {
-    const response = await fetch(`${BASE_URL}products/${id}`);
+    const response = await fetch(`${BASE_URL_2}products/${id}`);
     const data = await response.json();
     return data;
   }

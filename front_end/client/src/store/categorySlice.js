@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "../utils/apiURL";
+import { BASE_URL, BASE_URL_2 } from "../utils/apiURL";
 import { STATUS } from "../utils/status";
 
 const initialState = {
@@ -42,7 +42,7 @@ const categorySlice = createSlice({
 export const fetchAsyncCategories = createAsyncThunk(
   "categories/fetch",
   async () => {
-    const response = await fetch(`${BASE_URL}products/category-list`);
+    const response = await fetch(`${BASE_URL_2}products/categories`);
     const data = await response.json();
     return data;
   }
@@ -51,7 +51,7 @@ export const fetchAsyncCategories = createAsyncThunk(
 export const fetchAsyncProductsOfCategory = createAsyncThunk(
   "category-products/fetch",
   async (category) => {
-    const response = await fetch(`${BASE_URL}products/category/${category}`);
+    const response = await fetch(`${BASE_URL_2}products/category/${category}`);
     const data = await response.json();
     return data.products;
   }

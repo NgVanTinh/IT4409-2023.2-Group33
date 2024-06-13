@@ -73,6 +73,10 @@
         }
         .info {
           margin-bottom: 1.6rem;
+          .rating {
+            display: flex;
+            column-gap: 5px;
+          }
         }
         .price {
           background-color: rgba(0, 0, 0, 0.02);

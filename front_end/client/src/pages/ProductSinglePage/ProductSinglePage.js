@@ -21,6 +21,9 @@ import {
 } from "../../store/cartSlice";
 import CartMessage from "../../components/CartMessage/CartMessage";
 import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
+import Swal from "sweetalert2";
+import { Col, Row } from "antd";
+import Rating from "../../components/Rating/Rating";
 
 export default function ProductSinglePage() {
   const { id } = useParams();
@@ -28,35 +31,11 @@ export default function ProductSinglePage() {
   const product = useSelector(getProductSingle);
   const productSingleStatus = useSelector(getProductSingleStatus);
   const [quantity, setQuantity] = useState(1);
-  const cartMessageStatus = useSelector(getCartMessageStatus);
-
-  // getting single product
-  useEffect(() => {
-    dispatch(fetchAsyncProductSingle(id));
-
-    if (cartMessageStatus) {
-      setTimeout(() => {
-        dispatch(setCartMessageOff());
-      }, 2000);
-    }
-  }, [cartMessageStatus]);
 
   // // Xử lý tải thông tin sản phẩm
-  // useEffect(() => {
-  //   dispatch(fetchAsyncProductSingle(id));
-  // }, [id, dispatch]); // Phụ thuộc vào id và dispatch
-
-  // // Xử lý tắt thông báo giỏ hàng
-  // useEffect(() => {
-  //   if (cartMessageStatus) {
-  //     const timer = setTimeout(() => {
-  //       dispatch(setCartMessageOff());
-  //     }, 2000);
-
-  //     // Dọn dẹp khi component bị unmount hoặc trước khi useEffect chạy lại
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [cartMessageStatus, dispatch]);
+  useEffect(() => {
+    dispatch(fetchAsyncProductSingle(id));
+  }, [id, dispatch]); // Phụ thuộc vào id và dispatch
 
   let discountedPrice = (
     product?.price *
@@ -89,7 +68,14 @@ export default function ProductSinglePage() {
     let totalPrice = quantity * discountedPrice;
 
     dispatch(addToCart({ ...product, quantity, totalPrice, discountedPrice }));
-    dispatch(setCartMessageOn(true));
+    //dispatch(setCartMessageOn(true));
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Sản phẩm đã được thêm vào giỏ hàng",
+      showConfirmButton: false,
+      timer: 1500,
+    });
   };
 
   return (
@@ -164,17 +150,18 @@ export default function ProductSinglePage() {
                 </div>
                 <div className="info flex align-center flex-wrap fs-14">
                   <div className="rating">
-                    <span className="text-orange fw-5">Rating:</span>
-                    <span className="mx-1">{product?.rating}</span>
+                    <span className="text-orange fw-5">Đánh giá:</span>
+                    {/* <span className="mx-1">{product?.rating}</span> */}
+                    <Rating rating={product?.rating} disabled={true} />
                   </div>
                   <div className="vert-line"></div>
                   <div className="brand">
-                    <span className="text-orange fw-5">Brand:</span>
+                    <span className="text-orange fw-5">Thương hiệu:</span>
                     <span className="mx-1">{product?.brand}</span>
                   </div>
                   <div className="vert-line"></div>
                   <div className="brand">
-                    <span className="text-orange fw-5">Category:</span>
+                    <span className="text-orange fw-5">Danh mục:</span>
                     <span className="mx-1 text-capitalize">
                       {product?.category
                         ? product.category.replace("-", " ")
@@ -188,7 +175,7 @@ export default function ProductSinglePage() {
                       {formatPrice(product?.price)}
                     </div>
                     <span className="fs-14 mx-2 text-dark">
-                      Inclusive of all taxes
+                      Đã bao gồm cả thuế
                     </span>
                   </div>
                   <div className="flex align-center my-1">
@@ -202,7 +189,7 @@ export default function ProductSinglePage() {
                 </div>
 
                 <div className="qty flex align-center my-4">
-                  <div className="qty-text">Quantity:</div>
+                  <div className="qty-text">Số lượng:</div>
                   <div className="qty-change flex align-center mx-3">
                     <button
                       className="qty-decrease flex align-center justify-center"
@@ -222,7 +209,7 @@ export default function ProductSinglePage() {
                   </div>
                   {product?.stock === 0 ? (
                     <div className="qty-error text-uppercase bg-danger text-white fs-12 ls-1 mx-2 fw-5">
-                      out of stock
+                      Sản phẩm này hiện đã hết hàng
                     </div>
                   ) : (
                     ""
@@ -238,11 +225,11 @@ export default function ProductSinglePage() {
                         addToCartHandler(product);
                       }}
                     >
-                      Add to cart
+                      Thêm vào giỏ hàng
                     </span>
                   </button>
                   <button className="buy-now btn mx-3">
-                    <span className="btn-text">buy now</span>
+                    <span className="btn-text">Mua ngay</span>
                   </button>
                 </div>
               </div>
@@ -250,7 +237,30 @@ export default function ProductSinglePage() {
           </div>
         </div>
       </div>
-      {cartMessageStatus && <CartMessage />}
+
+      <div className="container my-3">
+        <Row>
+          <Col span={12}>
+            <div className="title-md mx-3">
+              <h3>Thông số kỹ thuật</h3>
+            </div>
+          </Col>
+          <Col span={12}>
+            <div className="title-md mx-3">
+              <h3>Các sản phẩm tương tự</h3>
+            </div>
+          </Col>
+        </Row>
+      </div>
+      <div className="container my-3">
+        <Row>
+          <Col span={24}>
+            <div className="title-md mx-3">
+              <h3>Đánh giá từ khách hàng</h3>
+            </div>
+          </Col>
+        </Row>
+      </div>
     </main>
   );
 }
