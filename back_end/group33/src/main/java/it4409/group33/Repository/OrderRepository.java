@@ -90,4 +90,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "ORDER BY total_quantity_sold DESC",
             nativeQuery = true)
     List<Object[]> findProductsTotalQuantitySold();
+
+    long count();
+
+    @Query("SELECT SUM(o.total) FROM Order o WHERE o.status = 'COMPLETED'")
+    Double sum();
 }

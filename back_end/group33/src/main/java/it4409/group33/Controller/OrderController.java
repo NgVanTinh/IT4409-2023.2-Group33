@@ -197,19 +197,33 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/orders/test")
+    @GetMapping("/orders/quantity-sold-by-brand")
     public Map<String, Long> getTotalQuantityByBrand() {
         return orderService.getTotalQuantityByBrand();
     }
 
-    @GetMapping("/orders/test2")
+    @GetMapping("/orders/list-product-sold-by-brand")
     public List<Map<String, Object>> getProductsByBrand(@RequestParam String brand) {
         return orderService.getProductsByBrand(brand);
     }
 
-    @GetMapping("/orders/test3")
+    @GetMapping("/orders/best-seller")
     public List<Map<String, Object>> getProductsTotalQuantitySold() {
         return orderService.getProductsTotalQuantitySold();
+    }
+
+    @GetMapping("/orders/number-orders")
+    public ResponseEntity<String> count() {
+        long x = orderService.count();
+        String xx = "{\"orders\":" + String.valueOf(x) + "}";
+        return new ResponseEntity<>(xx,HttpStatus.OK);
+    }
+
+    @GetMapping("/orders/sum")
+    public ResponseEntity<String> sum() {
+        Double x = orderService.sum();
+        String xx = "{\"sum\":" + String.valueOf(x) + "}";
+        return new ResponseEntity<>(xx,HttpStatus.OK);
     }
 }
 

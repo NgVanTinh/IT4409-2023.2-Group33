@@ -338,4 +338,16 @@ public class ProductController {
         List<Product> list = new ArrayList<>(sameProductsSet);
         return new ResponseEntity<>(filterListProduct(select,list,limit,skip),HttpStatus.OK);
     }
+
+    @GetMapping("/category-name")
+    public ResponseEntity<String> categoryName(@RequestParam Long id) {
+        String name = categoryService.getVietnameseNameById(id);
+        if(name != null) {
+            String res = "{\"id\":" + String.valueOf(id) + ",\"name\":\"" + name + "\"}";
+            return new ResponseEntity<>(res,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+
+    }
 }

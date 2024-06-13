@@ -11,14 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Query("SELECT c.englishName, c.vietnameseName FROM Category c")
-    List<Object[]> findAllEnglishName();
-
-//    @Query("SELECT c.vietnameseName FROM Category c WHERE c.englishName = :englishName")
-//    String findVietnameseNameByEnglishName(@Param("englishName") String englishName);
-//
-//    @Query("SELECT c.vietnameseName FROM Category c WHERE c.id = :id")
-//    String findVietnameseNameById(@Param("englishName") Long id);
     @Query("SELECT c.id, c.vietnameseName FROM Category c")
     List<Object[]> findAllIdsAndVietnameseNames();
 }

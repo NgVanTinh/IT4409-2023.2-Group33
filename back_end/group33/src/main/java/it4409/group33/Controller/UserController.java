@@ -248,4 +248,11 @@ public class UserController {
         return new ResponseEntity<>(userDicts,HttpStatus.OK);
     }
 
+    @GetMapping("/users/number-users")
+    private ResponseEntity<String> count() {
+        long x = userRepository.count();
+        String xx = "{\"users\":" + String.valueOf(x) + "}";
+        return new ResponseEntity<>(xx,HttpStatus.OK);
+    }
+
 }

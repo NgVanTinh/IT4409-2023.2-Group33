@@ -22,6 +22,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
         }
     }
 
+    long count();
+
     @Query("SELECT u.id, u.address, u.email, u.fullName, u.phone, u.role, u.username FROM User u")
     List<Object[]> getAllUsersExceptPassword();
 

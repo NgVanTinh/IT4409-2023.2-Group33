@@ -197,5 +197,13 @@ public class OrderService {
         return productList;
     }
 
+    public long count() {
+        return orderRepository.count();
+    }
+
+    public Double sum() {
+        return orderRepository.sum();
+    }
+
 }
 

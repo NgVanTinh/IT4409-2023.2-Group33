@@ -19,11 +19,7 @@ public class CategoryService {
 
     public String getVietnameseNameById(Long id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
-        if (categoryOptional.isPresent()) {
-            return categoryOptional.get().getVietnameseName();
-        } else {
-            throw new RuntimeException("Category not found with id: " + id);
-        }
+        return categoryOptional.map(Category::getVietnameseName).orElse(null);
     }
 }
 
