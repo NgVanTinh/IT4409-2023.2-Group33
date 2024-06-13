@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchAsyncProductSingle,
+  fetchAsyncSimilarProducts,
   getProductSingle,
   getProductSingleStatus,
 } from "../../store/productSlice";
@@ -24,17 +25,24 @@ import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
 import Swal from "sweetalert2";
 import { Col, Row } from "antd";
 import Rating from "../../components/Rating/Rating";
+import ProductSimilar from "../../components/ProductSimilar/ProductSimilar";
 
 export default function ProductSinglePage() {
-  console.log(useParams());
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector(getProductSingle);
   const productSingleStatus = useSelector(getProductSingleStatus);
   const [quantity, setQuantity] = useState(1);
 
+  // Similar products
+  const similarProducts = useSelector((state) => state.product.similarProducts);
+  const similarProductsStatus = useSelector(
+    (state) => state.product.similarProductsStatus
+  );
+
   useEffect(() => {
     dispatch(fetchAsyncProductSingle(id));
+    dispatch(fetchAsyncSimilarProducts(id));
   }, [id, dispatch]);
 
   let discountedPrice = (
@@ -152,7 +160,11 @@ export default function ProductSinglePage() {
                   <div className="rating">
                     <span className="text-orange fw-5">Đánh giá:</span>
                     {/* <span className="mx-1">{product?.rating}</span> */}
-                    <Rating rating={product?.rating} disabled={true} />
+                    <Rating
+                      rating={product?.rating}
+                      disabled={true}
+                      tooltips={false}
+                    />
                   </div>
                   <div className="vert-line"></div>
                   <div className="brand">
@@ -249,6 +261,7 @@ export default function ProductSinglePage() {
             <div className="title-md mx-3">
               <h3>Các sản phẩm tương tự</h3>
             </div>
+            <ProductSimilar products={similarProducts} />
           </Col>
         </Row>
       </div>

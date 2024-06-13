@@ -1,0 +1,61 @@
+@import "../../App.scss";
+
+.product-similar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.item-similar {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .item-similar-img {
+    flex: 0 0 120px; // Cố định chiều rộng của hình ảnh
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: auto;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .item-similar-content {
+    padding: 15px;
+
+    h3 {
+      margin: 10px 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    p {
+      margin: 5px 0;
+      font-size: 16px;
+      color: #666;
+
+      &:first-child {
+        font-weight: bold;
+        color: #000;
+      }
+
+      .price {
+        color: $clr-green;
+      }
+    }
+  }
+}

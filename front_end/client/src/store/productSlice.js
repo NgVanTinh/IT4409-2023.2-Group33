@@ -14,6 +14,8 @@ const initialState = {
   productsStatus: STATUS.IDLE,
   productSingle: [],
   productSingleStatus: STATUS.IDLE,
+  similarProducts: [],
+  similarProductsStatus: STATUS.IDLE,
 };
 
 // Hàm áp dụng bộ lọc
@@ -119,6 +121,16 @@ const productSlice = createSlice({
       })
       .addCase(fetchAsyncProductSingle.rejected, (state, action) => {
         state.productSingleStatus = STATUS.FAILED;
+      })
+      .addCase(fetchAsyncSimilarProducts.pending, (state) => {
+        state.similarProductsStatus = STATUS.LOADING;
+      })
+      .addCase(fetchAsyncSimilarProducts.fulfilled, (state, action) => {
+        state.similarProducts = action.payload;
+        state.similarProductsStatus = STATUS.SUCCEEDED;
+      })
+      .addCase(fetchAsyncSimilarProducts.rejected, (state) => {
+        state.similarProductsStatus = STATUS.FAILED;
       });
   },
 });
@@ -140,6 +152,21 @@ export const fetchAsyncProductSingle = createAsyncThunk(
     const response = await fetch(`${BASE_URL_2}products/${id}`);
     const data = await response.json();
     return data;
+  }
+);
+
+// Tạo async thunk để lấy sản phẩm tương tự
+export const fetchAsyncSimilarProducts = createAsyncThunk(
+  "products/fetchSimilar",
+  async (id) => {
+    const response = await fetch(
+      `${BASE_URL_2}products/same-products?id=${id}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch similar products");
+    }
+    const data = await response.json();
+    return data.products; // Giả sử data trả về là mảng các sản phẩm tương tự
   }
 );
 

@@ -33,8 +33,6 @@ export default function CategoryProductPage() {
     (category) => category.id.toString() === id
   )?.name;
 
-  console.log(categoryName);
-
   return (
     <>
       <div className="container">
