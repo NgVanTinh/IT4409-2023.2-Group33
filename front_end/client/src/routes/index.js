@@ -27,7 +27,7 @@ export const routes = [
         element: <ProductSingle />,
       },
       {
-        path: "category/:category",
+        path: "category/:id",
         element: <CategoryProduct />,
       },
       {

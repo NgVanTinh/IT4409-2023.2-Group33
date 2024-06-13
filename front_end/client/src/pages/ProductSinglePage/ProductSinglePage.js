@@ -26,16 +26,16 @@ import { Col, Row } from "antd";
 import Rating from "../../components/Rating/Rating";
 
 export default function ProductSinglePage() {
+  console.log(useParams());
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector(getProductSingle);
   const productSingleStatus = useSelector(getProductSingleStatus);
   const [quantity, setQuantity] = useState(1);
 
-  // // Xử lý tải thông tin sản phẩm
   useEffect(() => {
     dispatch(fetchAsyncProductSingle(id));
-  }, [id, dispatch]); // Phụ thuộc vào id và dispatch
+  }, [id, dispatch]);
 
   let discountedPrice = (
     product?.price *

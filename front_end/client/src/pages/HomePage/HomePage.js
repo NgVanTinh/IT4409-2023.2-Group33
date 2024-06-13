@@ -41,18 +41,18 @@ export default function HomePage() {
   }
 
   // Display some typical categories on the home page
-  let catProductsOne = products.filter(
-    (product) => product.category === categories[0]
-  );
-  let catProductsTwo = products.filter(
-    (product) => product.category === categories[1]
-  );
-  let catProductsThree = products.filter(
-    (product) => product.category === categories[2]
-  );
-  let catProductsFour = products.filter(
-    (product) => product.category === categories[3]
-  );
+  // let catProductsOne = products.filter(
+  //   (product) => product.category === categories[0]
+  // );
+  // let catProductsTwo = products.filter(
+  //   (product) => product.category === categories[1]
+  // );
+  // let catProductsThree = products.filter(
+  //   (product) => product.category === categories[2]
+  // );
+  // let catProductsFour = products.filter(
+  //   (product) => product.category === categories[3]
+  // );
 
   return (
     <main>
@@ -84,9 +84,9 @@ export default function HomePage() {
                 )}
               </div>
             </div>
-            <div className="categories-item">
+            {/* <div className="categories-item">
               <div className="title-md">
-                <h3>{categories[0]}</h3>
+                <h3>{categories[0].name}</h3>
               </div>
               <div>
                 {productsStatus === STATUS.LOADING ? (
@@ -98,7 +98,7 @@ export default function HomePage() {
             </div>
             <div className="categories-item">
               <div className="title-md">
-                <h3>{categories[1]}</h3>
+                <h3>{categories[1].name}</h3>
               </div>
               <div>
                 {productsStatus === STATUS.LOADING ? (
@@ -110,7 +110,7 @@ export default function HomePage() {
             </div>
             <div className="categories-item">
               <div className="title-md">
-                <h3>{categories[2]}</h3>
+                <h3>{categories[2].name}</h3>
               </div>
               <div>
                 {productsStatus === STATUS.LOADING ? (
@@ -122,7 +122,7 @@ export default function HomePage() {
             </div>
             <div className="categories-item">
               <div className="title-md">
-                <h3>{categories[3]}</h3>
+                <h3>{categories[3].name}</h3>
               </div>
               <div>
                 {productsStatus === STATUS.LOADING ? (
@@ -131,7 +131,7 @@ export default function HomePage() {
                   <ProductList products={catProductsFour} />
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

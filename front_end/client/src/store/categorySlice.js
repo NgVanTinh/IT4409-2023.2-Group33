@@ -2,6 +2,31 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL, BASE_URL_2 } from "../utils/apiURL";
 import { STATUS } from "../utils/status";
 
+// Định nghĩa async thunks
+export const fetchAsyncCategories = createAsyncThunk(
+  "categories/fetch",
+  async () => {
+    const response = await fetch(`${BASE_URL_2}products/categories`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+    const data = await response.json();
+    return data;
+  }
+);
+
+export const fetchAsyncProductsOfCategory = createAsyncThunk(
+  "category-products/fetch",
+  async (id) => {
+    const response = await fetch(`${BASE_URL_2}products/category/${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products of category ${id}`);
+    }
+    const data = await response.json();
+    return data.products;
+  }
+);
+
 const initialState = {
   categories: [],
   categoriesStatus: STATUS.IDLE,
@@ -39,27 +64,10 @@ const categorySlice = createSlice({
   },
 });
 
-export const fetchAsyncCategories = createAsyncThunk(
-  "categories/fetch",
-  async () => {
-    const response = await fetch(`${BASE_URL_2}products/categories`);
-    const data = await response.json();
-    return data;
-  }
-);
-
-export const fetchAsyncProductsOfCategory = createAsyncThunk(
-  "category-products/fetch",
-  async (category) => {
-    const response = await fetch(`${BASE_URL_2}products/category/${category}`);
-    const data = await response.json();
-    return data.products;
-  }
-);
-
 export const getAllCategories = (state) => state.category.categories;
 export const getAllProductsOfCategory = (state) =>
   state.category.categoryProducts;
 export const getCategoryProductsStatus = (state) =>
   state.category.categoryProductsStatus;
+
 export default categorySlice.reducer;

@@ -75,10 +75,10 @@ export default function Navbar() {
             {categories.slice(0, 8).map((category, idx) => (
               <li className="nav-item no-wrap" key={idx}>
                 <Link
-                  to={`category/${category}`}
+                  to={`category/${category.id}`}
                   className="nav-link text-capitalize"
                 >
-                  {category.replace("-", " ")}
+                  {category.name.replace("-", " ")}
                 </Link>
               </li>
             ))}
