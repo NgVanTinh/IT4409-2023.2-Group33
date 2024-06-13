@@ -30,6 +30,11 @@ const VisuallyHiddenInput = styled('input')({
   
 });
 
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwidXNlck5hbWUiOiJlZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxODIxMjI0OCwiZXhwIjoxNzE4MjQ4MjQ4fQ.vpw1f5Ou_YM3QAB1X3Dl1xasisBXJGYk4ay2tGwaJj4'
+const config = {
+      headers: { Authorization: `Bearer ${token}` }
+};
+
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -62,7 +67,7 @@ const AddProduct = () => {
       images: [...prevProduct.images, ...files]
     }));
     } else {
-      toast.warn('Can not upload more than 5 images!', {
+      toast.warn('Không thể thêm nhiều hơn 5 ảnh!', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -90,8 +95,9 @@ const AddProduct = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.post(`https://buckytank.shop/products/create`, product);
-    navigate(`/admin/products`);
+    console.log(product);
+    await axios.post(`https://buckytank.shop/products/create`, product, config);
+    // navigate(`/admin/products`);
   };
 
   // const loadProduct = async () => {
@@ -170,6 +176,18 @@ const AddProduct = () => {
             label="Stock"
             id="stock"
             value={product.stock}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'grey' } }}
+            onChange={onInputChange}
+          />
+        </Grid>
+        <Grid item sm={8}>
+          <TextField
+            fullWidth
+            name="discountPercentage"
+            label="Discount Percentage (%)"
+            id="discountPercentage"
+            value={product.discountPercentage}
             InputLabelProps={{ style: { color: 'blue' } }}
             InputProps={{ style: { color: 'grey' } }}
             onChange={onInputChange}

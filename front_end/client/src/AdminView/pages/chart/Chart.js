@@ -1,5 +1,6 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Box, Typography } from "@mui/material";
 import TopHeader from '../../components/TopHeader'
 import PieChart from "../../components/PieChart";
@@ -11,41 +12,41 @@ import Tab from '@mui/material/Tab';
 
 const Chart = () => {
   const [value, setValue] = useState('1');
-  // const [category, setCategory] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  // useEffect(() => {
-  //   loadValue();
-  // }, []);
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
-  // const loadCategories = async () => {
-  //   try {
-  //     const result = await axios.get(`https://dummyjson.com/carts`);
-  //     setCategories(result.data);
-  //   } catch (error) {
-  //     console.error('Error loading categories:', error);
-  //   }
-  // };
-  const categories = [
-    {
-      title: 'Category 1',
-    },
-    {
-      title: 'Category 2',
-    },
-    {
-      title: 'Category 3',
-    },
-    {
-      title: 'Category 4',
+  const loadCategories = async () => {
+    try {
+      const result = await axios.get(`https://buckytank.shop/products/categories`);
+      setCategories(result.data);
+    } catch (error) {
+      console.error('Error loading categories:', error);
     }
-  ];  
+  };
+  // const categories = [
+  //   {
+  //     title: 'Category 1',
+  //   },
+  //   {
+  //     title: 'Category 2',
+  //   },
+  //   {
+  //     title: 'Category 3',
+  //   },
+  //   {
+  //     title: 'Category 4',
+  //   }
+  // ];  
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   return (
     <div>
-      <TopHeader title="STATISTICS" subtitle="Statistics" />
+      <TopHeader title="THỐNG KÊ" subtitle="Thống kê sản phẩm, doanh thu,...." />
 
       {/* <Box
         display="grid"
@@ -68,7 +69,7 @@ const Chart = () => {
               alignItems="center"
               mt="25px"
             >
-              <PieChart/>
+              <PieChart categories={categories}/>
             </Box>
           </Box>
 
@@ -81,7 +82,7 @@ const Chart = () => {
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={handleChange} aria-label="lab API tabs example">
                   {categories.map((category, index) => (
-                    <Tab key={index} label={category.title} value={String(index + 1)} />
+                    <Tab key={index} label={category} value={String(index + 1)} />
                   ))}
                 </TabList>
               </Box>

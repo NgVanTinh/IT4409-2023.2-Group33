@@ -120,11 +120,11 @@ const OrderPage = () => {
   ]
   return (
     <>
-      <TopHeader title="ORDERS" subtitle="Managing all orders" />
+      <TopHeader title="ĐƠN HÀNG" subtitle="Quản lý thông tin các đơn hàng" />
         <Box m="20px">
           <Box
             m="40px 0 0 0"
-            height="75vh"
+            height="90vh"
             sx={{
               "& .MuiDataGrid-root": {
                 border: "none",
@@ -168,7 +168,12 @@ const OrderPage = () => {
                 },
               },
             }}
-            // pageSizeOptions={[5, 10, 20]}
+            sx={{
+              '& .MuiTablePagination-root': {
+                color: 'white',
+              },
+            }}  
+            pageSizeOptions={[5, 10, 20]}
             disableRowSelectionOnClick
             slots={{ toolbar: CustomGridToolbar }}
             />

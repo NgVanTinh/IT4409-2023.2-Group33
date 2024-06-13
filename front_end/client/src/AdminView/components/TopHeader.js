@@ -2,9 +2,9 @@ import { Typography, Box } from "@mui/material";
 
 const TopHeader = ({ title, subtitle }) => {
   return (
-    <Box mb="30px">
+    <Box mb="20px">
       <Typography
-        variant="h2"
+        variant="h3"
         color='grey'
         fontWeight="bold"
         sx={{ m: "0 0 5px 0" }}

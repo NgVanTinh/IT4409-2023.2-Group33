@@ -33,7 +33,7 @@ const ViewProduct = () => {
   },[]);
 
   const loadProduct = async () => {
-    const result = await axios.get(`https://dummyjson.com/products/${id}`);
+    const result = await axios.get(`https://buckytank.shop/products/${id}`);
     setProduct(result.data);
   };
 
@@ -107,6 +107,20 @@ const ViewProduct = () => {
             disabled
           />
         </Grid>
+
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            fullWidth
+            name="discountPercentage"
+            label="Discount Percentage (%)"
+            id="discountPercentage"
+            value={product.discountPercentage}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            disabled
+          />
+        </Grid>
+
         <Grid item sm={8}>
           <TextField
             variant="standard"
@@ -201,14 +215,14 @@ const ViewProduct = () => {
         onClick={() => {navigate('/products')}}
       >
         <ArrowBackIcon sx={{mr:1}}/>
-        Navigate to product page
+        Quay lại trang sản phẩm
       </Button>
 
       <Button
         sx={{backgroundColor: '#1890ff', color: 'white', borderRadius: '10px', marginLeft: 'auto'}}
         onClick={() => {navigate(`/edit-product/${id}`)}}
       >
-        Edit product
+        Chỉnh sửa sản phẩm
         <ArrowForwardIcon sx={{ml:1}}/>
         
       </Button>

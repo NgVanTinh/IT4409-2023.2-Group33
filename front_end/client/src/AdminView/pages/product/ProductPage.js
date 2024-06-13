@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from 'react'
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid' 
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import PreviewIcon from '@mui/icons-material/Preview';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+
 import TopHeader from "../../components/TopHeader";
 import { Modal } from 'antd';
 import { Carousel } from 'antd';
@@ -38,13 +40,14 @@ const OrderPage = () => {
   const [modalVisible, setModalVisible] = useState(false); 
 
   const loadProducts = async () => {
-        const result = await axios.get(`https://dummyjson.com/products?limit=50`);
+        const result = await axios.get(`https://buckytank.shop/products`);
         const {products} = result.data;
+        // console.log(products);
         setProducts(products);
   };
 
   const loadProduct = async (id) => {
-        const result = await axios.get(`https://dummyjson.com/products/${id}`);
+        const result = await axios.get(`https://buckytank.shop/products/${id}`);
         // const {dataProduct } = result.data;
         setProduct(result.data);
   }
@@ -140,11 +143,18 @@ const OrderPage = () => {
   ]
   return (
     <>
-      <TopHeader title="PRODUCTS" subtitle="Managing all products " />
+      <TopHeader title="SẢN PHẨM" subtitle="Quản lý thông tin các sản phẩm" />
+      <Box m="20px" sx={{display:'flex', justifyContent: 'flex-end'}}>
+        <Button variant="contained" startIcon={<AddCircleOutlineOutlinedIcon />}
+            sx={{backgroundColor: '#1890ff'}}
+            onClick={() => navigate('/add-product')}
+        >Add new product</Button>
+      </Box>
+      
       <Box m="20px">
         <Box
           m="40px 0 0 0"
-          height="75vh"
+          height="90vh"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -182,7 +192,12 @@ const OrderPage = () => {
                 },
               },
             }}
-            // pageSizeOptions={[5, 10, 20]}
+            sx={{
+              '& .MuiTablePagination-root': {
+                color: 'white',
+              },
+            }}  
+            pageSizeOptions={[5, 10, 20]}
             disableRowSelectionOnClick
             slots={{ toolbar: CustomGridToolbar }}
           />

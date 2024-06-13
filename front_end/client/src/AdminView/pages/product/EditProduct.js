@@ -91,20 +91,21 @@ const EditProduct = () => {
   },[]);
 
   const onSubmit = async (e) => {
+    console.log(product)
     e.preventDefault();
-    // await axios.put(`https://dummyjson.com/products/${id}`, product);
+    await axios.put(`https://buckytank.shop/products/${id}`, product);
     navigate(`/view-product/${id}`);
   };
 
   const loadProduct = async () => {
-    const result = await axios.get(`https://dummyjson.com/products/${id}`);
+    const result = await axios.get(`https://buckytank.shop/products/${id}`);
     setProduct(result.data);
   };
 
   return (
     
     <>
-    <TopHeader title="PRODUCTS" subtitle="Updating product" />
+    <TopHeader title="SẢN PHẨM" subtitle="Cập nhật thông tin sản phẩm" />
     <Box component="form"  onSubmit={onSubmit} sx={{display: 'flex', flexDirection: 'column'}} >
       <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
         <Grid item sm={8} >
@@ -289,6 +290,18 @@ const EditProduct = () => {
                         <div
                           style={{position: 'relative', display: 'inline-block'}}
                         >
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDeleteImage(index)}
+                            style={{
+                              position: 'absolute',
+                              bottom: '80%',
+                              right: '0',
+                              color: 'grey',
+                            }}
+                          >
+                            <CancelSharpIcon />
+                          </IconButton>
                           <img
                             src={URL.createObjectURL(image)}
                             alt="Product Thumbnail"

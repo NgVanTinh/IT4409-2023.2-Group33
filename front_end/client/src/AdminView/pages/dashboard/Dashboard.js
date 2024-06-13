@@ -1,19 +1,38 @@
-import { Box, Button, Typography } from "@mui/material";
-
+import React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Box, Typography } from "@mui/material";
 import TopHeader from "../../components/TopHeader";
 import StatBox from "../../components/StartBox";
-import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
 import { ProductOutlined, UserOutlined, OrderedListOutlined } from '@ant-design/icons'
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import PieChart from "../../components/PieChart";
 import LineChart from "../../components/LineChart";
 import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [countUser, setCountUser] = useState(0);
+  const [countProduct, setCountProduct] = useState(0);
+  const [countOrder, setCountOrder] = useState(0); 
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    const result = await axios.get(`https://buckytank.shop/products`);
+    const {products} = result.data;
+    const arr = products.slice(0, 5);
+    console.log("dashboard: ", data);
+    setData(arr);
+  };
+
   return (
-    <Box m="20px">
+    <Box m="5px">
 
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <TopHeader title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <TopHeader title="TỔNG QUAN" subtitle="Chào mừng tới bảng điều khiển của quản trị viên" />
       </Box>
 
       <Box
@@ -21,6 +40,7 @@ const Dashboard = () => {
         gridTemplateColumns="repeat(12, 1fr)"
         gridAutoRows="140px"
         gap="20px"
+        
       >
         <Box
           gridColumn="span 3"
@@ -28,15 +48,17 @@ const Dashboard = () => {
           display="flex"
           alignItems="center"
           justifyContent="center"
+          onClick={() => navigate(`/users`)}
         >
           <StatBox
             title="12,361"
-            subtitle="Users"
+            subtitle="Người dùng"
             icon={
               <UserOutlined
                 style={{ color: 'blue', fontSize: "26px" }}
               />
             }
+            
           />
         </Box>
         <Box
@@ -45,10 +67,11 @@ const Dashboard = () => {
           display="flex"
           alignItems="center"
           justifyContent="center"
+          onClick={() => navigate(`/products`)}
         >
           <StatBox
             title="431,225"
-            subtitle="Products"
+            subtitle="Sản phẩm"
             icon={
               <ProductOutlined
                 style={{ color: 'blue', fontSize: "26px" }}
@@ -62,11 +85,12 @@ const Dashboard = () => {
           display="flex"
           alignItems="center"
           justifyContent="center"
+          onClick={() => navigate(`/orders`)}
         >
           <StatBox
             
             title="32,441"
-            subtitle="Orders"
+            subtitle="Đơn hàng"
             icon={
               <OrderedListOutlined
                 style={{ color: 'blue', fontSize: "26px" }}
@@ -82,35 +106,25 @@ const Dashboard = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <Box width="100%" m="0 30px">
-            <Box display="flex" justifyContent="space-between">
-              <Box>
-                <CelebrationOutlinedIcon
-                  style={{ color: 'blue', fontSize: "35px" }}
-                />
-                <Typography
-                  variant="h5"
-                  fontWeight="bold"
-                  sx={{ color: 'white' }}
-                >
-                  Iphone Xs Max
-                </Typography>
-              </Box>
-            </Box>
-            <Box display="flex" justifyContent="space-between" mt="2px">
-              <Typography variant="h5" sx={{ color: 'blue' }}>
-                Best Seller
-              </Typography>
-            </Box>
-          </Box>
+          <StatBox
+            
+            title="32,441 VNĐ"
+            subtitle="Doanh thu"
+            icon={
+              <MonetizationOnOutlinedIcon
+                style={{ color: 'blue', fontSize: "30px" }}
+              />
+            }
+          />
         </Box>
 
         
         <Box
-          gridColumn="span 5"
+          gridColumn="span 6"
           gridRow="span 2"
           backgroundColor='#9C9C9C'
           p="30px"
+          height={"350px"}
         >
           <Typography variant="h5" fontWeight="600">
             Campaign
@@ -119,15 +133,15 @@ const Dashboard = () => {
             display="flex"
             flexDirection="column"
             alignItems="center"
-            mt="25px"
           >
             <PieChart/>
           </Box>
         </Box>
         <Box
-          gridColumn="span 7"
+          gridColumn="span 6"
           gridRow="span 2"
           backgroundColor='#9C9C9C'
+          height={"350px"}
         >
           <Typography
             variant="h5"
@@ -142,7 +156,7 @@ const Dashboard = () => {
             alignItems="center"
             mt="25px"
           >
-            <LineChart/>
+            <LineChart data={data}/>
           </Box>
         </Box>
       </Box> 

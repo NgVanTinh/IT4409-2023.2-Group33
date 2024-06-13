@@ -40,7 +40,7 @@ const ViewOrder = () => {
 
   return (
     <>
-    <TopHeader title="ORDERS" subtitle="Viewing a order" />
+    <TopHeader title="ĐƠN HÀNG" subtitle="Xem chi tiết đơn hàng" />
     <Box sx={{display: 'flex', flexDirection: 'column'}} >
       <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
         <Grid item sm={8} >
@@ -64,19 +64,6 @@ const ViewOrder = () => {
             id="orderDate"
             label="Order Date"
             value={order.id}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
-          />
-        </Grid>
-
-        <Grid item sm={8}>
-          <TextField
-            variant="standard"
-            name="user"
-            fullWidth
-            id="user"
-            label="User"
-            value={order && order.userId}
             InputLabelProps={{ style: { color: 'blue' } }}
             disabled
           />
@@ -144,6 +131,20 @@ const ViewOrder = () => {
             disabled
           />
         </Grid>
+
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            name="user"
+            fullWidth
+            id="user"
+            label="User"
+            value={order && order.userId}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            disabled
+          />
+        </Grid>
+        
         <Grid item sm={8}>
           <TextField
             variant="standard"

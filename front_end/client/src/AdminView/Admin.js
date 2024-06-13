@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
-
+import './Admin.css'
+import { useState } from 'react';
+import { Routes, Route} from 'react-router-dom';
 import Dashboard from './pages/dashboard/Dashboard'
 import ProductPage from './pages/product/ProductPage';
 import EditProduct from './pages/product/EditProduct';
@@ -10,11 +11,12 @@ import ViewProduct from './pages/product/ViewProduct';
 import AddProduct from './pages/product/AddProduct';
 import MainLayout from './components/MainLayout/MainLayout'
 import Chart from './pages/chart/Chart';
+import Login from '../pages/Login/Login';
 
 const Admin = () => {
-
   return (
       <Routes>
+        <Route path='/login' element={<Login/>}/>
         <Route path='/' element={<MainLayout/>}>
           <Route index element={<Dashboard />} />
           <Route path='products' element={<ProductPage/>}/> 
@@ -27,6 +29,7 @@ const Admin = () => {
           <Route path='view-order/:id' element={<ViewOrder/>}/>
         </Route>
       </Routes>
+        
   );
 
 }

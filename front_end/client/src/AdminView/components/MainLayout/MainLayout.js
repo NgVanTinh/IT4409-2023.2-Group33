@@ -4,7 +4,7 @@ import './MainLayout.css';
 import { Outlet } from "react-router-dom";
 
 import { DashboardOutlined, ProductOutlined, UserOutlined, BellOutlined,
-        OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined, BarChartOutlined } from '@ant-design/icons'
+        OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined, BarChartOutlined, LogoutOutlined  } from '@ant-design/icons'
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
@@ -21,9 +21,7 @@ const MainLayout = () => {
   useEffect(() => {
     let pathName;
     const path = location.pathname;
-    if(path === '/products') pathName = 'products';
-    else if(path === '/add-product') pathName = 'add-product';
-    else if(path === '/') pathName = '';
+    if(path === '/') pathName = '';
     else pathName = path;
     // console.log(path);
     setSelectedKey(pathName);
@@ -33,7 +31,7 @@ const MainLayout = () => {
     <Layout>
       <Sider theme='dark' trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" > 
-           <h2 className='fs-7 text-center py-3 mb-0'> 
+           <h2 style={{fontSize: '40px', display: 'flex', justifyContent: 'center'}}> 
            {!collapsed 
            ? 
               <span className='lg-logo'>Bucky <span className='text-white'>Tank</span> </span>
@@ -59,19 +57,7 @@ const MainLayout = () => {
             {
               label: 'Products',
               icon: <ProductOutlined/>,
-              key: '/',
-              children: [
-                {
-                  label: 'View all products',
-                  icon: <AppstoreOutlined />,
-                  key: 'products'
-                },
-                {
-                  label: 'Add product',
-                  icon: <AppstoreAddOutlined />,
-                  key: 'add-product'
-                },
-              ]
+              key: '/products',
             },
             {
               label: 'Users',
@@ -87,6 +73,11 @@ const MainLayout = () => {
               label: 'Statistics',
               icon:<BarChartOutlined />,
               key: '/statistics'
+            },
+            {
+              label: 'Log out',
+              icon:<LogoutOutlined />,
+              key: '/login'
             }
           ]}
         />

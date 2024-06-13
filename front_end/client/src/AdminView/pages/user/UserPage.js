@@ -28,12 +28,14 @@ const UserPage = () => {
     // };
 
   const loadUsers = async () => {
-      const result = await axios.get(`https://dummyjson.com/users?limit=50`);
-      const {users} = result.data;
-      setUsers(users);
+      const result = await axios.get(`https://buckytank.shop/users`);
+      setUsers(result.data);
       
   }
 
+  // const handleActive = async() => {
+  //     await axios.post(`https://buckytank.shop/`);
+  // }
   useEffect(() => {
       // if (localStorage.getItem('token') == null) {
       //     navigate("/login");
@@ -44,14 +46,8 @@ const UserPage = () => {
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     {
-      field: "firstName",
-      headerName: "First Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "lastName",
-      headerName: "Last Name",
+      field: "name",
+      headerName: "Name",
       flex: 1,
       cellClassName: "name-column--cell",
     },
@@ -87,23 +83,24 @@ const UserPage = () => {
         return (
           <Button
             // onClick={() => handleActive(params.row.id)}
+            onClick={() => setIsLocked(!isLocked)}
+            
           >
             <Box
-            width="100%"
+            width="100px"
             m="0 auto"
             p="5px"
             display="flex"
-            justifyContent="center"
+            justifyContent="left"
+            boxShadow={2}
             {...!isLocked ? {backgroundColor : "#4cceac"} : {backgroundColor : "#E95153"}}
             borderRadius="4px"
             >
                 {isLocked 
                 ? <LockOutlinedIcon
-                    onClick={() =>{setIsLocked(false)}}
                     color="#c2c2c2"
                   /> 
                 : <LockOpenOutlinedIcon 
-                    onClick={() =>{setIsLocked(true)}}
                     color="#E95153" 
                   />}
              
@@ -120,11 +117,11 @@ const UserPage = () => {
 
   return (
     <>
-      <TopHeader title="USERS" subtitle="Managing all users information" />
+      <TopHeader title="NGƯỜI DÙNG" subtitle="Quản lý thông tin người dùng" />
       <Box m="20px">
         <Box
           m="40px 0 0 0"
-          height="75vh"
+          height="90vh"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -168,7 +165,12 @@ const UserPage = () => {
                 },
               },
             }}
-            // pageSizeOptions={[5, 10, 20]}
+            sx={{
+              '& .MuiTablePagination-root': {
+                color: 'white',
+              },
+            }}  
+            pageSizeOptions={[5, 10, 20]}
             disableRowSelectionOnClick
             slots={{ toolbar: CustomGridToolbar }}
           />
