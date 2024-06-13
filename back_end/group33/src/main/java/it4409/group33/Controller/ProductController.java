@@ -15,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static it4409.group33.Service.CloudinaryService.uploadAndGetUrl;
@@ -313,5 +311,31 @@ public class ProductController {
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @GetMapping("/same-products")
+    public ResponseEntity<String> getSameProducts(
+            @RequestParam Long id,
+            @RequestParam(defaultValue = "30") int limit,
+            @RequestParam(defaultValue = "0") int skip,
+            @RequestParam(required = false) String select) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (!productOptional.isPresent()) {
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+        Product product = productOptional.get();
+        String brand = product.getBrand();
+        String category = product.getCategory();
+
+        List<Product> sameBrandProducts = productRepository.findByBrand(brand);
+        List<Product> sameCategoryProducts = productRepository.findByCategory(category);
+
+        Set<Product> sameProductsSet = new HashSet<>();
+        sameProductsSet.addAll(sameBrandProducts);
+        sameProductsSet.addAll(sameCategoryProducts);
+
+        sameProductsSet.remove(product);
+        List<Product> list = new ArrayList<>(sameProductsSet);
+        return new ResponseEntity<>(filterListProduct(select,list,limit,skip),HttpStatus.OK);
     }
 }
