@@ -45,6 +45,10 @@ public class PaymentController {
         Map<String, String> vnp_Params = new HashMap<>();
         Map<String, String[]> requestParams = request.getParameterMap();
 
+        for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
+            vnp_Params.put(entry.getKey(), entry.getValue()[0]);
+        }
+
         String vnp_SecureHash = request.getParameter("vnp_SecureHash");
         if (vnp_SecureHash != null) {
             vnp_Params.remove("vnp_SecureHash");
@@ -70,9 +74,11 @@ public class PaymentController {
         String secureHash = VNPayUtil.hmacSHA512(vnp_HashSecret, hashData);
 
         if (secureHash.equals(vnp_SecureHash)) {
-            return "1";
+            String x = "{\"code\":\"00\",\"message\":\"completed\"}";
+            return new ResponseEntity<>(x,HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Failure", HttpStatus.BAD_REQUEST);
+            String x = "{\"code\":\"01\",\"message\":\"failure\"}";
+            return new ResponseEntity<>(x, HttpStatus.BAD_REQUEST);
         }
     }
 }
