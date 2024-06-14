@@ -29,15 +29,15 @@
         width: 100%;
         padding: 0 16px;
         color: rgba(0, 0, 0, 0.8);
-        caret-color: $clr-orange;
+        caret-color: $clr-green;
         &::placeholder {
           font-size: 13.5px;
-          font-family: $font-family-manrope;
+          font-family: $font-family-roboto;
           letter-spacing: 0.5px;
         }
       }
       .search-btn {
-        background-color: $clr-orange;
+        background-color: $clr-green;
         width: 60px;
         height: 32px;
       }
@@ -79,7 +79,7 @@
         background-color: $clr-white;
         font-size: 14px;
         font-weight: 500;
-        color: $clr-orange;
+        color: $clr-green;
         padding: 0 0.5rem;
         width: 22px;
         border-radius: 50%;

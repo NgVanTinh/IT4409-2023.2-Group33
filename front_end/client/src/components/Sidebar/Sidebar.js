@@ -39,10 +39,10 @@ export default function Sidebar() {
             categories.map((category, idx) => (
               <li key={idx} onClick={() => dispatch(setSidebarOff())}>
                 <Link
-                  to={`category/${category}`}
+                  to={`category/${category.id}`}
                   className="cat-list-link text-capitalize"
                 >
-                  {category.replace("-", " ")}
+                  {category.name.replace("-", " ")}
                 </Link>
               </li>
             ))}

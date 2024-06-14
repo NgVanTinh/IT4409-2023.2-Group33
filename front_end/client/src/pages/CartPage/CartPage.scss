@@ -9,12 +9,12 @@
   .shopping-btn {
     padding: 0.65rem 2.8rem;
     margin-top: 1.6rem;
-    border: 1px solid $clr-orange;
+    border: 1px solid $clr-green;
     transition: $transition-ease;
 
     &:hover {
       background-color: transparent;
-      color: $clr-orange;
+      color: $clr-green;
     }
   }
 }
@@ -33,8 +33,8 @@
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-color: lighten($clr-light-orange, 5%);
-    outline: 1px solid $clr-light-orange;
+    background-color: lighten($clr-light-green, 5%);
+    outline: 1px solid $clr-light-green;
   }
 
   .container {

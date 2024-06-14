@@ -95,9 +95,11 @@ export const register = createAsyncThunk(
 // gửi OTP đến email
 export const sendOTP = createAsyncThunk(
   "user/sendOTP",
-  async (email, { rejectWithValue }) => {
+  async (values, { rejectWithValue }) => {
     try {
-      const response = await post(`users/forgot-password`, { email });
+      const response = await post(`users/forgot-password`, {
+        email: values.email,
+      });
       return response;
     } catch (error) {
       console.log(error);
@@ -109,12 +111,12 @@ export const sendOTP = createAsyncThunk(
 // Gửi yêu cầu reset password
 export const resetPassword = createAsyncThunk(
   "user/resetPassword",
-  async ({ otp, email, password }, { rejectWithValue }) => {
+  async (values, { rejectWithValue }) => {
     try {
       const response = await post("users/reset-password", {
-        otp,
-        email,
-        password,
+        email: values.email,
+        otp: parseInt(values.otp),
+        password: values.password,
       });
       return response;
     } catch (error) {

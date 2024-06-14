@@ -28,8 +28,8 @@
           }
           &::-webkit-scrollbar-thumb {
             border-radius: 10px;
-            background-color: lighten($clr-light-orange, 5%);
-            outline: 1px solid $clr-light-orange;
+            background-color: lighten($clr-light-green, 5%);
+            outline: 1px solid $clr-light-green;
           }
 
           .thumb-item {
@@ -50,7 +50,7 @@
             }
 
             &:hover {
-              border-color: $clr-orange;
+              border-color: $clr-green;
               img {
                 transform: scale(0.9);
               }
@@ -73,6 +73,10 @@
         }
         .info {
           margin-bottom: 1.6rem;
+          .rating {
+            display: flex;
+            column-gap: 5px;
+          }
         }
         .price {
           background-color: rgba(0, 0, 0, 0.02);
@@ -112,7 +116,7 @@
           .btn {
             height: 46px;
             font-size: 15px;
-            border: 1px solid $clr-orange;
+            border: 1px solid $clr-green;
             padding: 0 1.8rem;
             transition: $transition-ease;
 
@@ -121,10 +125,10 @@
             }
             &:first-child {
               background-color: #ffeee8;
-              color: $clr-orange;
+              color: $clr-green;
             }
             &:last-child {
-              background-color: $clr-orange;
+              background-color: $clr-green;
               color: white;
             }
             &:hover {

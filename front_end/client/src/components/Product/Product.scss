@@ -3,15 +3,17 @@
 .product-item {
   position: relative;
   border-radius: 8px;
-  box-shadow: rgba(50, 50, 93, 0.05) 0px 2px 5px -1px,
-    rgba(0, 0, 0, 0.05) 0px 1px 3px -1px;
+  // box-shadow: rgba(50, 50, 93, 0.05) 0px 2px 5px -1px,
+  //   rgba(0, 0, 0, 0.05) 0px 1px 3px -1px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: $transition-ease;
+  border: 1px solid #ddd;
 
   .category {
     position: absolute;
     left: -5px;
     top: 1.6rem;
-    background-color: $clr-orange;
+    background-color: $clr-green;
     color: $clr-white;
     font-size: 13px;
     text-transform: capitalize;
@@ -28,7 +30,7 @@
       height: 0;
       border-top: 5px solid transparent;
       border-bottom: 5px solid transparent;
-      border-right: 5px solid $clr-orange;
+      border-right: 5px solid $clr-green;
     }
   }
 
@@ -44,7 +46,7 @@
   &-info {
     padding: 0 12px 20px 12px;
     text-align: center;
-    font-family: $font-family-manrope;
+    font-family: $font-family-roboto;
     opacity: 0.8;
 
     .brand {
@@ -76,8 +78,8 @@
       .discount {
         font-size: 13px;
         font-weight: 600;
-        font-family: $font-family-poppins;
-        color: darken($clr-orange, 5%);
+        font-family: $font-family-roboto;
+        color: darken($clr-green, 5%);
       }
 
       &::after {
@@ -85,7 +87,7 @@
         position: absolute;
         top: calc(100% + 6px);
         height: 1px;
-        background-color: lighten($clr-orange, 10%);
+        background-color: lighten($clr-green, 10%);
         width: 60px;
       }
     }

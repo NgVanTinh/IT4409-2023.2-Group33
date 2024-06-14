@@ -1,15 +1,22 @@
 @import "../../App.scss";
 
 .header {
-  background: rgb(249, 78, 48);
+  background: rgb(62, 190, 62); //rgb(249, 78, 48)
+  // background: linear-gradient(
+  //   180deg,
+  //   rgba(249, 78, 48, 1) 0%,
+  //   rgba(255, 100, 51, 1) 100%
+  // );
+
   background: linear-gradient(
     180deg,
-    rgba(249, 78, 48, 1) 0%,
-    rgba(255, 100, 51, 1) 100%
+    rgb(62, 190, 62) 0%,
+    rgb(57, 195, 57) 100%
   );
 
   .header-cnt-top {
-    border-bottom: 1px solid lighten($clr-orange, 10%);
+    // border-bottom: 1px solid lighten($clr-green, 10%);
+    border-bottom: 1px solid lighten($clr-green, 10%);
   }
 
   @media screen and (max-width: 992px) {

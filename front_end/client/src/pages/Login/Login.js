@@ -16,7 +16,7 @@ function Login() {
     // call api login
     const actionResult = await dispatch(login(values));
     const response = actionResult.payload;
-    console.log(response);
+
     if (response) {
       Swal.fire({
         position: "center",
