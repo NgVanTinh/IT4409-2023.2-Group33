@@ -34,9 +34,9 @@ const MainLayout = () => {
            <h2 style={{fontSize: '40px', display: 'flex', justifyContent: 'center'}}> 
            {!collapsed 
            ? 
-              <span className='lg-logo'>Bucky <span className='text-white'>Tank</span> </span>
+              <span className='lg-logo'>T <span className='text-white'>SHOP</span> </span>
            :
-              <span className='sm-logo 50px'>B<span className='text-white'>T</span></span>
+              <span className='sm-logo 50px'>T<span className='text-white'>S</span></span>
            }    
            </h2>
         </div>
@@ -44,40 +44,43 @@ const MainLayout = () => {
           theme="dark"
           mode="inline"
           selectedKeys={selectedKey}
-          defaultOpenKeys={['/']}
+          defaultOpenKeys={['/admin']}
           onClick={({ key }) => {
               navigate(key);
             }}  
           items={[
             {
-              key: '',
+              key: '/admin',
               icon: <DashboardOutlined />,
-              label: 'Dashboard'
+              label: 'Tổng quan'
             },
             {
-              label: 'Products',
+              label: 'Sản phẩm',
               icon: <ProductOutlined/>,
-              key: '/products',
+              key: '/admin/products',
             },
             {
-              label: 'Users',
+              label: 'Người dùng',
               icon: <UserOutlined/>,
-              key: '/users'
+              key: '/admin/users'
             },
             {
-              label: 'Orders',
+              label: 'Đơn hàng',
               icon: <OrderedListOutlined/>,
-              key: '/orders'
+              key: '/admin/orders'
             },
             {
-              label: 'Statistics',
+              label: 'Thống kê',
               icon:<BarChartOutlined />,
-              key: '/statistics'
+              key: '/admin/statistics'
             },
             {
-              label: 'Log out',
+              label: 'Đăng xuất',
               icon:<LogoutOutlined />,
-              key: '/login'
+              key: '/admin/login',
+              onClick: () => {
+                localStorage.removeItem('token');
+              }
             }
           ]}
         />
@@ -105,7 +108,7 @@ const MainLayout = () => {
         <Content
           style={{
             margin: '24px 16px',
-            padding: 24,
+            padding: 10,
             minHeight: 280,
           }}
         >

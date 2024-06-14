@@ -92,9 +92,12 @@ const UserPage = () => {
             p="5px"
             display="flex"
             justifyContent="left"
-            boxShadow={2}
+            boxShadow={5}
             {...!isLocked ? {backgroundColor : "#4cceac"} : {backgroundColor : "#E95153"}}
             borderRadius="4px"
+            sx={{
+              border: '1px solid white',
+            }}
             >
                 {isLocked 
                 ? <LockOutlinedIcon
@@ -123,37 +126,31 @@ const UserPage = () => {
           m="40px 0 0 0"
           height="90vh"
           sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-            "& .name-column--cell": {
-              color: "#a3a3a3",
-            },
-            "& .username-column--cell": {
-              color: "#2679E0",
-            },
-            // "& .phone-column--cell": {
-            //   color: "#868dfb",
-            // },
-             "& .status-column--cell": {
-              ...isLocked ? {color: "#DA3B1F"} : {color: "#51E080"},
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#3e4396",
-              borderBottom: "none",
-            },
-            
-            "& .MuiDataGrid-footerContainer": {
-              backgroundColor: "#1890ff",
-            },
-            
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `#e0e0e0 !important`,
-            },
-          }}
+              "& .MuiDataGrid-root": {
+                border: "none",
+              },
+              "& .MuiDataGrid-cell": {
+                borderBottom: "none",
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#3e4396",
+                borderBottom: "none",
+              },
+              "& .MuiDataGrid-virtualScroller": {
+                backgroundColor: "#fff",
+              },
+              "& .MuiDataGrid-footerContainer": {
+                borderTop: "none",
+                display: "inline-block",
+                backgroundColor: "#1890ff",
+              },
+              "& .MuiCheckbox-root": {
+                color: `#b7ebde !important`,
+              },
+              "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                color: `#e0e0e0 !important`,
+              },
+            }}
         >
           <DataGrid
             rows={users}

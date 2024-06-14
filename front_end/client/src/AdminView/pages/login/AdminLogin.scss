@@ -1,0 +1,105 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+.admin-body {
+    font-family: "Roboto", sans-serif;
+    background: linear-gradient(to bottom, #7FC1FE, #8CC7FE);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+input,
+button {
+    font-family: "Roboto";
+}
+
+a {
+    text-decoration: none;
+}
+
+.admin-form-login {
+    background: #1890FF;
+    width: 50%;
+    height: 65%;
+    display: flex;
+    border-radius: 8px;
+}
+
+.admin-form-login .admin-left {
+    width: 50%;
+    padding: 40px 32px;
+    text-align: center;
+}
+
+.admin-form-login .admin-left h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+// .admin-login-form .left input {
+//   display: block;
+//   width: 100%;
+//   padding: 12px;
+//   background-color: #ebebeb;
+//   border: none;
+//   margin-bottom: 10px;
+// }
+
+.admin-form-login .admin-left a {
+    font-size: 13px;
+    display: block;
+    color: #999;
+    margin: 20px 0;
+}
+
+.admin-form-login .admin-left button {
+    background-color: #0177E5;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 30px;
+    border: none;
+}
+
+.admin-form-login .admin-left button:hover {
+    background-color: #fff;
+    color: #0177E5;
+    padding: 10px 15px;
+    border-radius: 30px;
+    border: 1px solid #0177E5;
+    cursor: pointer;
+}
+
+.admin-form-login .admin-right {
+    width: 50%;
+    padding: 40px 32px;
+    background-color: #fff;
+    color: #0177E5;
+    text-align: center;
+    border-radius: 0 8px 8px 0;
+}
+
+.admin-form-login .admin-right h3 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.admin-form-login .admin-right p {
+    margin-bottom: 32px;
+}
+
+.admin-form-login .admin-right a {
+    border: 1px solid #ddd;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 30px;
+}
+
+.admin-form-login .admin-right a:hover {
+    color: #0177E5;
+    background-color: #fff;
+    padding: 12px 28px;
+    border-radius: 30px;
+}

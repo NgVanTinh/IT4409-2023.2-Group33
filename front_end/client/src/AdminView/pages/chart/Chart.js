@@ -87,11 +87,10 @@ const Chart = () => {
                 </TabList>
               </Box>
               {categories.map((item, index) => (
-                    <TabPanel value={String(index + 1)} ><LineChart category={value}/></TabPanel>
+                    <TabPanel value={String(index + 1)} >
+                        <LineChart data={categories}/>
+                    </TabPanel>
                   ))}
-              {/* <TabPanel value="1"><LineChart/></TabPanel>
-              <TabPanel value="2"><LineChart/></TabPanel>
-              <TabPanel value="3"><LineChart/></TabPanel> */}
             </TabContext>
           </Box>
     </div>

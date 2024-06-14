@@ -6,8 +6,8 @@ const LineCharts = ({data}) => {
   const chartData = data;
   return (
     <BarChart
-      xAxis={[{ scaleType: 'band', data: chartData.map(item => item.title) }]}
-      series={[{ data:chartData.map(item => item.rating) }]}
+      xAxis={[{ scaleType: 'band', data: chartData && chartData.map(item => item.title) }]}
+      series={[{ data:chartData && chartData.map(item => item.rating) }]}
       width={600}
       height={200}
     />
@@ -16,4 +16,5 @@ const LineCharts = ({data}) => {
 
 
 export default LineCharts;
+
 

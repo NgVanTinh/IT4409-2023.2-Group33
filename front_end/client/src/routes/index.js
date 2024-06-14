@@ -5,6 +5,9 @@ import Login from "../pages/Login/Login";
 import Logout from "../pages/Logout/Logout";
 import Register from "../pages/Register/Register";
 import ResetPassword from "../pages/ResetPassword/ResetPassword";
+import Admin from "../AdminView/Admin";
+import PrivateRoute from "../AdminView/components/PrivateRoute";
+import AdminLogin from "../AdminView/pages/login/Login"
 import {
   Home,
   Cart,
@@ -60,4 +63,16 @@ export const routes = [
     path: "reset-password/:email",
     element: <ResetPassword />,
   },
+  {
+    path: "/admin/login",
+    element: <AdminLogin />,
+  },
+  {
+    path: "/admin/*",
+    element: (
+      <PrivateRoute>
+        <Admin />
+      </PrivateRoute>
+    ),
+  }
 ];

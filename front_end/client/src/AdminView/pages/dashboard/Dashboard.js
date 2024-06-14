@@ -18,18 +18,25 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadData();
+    // loadCountUser();
   }, []);
+
+  // const loadCountUser = async() =>{
+  //   const result = await axios.get(`https://buckytank.shop/users`);
+  //   const {user} = result.data;
+  //   console.log(user);
+  // }
 
   const loadData = async () => {
     const result = await axios.get(`https://buckytank.shop/products`);
     const {products} = result.data;
+    products.sort((a, b) => a.rating - b.rating);
     const arr = products.slice(0, 5);
-    console.log("dashboard: ", data);
     setData(arr);
   };
 
   return (
-    <Box m="5px">
+    <Box m="5px" padding={0}>
 
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <TopHeader title="TỔNG QUAN" subtitle="Chào mừng tới bảng điều khiển của quản trị viên" />
@@ -44,11 +51,19 @@ const Dashboard = () => {
       >
         <Box
           gridColumn="span 3"
-          backgroundColor='#9C9C9C'
+          backgroundColor='white'
+          borderRadius={5}
+          boxShadow={10}
           display="flex"
           alignItems="center"
           justifyContent="center"
-          onClick={() => navigate(`/users`)}
+          onClick={() => navigate(`/admin/users`)}
+          sx={{
+            cursor: 'pointer', 
+            '&:hover': {
+              boxShadow: 20, 
+            }
+          }}
         >
           <StatBox
             title="12,361"
@@ -63,11 +78,19 @@ const Dashboard = () => {
         </Box>
         <Box
           gridColumn="span 3"
-          backgroundColor='#9C9C9C'
+          backgroundColor='white'
+          borderRadius={5}
+          boxShadow={10}
           display="flex"
           alignItems="center"
           justifyContent="center"
-          onClick={() => navigate(`/products`)}
+          onClick={() => navigate(`/admin/products`)}
+          sx={{
+            cursor: 'pointer', 
+            '&:hover': {
+              boxShadow: 20, 
+            }
+          }}
         >
           <StatBox
             title="431,225"
@@ -81,11 +104,19 @@ const Dashboard = () => {
         </Box>
         <Box
           gridColumn="span 3"
-          backgroundColor='#9C9C9C'
+          backgroundColor='white'
+          borderRadius={5}
+          boxShadow={10}
           display="flex"
           alignItems="center"
           justifyContent="center"
-          onClick={() => navigate(`/orders`)}
+          onClick={() => navigate(`/admin/orders`)}
+          sx={{
+            cursor: 'pointer', 
+            '&:hover': {
+              boxShadow: 20, 
+            }
+          }}
         >
           <StatBox
             
@@ -101,7 +132,9 @@ const Dashboard = () => {
 
         <Box
           gridColumn="span 3"
-          backgroundColor='#9C9C9C'
+          backgroundColor='white'
+          borderRadius={5}
+          boxShadow={10}
           display="flex"
           alignItems="center"
           justifyContent="center"
@@ -122,9 +155,11 @@ const Dashboard = () => {
         <Box
           gridColumn="span 6"
           gridRow="span 2"
-          backgroundColor='#9C9C9C'
+          backgroundColor='white'
+          borderRadius={5}
+          boxShadow={5}
           p="30px"
-          height={"350px"}
+          height={"340px"}
         >
           <Typography variant="h5" fontWeight="600">
             Campaign
@@ -134,14 +169,16 @@ const Dashboard = () => {
             flexDirection="column"
             alignItems="center"
           >
-            <PieChart/>
+            {/* <PieChart/> */}
           </Box>
         </Box>
         <Box
           gridColumn="span 6"
           gridRow="span 2"
-          backgroundColor='#9C9C9C'
-          height={"350px"}
+          backgroundColor='white'
+          borderRadius={5}
+          boxShadow={10}
+          height={"340px"}
         >
           <Typography
             variant="h5"

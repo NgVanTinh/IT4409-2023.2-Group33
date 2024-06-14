@@ -1,5 +1,5 @@
 import { Typography, Box } from "@mui/material";
-
+import "../Admin.css"
 const TopHeader = ({ title, subtitle }) => {
   return (
     <Box mb="20px">

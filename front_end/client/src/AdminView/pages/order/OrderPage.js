@@ -96,7 +96,7 @@ const OrderPage = () => {
               onClick={() => {
                 let id = params.row.id ? params.row.id : null;
                 
-                navigate(`/view-order/${id}`)
+                navigate(`/admin/view-order/${id}`)
               }}
             >
               < VisibilityOutlinedIcon />

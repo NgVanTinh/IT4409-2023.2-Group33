@@ -11,7 +11,7 @@ import ViewProduct from './pages/product/ViewProduct';
 import AddProduct from './pages/product/AddProduct';
 import MainLayout from './components/MainLayout/MainLayout'
 import Chart from './pages/chart/Chart';
-import Login from '../pages/Login/Login';
+import Login from './pages/login/Login';
 
 const Admin = () => {
   return (

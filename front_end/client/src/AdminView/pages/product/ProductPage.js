@@ -116,13 +116,13 @@ const OrderPage = () => {
             <IconButton aria-label="view" color="primary"
               title="View product"
               onClick={() => {
-                navigate(`/view-product/${params.row.id}`);
+                navigate(`/admin/view-product/${params.row.id}`);
               }} 
             >
               < VisibilityIcon />
             </IconButton> 
 
-            <Link to={`/edit-product/${params.row.id}`}>
+            <Link to={`/admin/edit-product/${params.row.id}`}>
               <IconButton aria-label="edit" color="success" title="Edit product">
               <EditIcon />
             </IconButton> 
@@ -147,7 +147,7 @@ const OrderPage = () => {
       <Box m="20px" sx={{display:'flex', justifyContent: 'flex-end'}}>
         <Button variant="contained" startIcon={<AddCircleOutlineOutlinedIcon />}
             sx={{backgroundColor: '#1890ff'}}
-            onClick={() => navigate('/add-product')}
+            onClick={() => navigate('/admin/add-product')}
         >Add new product</Button>
       </Box>
       

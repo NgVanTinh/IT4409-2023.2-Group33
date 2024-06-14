@@ -10,7 +10,7 @@ const StatBox = ({ title, subtitle, icon }) => {
           <Typography
             variant="h4"
             fontWeight="bold"
-            sx={{ color: 'white' }}
+            sx={{ color: 'grey' }}
           >
             {title}
           </Typography>
