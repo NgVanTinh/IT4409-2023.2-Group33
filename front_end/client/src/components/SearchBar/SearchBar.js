@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../utils/apiURL";
+import { BASE_URL_2 } from "../../utils/apiURL";
 import { debounce } from "lodash";
 
 export default function SearchBar({ setResults, setShowResults }) {
@@ -9,7 +9,7 @@ export default function SearchBar({ setResults, setShowResults }) {
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const fetchApi = async (value) => {
-    const response = await fetch(`${BASE_URL}products`);
+    const response = await fetch(`${BASE_URL_2}products`);
     const result = await response.json();
     const resultFinal = result.products.filter((item) => {
       return item.title.toLowerCase().includes(value.toLowerCase());
