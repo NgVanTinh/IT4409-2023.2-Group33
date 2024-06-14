@@ -7,6 +7,8 @@ import { getCookie } from "../../helpers/cookie";
 
 export default function Header() {
   const token = getCookie("token");
+  const username = getCookie("username");
+  const id = getCookie("id");
 
   return (
     <header className="header text-white">
@@ -16,7 +18,7 @@ export default function Header() {
             <div className="header-cnt-top-l">
               <ul className="flex top-links align-center">
                 <li className="flex align-center">
-                  <span fs-13>Nguyễn Quang Thuận</span>
+                  <span fs-13>{username}</span>
                   <ul className="social-links flex align-center">
                     <li className="mx-2">
                       <a

@@ -5,6 +5,7 @@ import productReducer from "./productSlice";
 import cartReducer from "./cartSlice";
 import searchReducer from "./searchSlice";
 import userReducer from "./userSlice";
+import sensitiveDataMiddleware from "../middleware/sensitiveDataMiddleware";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,8 @@ const store = configureStore({
     search: searchReducer,
     user: userReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(sensitiveDataMiddleware),
 });
 
 export default store;

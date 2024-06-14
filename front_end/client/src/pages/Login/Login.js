@@ -21,17 +21,19 @@ function Login() {
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Login success",
+        title: "Đăng nhập thành công",
         showConfirmButton: false,
         timer: 1500,
       });
       setCookie("token", response.token, 1);
+      setCookie("username", response.username, 1);
+      setCookie("id", response.id, 1);
       navigate("/");
     } else {
       Swal.fire({
         position: "center",
         icon: "error",
-        title: "Login failed",
+        title: "Đăng nhập thất bại",
         showConfirmButton: false,
         timer: 1500,
       });

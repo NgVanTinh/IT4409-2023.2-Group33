@@ -6,6 +6,8 @@ import { get, post, edit, del } from "../utils/request";
 const initialState = {
   user: null,
   userStatus: STATUS.IDLE,
+  users: [],
+  usersStatus: STATUS.IDLE,
   error: null,
 };
 
@@ -61,6 +63,17 @@ const userSlice = createSlice({
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.userStatus = STATUS.FAILED;
+        state.error = action.error.message;
+      })
+      .addCase(fetchAllUsers.pending, (state) => {
+        state.usersStatus = STATUS.LOADING;
+      })
+      .addCase(fetchAllUsers.fulfilled, (state, action) => {
+        state.usersStatus = STATUS.SUCCEEDED;
+        state.users = action.payload;
+      })
+      .addCase(fetchAllUsers.rejected, (state, action) => {
+        state.usersStatus = STATUS.FAILED;
         state.error = action.error.message;
       });
   },
@@ -126,20 +139,15 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
-// Kiểm tra xem người dùng đã tồn tại chưa
-export const checkExist = createAsyncThunk(
-  "user/checkExist",
-  async ({ key, value }, { rejectWithValue }) => {
+// Tạo asyncThunk để lấy tất cả người dùng
+export const fetchAllUsers = createAsyncThunk(
+  "user/fetchAll",
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await get(`users?${key}=${value}`);
-      if (response.length > 0) {
-        // Nếu tìm thấy người dùng với email này, trả về thông tin người dùng
-        return response[0];
-      } else {
-        // Nếu không tìm thấy, trả về null
-        return null;
-      }
+      const response = await get("/users");
+      return response;
     } catch (error) {
+      console.log(error);
       return rejectWithValue(error.response);
     }
   }

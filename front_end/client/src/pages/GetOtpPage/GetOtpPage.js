@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Form, Input } from "antd";
 import "./GetOtpPage.scss";
 import { sendOTP } from "../../store/userSlice";
@@ -9,18 +9,20 @@ import Swal from "sweetalert2";
 export default function GetOtpPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleFinishForm = async (values) => {
     const { email } = values;
     try {
+      setLoading(true);
       const actionResult = await dispatch(sendOTP(values));
 
       if (actionResult) {
-        console.log("OTP sent successfully", actionResult);
+        setLoading(false);
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "Đã gủi mã OTP qua email của bạn!",
+          title: "Đã gửi mã OTP qua email của bạn!",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -29,8 +31,7 @@ export default function GetOtpPage() {
         navigate(`/reset-password/${encodedEmail}`);
       }
     } catch (error) {
-      // Nếu có lỗi, unwrap() sẽ throw một exception
-      console.error("Failed to send OTP", error);
+      setLoading(false);
       Swal.fire({
         position: "center",
         icon: "error",
@@ -61,7 +62,7 @@ export default function GetOtpPage() {
           <Input />
         </Form.Item>
         <Form.Item>
-          <Button danger htmlType="submit">
+          <Button danger htmlType="submit" loading={loading}>
             Lấy mã OTP
           </Button>
         </Form.Item>
