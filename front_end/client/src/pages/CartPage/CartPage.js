@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./CartPage.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { shopping_cart } from "../../utils/images";
@@ -17,6 +17,9 @@ import { FaMinus, FaPlus, FaTrashAlt } from "react-icons/fa";
 import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
 import { getCookie } from "../../helpers/cookie";
 import Loader from "../../components/Loader/Loader";
+import OrderModal from "../../components/Order/OrderModal";
+import Swal from "sweetalert2";
+import { createOrder } from "../../store/orderSlice";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -40,6 +43,30 @@ export default function CartPage() {
         error.message
       );
     }
+  };
+
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const handleOrderSubmit = async (orderData) => {
+    try {
+      await dispatch(createOrder(orderData));
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Đặt hàng thành công",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Đặt hàng thất bại",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      console.error("Có lỗi xảy ra khi tạo đơn hàng: ", error.message);
+    }
+    setShowOrderModal(false);
   };
 
   if (loading) {
@@ -175,9 +202,19 @@ export default function CartPage() {
                 <button className="checkout-btn text-white bg-orange fs-16 mx-3">
                   Thanh toán qua VNPay
                 </button>
-                <button className="checkout-btn text-white bg-orange fs-16">
+                <button
+                  className="checkout-btn text-white bg-orange fs-16"
+                  onClick={() => setShowOrderModal(true)}
+                >
                   Đặt hàng
                 </button>
+
+                {showOrderModal && (
+                  <OrderModal
+                    onClose={() => setShowOrderModal(false)}
+                    onSubmit={handleOrderSubmit}
+                  />
+                )}
               </div>
             </div>
           </div>
