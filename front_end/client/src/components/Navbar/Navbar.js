@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAllCategories } from "../../store/categorySlice";
 // carts
 import {
+  fetchUserCart,
   getAllCarts,
   getCartItemsCount,
   getCartTotal,
@@ -21,6 +22,7 @@ import {
 import CartModal from "../CartModal/CartModal";
 import SearchBar from "../SearchBar/SearchBar";
 import SearchResultList from "../SearchResultList/SearchResultList";
+import { getCookie } from "../../helpers/cookie";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -31,9 +33,11 @@ export default function Navbar() {
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
 
+  const userId = getCookie("id");
+
   useEffect(() => {
-    dispatch(getCartTotal());
-  }, [carts, dispatch]);
+    if (userId) dispatch(fetchUserCart(userId));
+  }, [dispatch, userId]);
 
   return (
     <nav className="navbar">

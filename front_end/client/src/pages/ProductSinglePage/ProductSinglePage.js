@@ -15,6 +15,7 @@ import { formatPrice } from "../../utils/helpers";
 
 import { FaMinus, FaPlus, FaShoppingCart } from "react-icons/fa";
 import {
+  addItemToCart,
   addToCart,
   getCartMessageStatus,
   setCartMessageOff,
@@ -70,20 +71,38 @@ export default function ProductSinglePage() {
     });
   };
 
-  const addToCartHandler = (product) => {
-    let discountedPrice =
-      product.price * (1 - product.discountPercentage / 100).toFixed(2);
-    let totalPrice = quantity * discountedPrice;
+  const addToCartHandler = async (product) => {
+    try {
+      const response = await dispatch(
+        addItemToCart({ productId: product.id, quantity: quantity })
+      );
 
-    dispatch(addToCart({ ...product, quantity, totalPrice, discountedPrice }));
-    //dispatch(setCartMessageOn(true));
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Sản phẩm đã được thêm vào giỏ hàng",
-      showConfirmButton: false,
-      timer: 1500,
-    });
+      if (response.meta.requestStatus === "fulfilled") {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Sản phẩm đã được thêm vào giỏ hàng",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Có lỗi xảy ra khi thêm sản phẩm",
+          showConfirmButton: true,
+        });
+      }
+    } catch (error) {
+      // Xử lý nếu có lỗi xảy ra trong quá trình gửi request
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Có lỗi xảy ra khi thêm sản phẩm",
+        text: error.message,
+        showConfirmButton: true,
+      });
+    }
   };
 
   return (

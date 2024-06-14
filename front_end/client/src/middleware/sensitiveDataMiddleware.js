@@ -2,7 +2,6 @@
  * Middleware để loại bỏ thông tin nhạy cảm khỏi payload của actions.
  */
 const sensitiveDataMiddleware = (store) => (next) => (action) => {
-  console.log("Middleware triggered", action);
   // Danh sách các action types cần lọc thông tin nhạy cảm
   const sensitiveActions = [
     "user/login/fulfilled",

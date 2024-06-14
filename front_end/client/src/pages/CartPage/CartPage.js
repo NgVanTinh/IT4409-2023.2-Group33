@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./CartPage.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { shopping_cart } from "../../utils/images";
@@ -7,17 +7,44 @@ import { formatPrice } from "../../utils/helpers";
 import {
   getAllCarts,
   removeFromCart,
-  toggleCartQty,
   clearCart,
-  getCartTotal,
+  fetchUserCart,
+  addItemToCart,
+  removeItemFromCart,
+  clearCartAsync,
 } from "../../store/cartSlice";
 import { FaMinus, FaPlus, FaTrashAlt } from "react-icons/fa";
 import BreadcrumbComponent from "../../components/Breadcrumb/Breadcrumb";
+import { getCookie } from "../../helpers/cookie";
+import Loader from "../../components/Loader/Loader";
 
 export default function CartPage() {
   const dispatch = useDispatch();
   const carts = useSelector(getAllCarts);
-  const { itemsCount, totalAmount } = useSelector((state) => state.cart);
+  const { itemsCount, totalAmount, loading } = useSelector(
+    (state) => state.cart
+  );
+
+  const userId = getCookie("id");
+
+  useEffect(() => {
+    if (userId) dispatch(fetchUserCart(userId));
+  }, [dispatch, userId, itemsCount, totalAmount]);
+
+  const updateItemQuantity = async (productId, quantityChange) => {
+    try {
+      await dispatch(addItemToCart({ productId, quantity: quantityChange }));
+    } catch (error) {
+      console.error(
+        "Có lỗi xảy ra khi cập nhật số lượng sản phẩm: ",
+        error.message
+      );
+    }
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   if (carts.length === 0) {
     return (
@@ -65,74 +92,71 @@ export default function CartPage() {
             </div>
           </div>
           <div className="cart-cbody bg-white">
-            {carts.map((cart, idx) => {
-              return (
-                <div className="cart-ctr py-4" key={cart?.id}>
-                  <div className="cart-ctd">
-                    <span className="cart-ctxt">{idx + 1}</span>
-                  </div>
-                  <div className="cart-ctd">
-                    <span className="cart-ctxt">{cart?.title}</span>
-                  </div>
-                  <div className="cart-ctd">
-                    <span className="cart-ctxt">
-                      <img
-                        src={cart?.thumbnail}
-                        alt=""
-                        style={{ width: 75, height: 75 }}
-                      />
-                    </span>
-                  </div>
-                  <div className="cart-ctd">
-                    <span className="cart-ctxt">
-                      {formatPrice(cart?.discountedPrice)}
-                    </span>
-                  </div>
-                  <div className="cart-ctd">
-                    <div className="qty-change flex align-center">
-                      <button
-                        className="qty-decrease flex align-center justify-center"
-                        onClick={() =>
-                          dispatch(toggleCartQty({ id: cart?.id, type: "DEC" }))
-                        }
-                      >
-                        <FaMinus />
-                      </button>
-                      <div className="qty-value flex align-center justify-center">
-                        {cart?.quantity}
+            {carts.length > 0 &&
+              carts.map((cart, idx) => {
+                return (
+                  <div className="cart-ctr py-4" key={cart?.id}>
+                    <div className="cart-ctd">
+                      <span className="cart-ctxt">{idx + 1}</span>
+                    </div>
+                    <div className="cart-ctd">
+                      <span className="cart-ctxt">{cart?.title}</span>
+                    </div>
+                    <div className="cart-ctd">
+                      <span className="cart-ctxt">
+                        <img
+                          src={cart?.thumbnail}
+                          alt=""
+                          style={{ width: 75, height: 75 }}
+                        />
+                      </span>
+                    </div>
+                    <div className="cart-ctd">
+                      <span className="cart-ctxt">
+                        {formatPrice(cart?.discountedPrice)}
+                      </span>
+                    </div>
+                    <div className="cart-ctd">
+                      <div className="qty-change flex align-center">
+                        <button
+                          className="qty-decrease flex align-center justify-center"
+                          onClick={() => updateItemQuantity(cart?.id, -1)}
+                        >
+                          <FaMinus />
+                        </button>
+                        <div className="qty-value flex align-center justify-center">
+                          {cart?.quantity}
+                        </div>
+                        <button
+                          className="qty-increase flex align-center justify-center"
+                          onClick={() => updateItemQuantity(cart?.id, 1)}
+                        >
+                          <FaPlus />
+                        </button>
                       </div>
+                    </div>
+                    <div className="cart-ctd">
+                      <span className="cart-ctxt text-orange fw-5">
+                        {formatPrice(cart?.discountedPrice)}
+                      </span>
+                    </div>
+                    <div className="cart-ctd">
                       <button
-                        className="qty-increase flex align-center justify-center"
-                        onClick={() =>
-                          dispatch(toggleCartQty({ id: cart?.id, type: "INC" }))
-                        }
+                        className="delete-btn text-dark"
+                        onClick={() => dispatch(removeItemFromCart(cart?.id))}
                       >
-                        <FaPlus />
+                        Xóa
                       </button>
                     </div>
                   </div>
-                  <div className="cart-ctd">
-                    <span className="cart-ctxt text-orange fw-5">
-                      {formatPrice(cart?.totalPrice)}
-                    </span>
-                  </div>
-                  <div className="cart-ctd">
-                    <button
-                      className="delete-btn text-dark"
-                      onClick={() => dispatch(removeFromCart(cart?.id))}
-                    >
-                      Xóa
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
           <div className="cart-cfoot flex align-start justify-between py-3 bg-white">
             <div className="cart-cfoot-l">
               <button
                 className="clear-cart-btn text-danger fs-15 text-uppercase fw-4"
-                onClick={() => dispatch(clearCart())}
+                onClick={() => dispatch(clearCartAsync())}
               >
                 <FaTrashAlt />
                 <span className="mx-1">Xóa toàn bộ sản phẩm</span>
