@@ -20,14 +20,15 @@ const InfoOrder = () => {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    const processedData = orders.map((order) => {
+    const reversedOrders = [...orders].reverse();
+    const processedData = reversedOrders.map((order, index) => {
       const products = JSON.parse(order.productJsonArray);
       const address = JSON.parse(order.addressJSON);
       const fullAddress = `Nhà số ${address.number}, đường ${address.street}, phường ${address.ward}, quận ${address.district}, thành phố ${address.city}, SDT: ${order.phone}`;
 
       return {
         key: order.id,
-        id: order.id,
+        id: index + 1,
         orderDate: moment(order.orderDate).format("DD/MM/YYYY HH:mm:ss"),
         status: order.status,
         products: products.map((product) => ({

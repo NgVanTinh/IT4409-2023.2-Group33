@@ -71,7 +71,7 @@ export default function CartPage() {
           timer: 1500,
         });
         dispatch(fetchUserCart(userId));
-        navigate(`/infoUser/${userId}`);
+        navigate(`/infoUser`);
       }
     } catch (error) {
       Swal.fire({

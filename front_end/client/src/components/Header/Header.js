@@ -18,10 +18,7 @@ export default function Header() {
             <div className="header-cnt-top-l">
               <ul className="flex top-links align-center">
                 <li className="flex align-center">
-                  <NavLink
-                    to={`/infoUser/${id}`}
-                    className="top-link-itm fs-13"
-                  >
+                  <NavLink to={`/infoUser`} className="top-link-itm fs-13">
                     {username}
                   </NavLink>
                   <ul className="social-links flex align-center">
