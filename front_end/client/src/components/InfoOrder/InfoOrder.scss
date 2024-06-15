@@ -1,0 +1,119 @@
+@import "../../App.scss";
+
+// Bảng với viền và bo góc
+.ant-table {
+  border-radius: 10px;
+  overflow: hidden;
+
+  // Header của bảng
+  .ant-table-thead > tr > th {
+    background-color: $clr-light-green;
+    color: white;
+    font-weight: bold;
+    border: 1px solid #ddd;
+  }
+
+  // Các hàng
+  .ant-table-tbody > tr > td {
+    color: #333;
+    border: 1px solid #ddd;
+  }
+}
+
+// Nút phân trang
+.ant-pagination-item,
+.ant-pagination-prev,
+.ant-pagination-next {
+  border-color: $clr-light-green;
+}
+
+.ant-pagination-item-active {
+  background-color: $clr-light-green;
+  border-color: $clr-light-green;
+  a {
+    color: #fff;
+  }
+}
+
+// Thay đổi màu nền khi rê chuột qua hàng
+.ant-table-tbody > tr:hover {
+  background-color: #e7e6e6;
+}
+
+// Hiệu ứng khi rê chuột qua nút phân trang
+.ant-pagination-item:hover,
+.ant-pagination-prev:hover,
+.ant-pagination-next:hover {
+  border-color: $clr-light-green;
+  a {
+    color: $clr-light-green;
+  }
+}
+
+// Tùy chỉnh kích thước và bo góc cho hình ảnh sản phẩm
+.ant-table-tbody > tr > td .ant-space-item .ant-image img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+// Tăng kích thước và đổi màu cho giá
+.price-highlight {
+  font-size: 16px;
+  color: $clr-light-green;
+  font-weight: bold;
+}
+
+// Tùy chỉnh tiêu đề sản phẩm
+.ant-table-tbody > tr > td .ant-space-item p {
+  margin-bottom: 4px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Product Styles
+.productContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.productItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  gap: 10px;
+}
+
+.productImage {
+  border-radius: 4px;
+}
+
+.productInfo {
+  flex: 1;
+
+  strong {
+    font-size: 16px;
+  }
+
+  p {
+    margin: 5px 0;
+
+    &:last-child {
+      margin: 0;
+      font-weight: bold;
+      color: #ff5722;
+    }
+  }
+}
+
+.address-cell-wrap {
+  max-width: 200px;
+  white-space: normal;
+  word-wrap: break-word;
+}

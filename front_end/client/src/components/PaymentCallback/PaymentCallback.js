@@ -21,7 +21,7 @@ const PaymentCallback = () => {
         showConfirmButton: false,
         timer: 1500,
       });
-      navigate(`/infoUser/${userId}`);
+      navigate(`/infoUser`);
     } else {
       Swal.fire({
         position: "center",

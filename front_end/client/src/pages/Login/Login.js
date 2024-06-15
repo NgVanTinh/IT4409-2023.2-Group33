@@ -28,6 +28,10 @@ function Login() {
       setCookie("token", response.token, 1);
       setCookie("username", response.username, 1);
       setCookie("id", response.id, 1);
+      setCookie("address", response.address, 1);
+      setCookie("phone", response.phone, 1);
+      setCookie("email", response.email, 1);
+      setCookie("fullname", response.fullname, 1);
       navigate("/");
     } else {
       Swal.fire({

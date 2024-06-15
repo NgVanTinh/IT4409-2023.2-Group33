@@ -41,7 +41,7 @@ export const routes = [
         element: <Search />,
       },
       {
-        path: "infoUser/:id",
+        path: "infoUser",
         element: <InfoUser />,
       },
       {
