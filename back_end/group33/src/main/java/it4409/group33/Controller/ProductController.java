@@ -325,9 +325,8 @@ public class ProductController {
         List<Product> sameBrandProducts = productRepository.findByBrand(brand);
         List<Product> sameCategoryProducts = productRepository.findByCategory(category);
 
-        Set<Product> sameProductsSet = new HashSet<>();
-        sameProductsSet.addAll(sameBrandProducts);
-        sameProductsSet.addAll(sameCategoryProducts);
+        Set<Product> sameProductsSet = new HashSet<>(sameBrandProducts);
+        sameProductsSet.retainAll(sameCategoryProducts);
 
         sameProductsSet.remove(product);
         List<Product> list = new ArrayList<>(sameProductsSet);

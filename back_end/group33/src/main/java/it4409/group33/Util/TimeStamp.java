@@ -1,5 +1,10 @@
 package it4409.group33.Util;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static it4409.group33.Util.Hash.sha256;
 
 public class TimeStamp {
@@ -26,5 +31,12 @@ public class TimeStamp {
             asciiLastChar -= 5;
         }
         return String.valueOf(asciiLastChar) + String.valueOf(asciiSecondLastChar);
+    }
+
+    public static String getDate() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+        ZonedDateTime vietnamTime = now.atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        return vietnamTime.format(formatter);
     }
 }

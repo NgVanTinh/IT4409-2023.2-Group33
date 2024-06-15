@@ -37,7 +37,7 @@ public class VnpayService {
             String vnp_TxnRef = VNPayUtil.getRandomNumber(8);
             String vnp_IpAddr = getIpAddress(request);
 
-            String returnURL = vnpayConfig.getVnpReturnUrl() + order.getUserId();
+            String returnURL = vnpayConfig.getVnpReturnUrl();
 
             long amount = (long) (order.getDiscountedPrice() * 100); // Amount in VND * 100
             Map<String, String> vnp_Params = new HashMap<>();
@@ -107,7 +107,7 @@ public class VnpayService {
             String vnp_TxnRef = VNPayUtil.getRandomNumber(8);
             String vnp_IpAddr = getIpAddress(request);
 
-            String returnURL = vnpayConfig.getVnpReturnUrl() + order.getUserId();
+            String returnURL = vnpayConfig.getVnpReturnUrl();
 
             long amount = (long) (order.getDiscountedPrice() * 100); // Amount in VND * 100
             Map<String, String> vnp_Params = new HashMap<>();
