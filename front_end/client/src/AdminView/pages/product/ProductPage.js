@@ -10,7 +10,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import PreviewIcon from '@mui/icons-material/Preview';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import TopHeader from "../../components/TopHeader";
 import { Modal } from 'antd';
 import { Carousel } from 'antd';
@@ -39,25 +40,43 @@ const OrderPage = () => {
   const [products, setProducts] = useState([]);
   const [modalVisible, setModalVisible] = useState(false); 
 
+  const config = {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  };
+  
   const loadProducts = async () => {
-        const result = await axios.get(`https://buckytank.shop/products`);
+        const result = await axios.get(`https://buckytank.shop/products?limit=100`, config);
         const {products} = result.data;
         // console.log(products);
-        setProducts(products);
+        setProducts(products.filter(product => product.isDeleted === false)); 
   };
 
   const loadProduct = async (id) => {
-        const result = await axios.get(`https://buckytank.shop/products/${id}`);
+        const result = await axios.get(`https://buckytank.shop/products/${id}`, config);
         // const {dataProduct } = result.data;
         setProduct(result.data);
   }
-
   useEffect(() => {
       loadProducts();
   }, []);
 
   const deleteProduct = async (id) => {
-    await axios.delete(`https://dummyjson.com/products/${id}`);
+    await axios.delete(`https://buckytank.shop/products/${id}`, config)
+    .then(() => {
+      toast.info('Xóa sản phẩm thành công', {
+        position: "top-center",
+        autoClose:1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    })
     loadProducts();
   }
 
@@ -70,32 +89,37 @@ const OrderPage = () => {
     {
       field: "title",
       key: "title",
-      headerName: "Title",
+      headerName: "Tên sản phẩm",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "brand",
       key: "brand",
-      headerName: "Brand",
+      headerName: "Hãng",
       flex: 1,
     },
     {
       field: "category",
       key: "category",
-      headerName: "Category",
+      headerName: "Danh mục",
+      flex: 1,
+    },
+    {
+      field: "stock",
+      key: "stock",
+      headerName: "Số lượng",
       flex: 1,
     },
     {
       field: "price",
       key: "price",
-      headerName: "Price",
+      headerName: "Giá",
       headerAlign: "left",
       cellClassName: "price-column--cell",
       align: "left",
     },
     {
-      headerName: "Action",
       key: "action",
       flex: 1,
       cellClassName: "action-column--cell",
@@ -148,7 +172,7 @@ const OrderPage = () => {
         <Button variant="contained" startIcon={<AddCircleOutlineOutlinedIcon />}
             sx={{backgroundColor: '#1890ff'}}
             onClick={() => navigate('/admin/add-product')}
-        >Add new product</Button>
+        >Thêm sản phẩm</Button>
       </Box>
       
       <Box m="20px">
@@ -201,38 +225,46 @@ const OrderPage = () => {
             disableRowSelectionOnClick
             slots={{ toolbar: CustomGridToolbar }}
           />
+          
         </Box>
-      </Box>
 
+        
+      </Box>
+      <ToastContainer/>
       <Modal
-            // title="Product Information"
-           
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)} 
-            footer={[ ]}
-          >
-            <Carousel arrows infinite={false} dotWidth={20}>
-                {product.images && product.images.map((imageUrl, index) => (
-                  <Image
-                    key={index} 
-                    width={476}
-                    height={300}
-                    src={imageUrl}
-                    alt={`Product Image ${index + 1}`}
-                  />
-                ))}
-            </Carousel>
-            <br/>
-            <Space direction="vertical">
-              <Text type="secondary">ID: <Text strong>{product ? product.id : null}</Text></Text>
-              <Text type="secondary">TITLE: <Text strong>{product ? product.title : null}</Text></Text>
-              <Text type="secondary">BRAND: <Text strong>{product ? product.brand : null}</Text></Text>
-              <Text type="secondary">CATEGORY: <Text strong>{product ? product.category : null}</Text></Text>
-              <Text type="secondary">DESCRIPTION: <Text strong>{product ? product.description : null}</Text></Text>
-              <Text type="secondary">STOCK: <Text strong>{product ? product.stock : null}</Text></Text>
-              <Text type="secondary">PRICE: <Text strong>{product ? product.price : null} $</Text></Text>
-            </Space>
-          </Modal>
+        // title="Product Information"
+        
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)} 
+        footer={[ ]}
+      >
+        <Carousel arrows infinite={false} dotWidth={20}>
+            {product.images && product.images.map((imageUrl, index) => (
+              <Image
+                key={index} 
+                width={476}
+                height={300}
+                src={imageUrl}
+                alt={`Product Image ${index + 1}`}
+              />
+            ))}
+        </Carousel>
+        <br/>
+        <Space direction="vertical">
+          <Text type="secondary">ID: <Text strong>{product ? product.id : null}</Text></Text>
+          <Text type="secondary">Tên sản phẩm: <Text strong>{product ? product.title : null}</Text></Text>
+          <Text type="secondary">Hãng: <Text strong>{product ? product.brand : null}</Text></Text>
+          <Text type="secondary">Danh mục: <Text strong>{product ? product.category : null}</Text></Text>
+          <Text type="secondary">Mô tả: <Text strong>{product ? product.description : null}</Text></Text>
+          <Text type="secondary">Số lượng: <Text strong>{product ? product.stock : null}</Text></Text>
+          <Text type="secondary">Giá: <Text strong>{product ? product.price : null} VNĐ</Text></Text>
+          <Text type="secondary">Giảm giá: <Text strong>{product ? product.discountPercentage : null} %</Text></Text>
+          <Text type="secondary">Đánh giá: <Text strong>{product ? product.rating : null}/5</Text></Text>
+          <Text type="secondary">Thông số chi tiết: <Text strong>{product ? product.spec : null}</Text></Text>
+        </Space>
+      </Modal>
+
+
     </>
   )
 }

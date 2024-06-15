@@ -11,8 +11,16 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ViewOrder = () => {
   const navigate = useNavigate();
-
   const { id } = useParams();
+  const [user, setUser] = useState({
+    address: "",
+    role: "",
+    phone: "",
+    name: "",
+    id: '',
+    email: "",
+    username: ""
+  });
 
   const [order, setOrder] = useState({
     id: "",
@@ -26,46 +34,53 @@ const ViewOrder = () => {
     status: ""
   });
 
-  useEffect(() => {
-    loadOrder();
-  },[]);
-
-  const loadOrder = async () => {
-    const result = await axios.get(`https://dummyjson.com/carts/${id}`);
-    console.log(result.data);
-    setOrder(result.data);
+   const config = {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   };
 
-  // const productsInfo = order.products.map(product => `${product.title} x ${product.quantity}`) ;
+  useEffect(() => {
+    loadOrder();
+  });
+
+  const loadOrder = async () => {
+    const result = await axios.get(`https://buckytank.shop/api/orders/${id}`, config);
+    // console.log("order: ", result.data[0]);
+    const order = result.data;
+    const formattedDateTime = new Date(`${order.orderDate}`).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false });
+    order.createdTime = formattedDateTime;
+    const products = JSON.parse(order.productJsonArray);
+    const res = await axios.get(`https://buckytank.shop/user/${order.userId}`, config);
+    const user = res.data;
+    const addressObj = JSON.parse(order.addressJSON);
+    const orderedKeys = ["number", "street", "ward", "district", "city", "province"];
+    const orderedValues = orderedKeys.map(key => addressObj[key]);
+    const addressValuesString = orderedValues.join(", ");    
+    order.products = products;
+    order.address = addressValuesString;
+    order.user = user.fullname;
+    setOrder(order);
+  };
 
   return (
     <>
     <TopHeader title="ĐƠN HÀNG" subtitle="Xem chi tiết đơn hàng" />
     <Box sx={{display: 'flex', flexDirection: 'column'}} >
       <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
-        <Grid item sm={8} >
-          <TextField
-            variant="standard"
-            fullWidth={true}
-            name="id"
-            id="id"
-            label="ID"
-            value={order.id}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
-          />
-        </Grid>
+        
 
         <Grid item sm={8} >
           <TextField
             variant="standard"
             fullWidth={true}
-            name="orderDate"
-            id="orderDate"
-            label="Order Date"
-            value={order.id}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            name="createdTime"
+            id="createdTime"
+            label="Thời gian tạo"
+            value={order.createdTime && order.createdTime}
+            InputLabelProps={{ style: { color: 'blue'}, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
 
@@ -75,11 +90,14 @@ const ViewOrder = () => {
             name="products"
             fullWidth
             id="products"
-            label="Products"
+            label="Sản phẩm"
             value={order.products && order.products.map((product) => `${product.title} x ${product.quantity} `).join('\n')}
             InputLabelProps={{ style: { color: 'blue' } }}
             multiline
-            disabled
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
 
@@ -89,10 +107,13 @@ const ViewOrder = () => {
             name="totalProducts"
             fullWidth
             id="totalProducts"
-            label="Total Products"
-            value={order.totalProducts}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            label="Tổng số sản phẩm"
+            value={order.totalProducts && order.totalProducts}
+            InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
         <Grid item sm={8}>
@@ -100,11 +121,14 @@ const ViewOrder = () => {
             variant="standard"
             fullWidth
             name="totalQuantity"
-            label="Total Quantity"
+            label="Tổng số lượng"
             id="totalQuantity"
-            value={order.totalQuantity}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            value={order.totalQuantity && order.totalQuantity}
+            InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
         <Grid item sm={8}>
@@ -112,23 +136,29 @@ const ViewOrder = () => {
             variant="standard"
             fullWidth
             name="total"
-            label="Total (USD)"
+            label="Tổng tiền (VNĐ)"
             id="total"
-            value={order.total}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            value={order.total && order.total}
+            InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
         <Grid item sm={8}>
           <TextField
             variant="standard"
             fullWidth
-            name="discountedTotal"
-            label="Discounted Total (USD)"
-            id="discountedTotal"
-            value={order.discountedTotal}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            name="discountedPrice"
+            label="Tổng tiền sau khi giảm (VNĐ)"
+            id="discountedPrice"
+            value={order.discountedPrice && order.discountedPrice}
+            InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
 
@@ -138,10 +168,13 @@ const ViewOrder = () => {
             name="user"
             fullWidth
             id="user"
-            label="User"
-            value={order && order.userId}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            label="Người đặt"
+            value={order.user && order.user}
+            InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
         
@@ -150,11 +183,14 @@ const ViewOrder = () => {
             variant="standard"
             fullWidth
             name="address"
-            label="Address"
+            label="Địa chỉ"
             id="address"
-            value={order.discountedTotal}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            value={order.address && order.address}
+            InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
 
@@ -163,11 +199,14 @@ const ViewOrder = () => {
             variant="standard"
             fullWidth
             name="status"
-            label="Status"
+            label="Trạng thái"
             id="status"
-            value={order.discountedTotal}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            value={order.status}
+            InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
+            InputProps={{
+              style: { color: 'black' }, // Thay đổi màu chữ ở đây
+              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+            }}
           />
         </Grid>
   
@@ -181,7 +220,7 @@ const ViewOrder = () => {
     >
       <Button
         sx={{backgroundColor: '#1890ff', color: 'white', borderRadius: '10px', mr:1}}
-        onClick={() => {navigate('/orders')}}
+        onClick={() => {navigate('/admin/orders')}}
       >
         <ArrowBackIcon sx={{mr:1}}/>
         Navigate to order page

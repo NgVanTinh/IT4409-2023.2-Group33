@@ -18,14 +18,25 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadData();
-    // loadCountUser();
+    loadCountUser();
+    loadCountProduct();
+    loadCountOrder(); 
   }, []);
 
-  // const loadCountUser = async() =>{
-  //   const result = await axios.get(`https://buckytank.shop/users`);
-  //   const {user} = result.data;
-  //   console.log(user);
-  // }
+  const loadCountUser = async() =>{
+    const result = await axios.get(`https://buckytank.shop/users/number-users`);
+    setCountUser(result.data.users - 1);
+  }
+
+  const loadCountProduct = async() =>{
+    const result = await axios.get(`https://buckytank.shop/products`);
+    setCountProduct(result.data.total);
+  }
+
+  const loadCountOrder = async() =>{
+    const result = await axios.get(`https://buckytank.shop/api/orders/number-orders`);
+    setCountOrder(result.data.orders);
+  }
 
   const loadData = async () => {
     const result = await axios.get(`https://buckytank.shop/products`);
@@ -66,7 +77,7 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            title="12,361"
+            title={countUser}
             subtitle="Người dùng"
             icon={
               <UserOutlined
@@ -93,7 +104,7 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            title="431,225"
+            title={countProduct}
             subtitle="Sản phẩm"
             icon={
               <ProductOutlined
@@ -120,7 +131,7 @@ const Dashboard = () => {
         >
           <StatBox
             
-            title="32,441"
+            title={countOrder}
             subtitle="Đơn hàng"
             icon={
               <OrderedListOutlined
@@ -162,14 +173,14 @@ const Dashboard = () => {
           height={"340px"}
         >
           <Typography variant="h5" fontWeight="600">
-            Campaign
+            Thống kê sản phẩm
           </Typography>
           <Box
             display="flex"
             flexDirection="column"
             alignItems="center"
           >
-            {/* <PieChart/> */}
+            <PieChart/>
           </Box>
         </Box>
         <Box

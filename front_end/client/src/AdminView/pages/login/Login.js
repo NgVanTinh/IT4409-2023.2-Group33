@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {Form, Input, Button} from "antd";
+import {Form, Input} from "antd";
 import "./AdminLogin.scss";
 import {toast, ToastContainer} from "react-toastify"
 
@@ -10,9 +10,23 @@ function Login() {
         await axios.post('https://buckytank.shop/auth/login', values)
         .then(result => {
             const data = result.data;
-            // console.log(result)
-            localStorage.setItem('token', data.token)
-            navigate('/admin')
+            console.log(data)
+            if(data.id === 1){
+                localStorage.setItem('token', data.token)
+                navigate('/admin')
+            }
+            else {
+                toast.info('Đăng nhập thất bại', {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                });
+            }
         })
         .catch(err => {
             toast.info('Đăng nhập thất bại', {
@@ -72,9 +86,9 @@ function Login() {
                 <button type="submit">Đăng nhập</button>
                 </Form.Item>
             </Form>
-            <Link class="btn btn-primary" to={'/login'}
+            <Link style={{color: 'white'}} to={'/'}
                 // onClick={() => navigate(`/login`)}
-            >Quay lại trang đăng nhập cho người dùng</Link>
+            >Quay lại trang dành cho người dùng</Link>
             </div>
             <div class="admin-right">
             <h3>TShop</h3>

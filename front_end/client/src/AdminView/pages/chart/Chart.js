@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Typography } from "@mui/material";
 import TopHeader from '../../components/TopHeader'
-import PieChart from "../../components/PieChart";
+import PieCharts from "../../components/PieChart";
 import LineChart from "../../components/LineChart";
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -69,28 +69,24 @@ const Chart = () => {
               alignItems="center"
               mt="25px"
             >
-              <PieChart categories={categories}/>
+              <PieCharts />
             </Box>
           </Box>
 
-          <Box
-            gridColumn="span 7"
-            gridRow="span 2"
-            // backgroundColor='#9C9C9C'
-          >
+          <Box gridColumn="span 7" gridRow="span 2">
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={handleChange} aria-label="lab API tabs example">
                   {categories.map((category, index) => (
-                    <Tab key={index} label={category} value={String(index + 1)} />
+                    <Tab key={index} label={category.name} value={String(index + 1)} />
                   ))}
-                </TabList>
+                </TabList >
               </Box>
               {categories.map((item, index) => (
-                    <TabPanel value={String(index + 1)} >
-                        <LineChart data={categories}/>
-                    </TabPanel>
-                  ))}
+                <TabPanel key={index} value={String(index + 1)}>
+                  <LineChart data={categories} length={600}/> 
+                </TabPanel>
+              ))}
             </TabContext>
           </Box>
     </div>

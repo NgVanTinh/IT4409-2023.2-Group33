@@ -125,6 +125,18 @@ const ViewProduct = () => {
           <TextField
             variant="standard"
             fullWidth
+            name="spec"
+            label="Spec"
+            id="spec"
+            value={product.spec && product.spec}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            disabled
+          />
+        </Grid>
+        <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            fullWidth
             name="price"
             label="Price (USD)"
             id="price"

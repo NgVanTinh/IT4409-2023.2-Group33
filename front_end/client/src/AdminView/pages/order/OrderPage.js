@@ -25,37 +25,51 @@ const CustomGridToolbar = () => {
 const OrderPage = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
+  const config = {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  };
 
   const loadOrders = async () => {
-      const result = await axios.get(`https://dummyjson.com/carts`);
-      console.log(result.data.carts);
-      setOrders(result.data.carts);
+    const result = await axios.get(`https://buckytank.shop/api/orders`, config);
+    const ordersData = result.data;
+    
+    // console.log(ordersData);
+    ordersData.map((order) => {
+      // console.log(user);
+      const formattedDateTime = new Date(`${order.orderDate}`).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false });
+      order.createdDate = formattedDateTime;
+    })
+    // console.log(ordersData);
+    
+
+    setOrders(ordersData);
+    // console.log(orders);
   }
 
   useEffect(() => {
       loadOrders();
-  }, []);
+  });
 
   
   const columns = [
     { field: "id", id:"id", headerName: "ID", flex: 0.5 },
     {
-      field: "createdTime",
-      id:"createdTime",
-      headerName: "Created Time",
+      field: "createdDate",
+      id:"createdDate",
+      headerName: "Thời gian tạo",
       flex: 1,
     },
     {
       field: "userId",
-      id:"user",
-      headerName: "User",
+      id:"userId",
+      headerName: "ID người dùng",
       cellClassName: "user-column--cell",
       flex: 1,
     },
     {
       field: "totalQuantity",
       id: "totalQuantity",
-      headerName: "Total Quantity",
+      headerName: "Tổng số lượng sản phẩm",
       headerAlign: "left",
       cellClassName: "price-column--cell",
       flex: 1,
@@ -63,15 +77,15 @@ const OrderPage = () => {
     {
       field: "total",
       id: "total",
-      headerName: "Total Price ($)",
+      headerName: "Tổng tiền (VNĐ)",
       headerAlign: "left",
       cellClassName: "price-column--cell",
       flex: 1,
     },
     {
-      field: "discountedTotal",
-      id: "discountedTotal",
-      headerName: "Discounted Total ($)",
+      field: "discountedPrice",
+      id: "discountedPrice",
+      headerName: "Tổng tiền sau giảm (VNĐ)",
       headerAlign: "left",
       cellClassName: "price-column--cell",
       flex: 1,
@@ -79,13 +93,12 @@ const OrderPage = () => {
     {
       field: "status",
       id:"status",
-      headerName: "Status",
+      headerName: "Trạng thái",
       headerAlign: "left",
       cellClassName: "price-column--cell",
       flex: 1,
     },
     {
-      headerName: "Action",
       id:"action",
       flex: 1,
       cellClassName: "status-column--cell",
@@ -101,17 +114,6 @@ const OrderPage = () => {
             >
               < VisibilityOutlinedIcon />
             </IconButton> 
-            
-            {/* <IconButton aria-label="delete" color="error"
-              onClick={() => deleteorder(params.row.id)}
-            >
-              <DeleteOutlinedIcon />
-            </IconButton> 
-            <Link to={`/edit-order/`}>
-              <IconButton aria-label="edit" color="success">
-              <EditOutlinedIcon/>
-            </IconButton> 
-            </Link> */}
           </Box>
         );
       },
@@ -179,30 +181,6 @@ const OrderPage = () => {
             />
           </Box>
         </Box>
-
-        {/* <Modal
-            title="Order Information"
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)} 
-            footer={[  ]}
-          >
-            <Space direction="vertical">
-              <Text type="secondary">ID: <Text strong>{order ? order.id : null}</Text></Text>
-              <Text type="secondary">CREATED TIME: <Text strong>{order ? order.orderDate : null}</Text></Text>
-              <Text type="secondary">USER: <Text strong>{order ? order.userId : null}</Text></Text>
-              <Text type="secondary">TOTAL PRODUCTS: <Text strong>{order ? order.totalProducts : null}</Text></Text>
-              <Text type="secondary">PRODUCTS:</Text>
-              <Space direction="vertical" > 
-                {order.products && order.products.map((product,id) => (
-                    <Text strong style={{marginLeft: '30px'}}> {product.quantity} x {product.title} </Text>
-                ))}
-              </Space>
-              <Text type="secondary">TOTAL QUANTITY: <Text strong>{order ? order.totalQuantity : null}</Text></Text>
-              <Text type="secondary">TOTAL PRICE: <Text strong>{order ? order.total : null} $</Text></Text>
-              <Text type="secondary">DISCOUNTED PRICE: <Text strong>{order ? order.discountedPrice : null}</Text></Text>
-              <Text type="secondary">STATUS: <Text strong>{order ? order.status : null}</Text></Text>
-            </Space>
-          </Modal> */}
     </>
     
   )

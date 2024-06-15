@@ -23,25 +23,32 @@ const CustomGridToolbar = () => {
 const UserPage = () => {
   const [users, setUsers] = useState([]);
   const [isLocked, setIsLocked] = useState(false);
-    // const config = {
-    //     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    // };
+  const config = {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  };
 
   const loadUsers = async () => {
-      const result = await axios.get(`https://buckytank.shop/users`);
-      setUsers(result.data);
+      const result = await axios.get(`https://buckytank.shop/users`, config);
+      const arr = result.data.filter(user => user.role !== 'admin');
+      // console.log(arr);
+      setUsers(arr);
       
   }
 
-  // const handleActive = async() => {
-  //     await axios.post(`https://buckytank.shop/`);
-  // }
+  const handleLock = async(id) => {
+      await axios.put(`https://buckytank.shop/users/lock?id=${id}`);
+  }
+
+  const handleUnLock = async(id) => {
+      await axios.put(`https://buckytank.shop/users/unlock?id=${id}`);
+  }
+
   useEffect(() => {
       // if (localStorage.getItem('token') == null) {
       //     navigate("/login");
       // }
       loadUsers();
-  }, []);
+  });
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
@@ -75,16 +82,19 @@ const UserPage = () => {
       flex: 1,
     },
     {
-    field: "action",
-      headerName: "Action",
+      field: "action",
       flex: 1,
       cellClassName: "action-column--cell",
       renderCell: params => {
+        const id = params.row.id;
+        const status = params.row.status;
+
+        console.log(status);
         return (
           <Button
-            // onClick={() => handleActive(params.row.id)}
-            onClick={() => setIsLocked(!isLocked)}
-            
+            // onClick={() => handleLock(params.row.id)}
+            // onClick={() => setIsLocked(!isLocked)}
+            onClick={() => console.log(params.row.id)}
           >
             <Box
             width="100px"

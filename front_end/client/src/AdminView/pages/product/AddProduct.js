@@ -3,11 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Grid, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { Button } from "@mui/material";
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TopHeader from "../../components/TopHeader";
 import { styled } from '@mui/material/styles';
@@ -27,18 +26,114 @@ const VisuallyHiddenInput = styled('input')({
   left: 0,
   whiteSpace: 'nowrap',
   width: 1,
-  
 });
-
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwidXNlck5hbWUiOiJlZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxODIxMjI0OCwiZXhwIjoxNzE4MjQ4MjQ4fQ.vpw1f5Ou_YM3QAB1X3Dl1xasisBXJGYk4ay2tGwaJj4'
-const config = {
-      headers: { Authorization: `Bearer ${token}` }
-};
-
-
+const Category = [
+      {
+          id: 'phone',
+          name: 'Điện thoại',
+          specs: [
+              { name: 'Màn hình', type: 'text' },
+              { name: 'Hệ điều hành', type: 'text' },
+              { name: 'Camera sau', type: 'text' },
+              { name: 'Camera trước', type: 'text' },
+              { name: 'Chip', type: 'text' },
+              { name: 'RAM', type: 'text' },
+              { name: 'Dung lượng lưu trữ', type: 'text' },
+              { name: 'Sim', type: 'text' },
+              { name: 'Pin, Sạc', type: 'text' },
+          ],
+      },
+      {
+          id: 'tablet',
+          name: 'Máy tính bảng',
+          specs: [
+              { name: 'Màn hình', type: 'text' },
+              { name: 'Hệ điều hành', type: 'text' },
+              { name: 'Camera sau', type: 'text' },
+              { name: 'Camera trước', type: 'text' },
+              { name: 'Chip', type: 'text' },
+              { name: 'RAM', type: 'text' },
+              { name: 'Dung lượng lưu trữ', type: 'text' },
+              { name: 'Pin, Sạc', type: 'text' },
+          ],
+      },
+      {
+          id: 'power',
+          name: 'Sạc dự phòng',
+          specs: [
+              { name: 'Hiệu suất sạc', type: 'text' },
+              { name: 'Dung lượng pin', type: 'text' },
+              { name: 'Thời gian sạc đầy pin', type: 'text' },
+              { name: 'Nguồn vào', type: 'text' },
+              { name: 'Nguồn ra', type: 'text' },
+              { name: 'Lõi pin', type: 'text' },
+              { name: 'Công nghệ/Tiện ích', type: 'text' },
+              { name: 'Kích thước', type: 'text' },
+              { name: 'Khối lượng', type: 'text' },
+          ],
+      },
+      {
+          id: 'airphone',
+          name: 'Tai nghe',
+          specs: [
+              { name: 'Thời gian tai nghe', type: 'text' },
+              { name: 'Thời gian hộp sạc', type: 'text' },
+              { name: 'Cổng sạc', type: 'text' },
+              { name: 'Công nghệ âm thanh', type: 'text' },
+              { name: 'Tương thích', type: 'text' },
+              { name: 'Tiện ích', type: 'text' },
+              { name: 'Hỗ trợ kết nối', type: 'text' },
+              { name: 'Điều khiển bằng', type: 'text' },
+          ],
+      },
+      {
+          id: 'adapter',
+          name: 'Củ sạc',
+          specs: [
+              { name: 'Model', type: 'text' },
+              { name: 'Chức năng', type: 'text' },
+              { name: 'Đầu vào', type: 'text' },
+              { name: 'Đầu ra', type: 'text' },
+              { name: 'Dòng sạc tối đa', type: 'text' },
+              { name: 'Kích thước', type: 'text' },
+              { name: 'Công nghệ/Tiện ích', type: 'text' },
+          ],
+      },
+      {
+          id: 'bao-da',
+          name: 'Bao dao',
+          specs: [
+              
+          ],
+      },
+      {
+          id: 'gia-do',
+          name: 'Giá đỡ',
+          specs: [
+              
+          ],
+      },
+      {
+          id: 'line',
+          name: 'Dây sạc',
+          specs: [
+              { name: 'Công suất tối đa', type: 'text' },
+              { name: 'Chức năng', type: 'text' },
+              { name: 'Đầu vào', type: 'text' },
+              { name: 'Đầu ra', type: 'text' },
+              { name: 'Jack kết nối', type: 'text' },
+              { name: 'Độ dài dây', type: 'text' },
+          ],
+      }, 
+  ];
 const AddProduct = () => {
   const navigate = useNavigate();
-
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [productSpecs, setProductSpecs] = useState({});
+  const config = {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  };
   const [product, setProduct] = useState({
     title: "",
     description: "",
@@ -48,12 +143,55 @@ const AddProduct = () => {
     brand: "",
     category: "",
     thumbnail: "",
-    images: ""
+    image: "",
+    rating: "",
+    spec: ""
   });
+
+
+  useEffect(() => {
+    loadCategores();
+  },[]);
+
+  const loadCategores = async () => {
+    const result = await axios.get('https://buckytank.shop/products/categories', config);
+    setCategories(result.data);
+  } 
 
   const onInputChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
+  
+  const handleCategoryChange = (event) => {
+    
+    const categoryId = event.target.value;
+    // const obj = Category[categoryId-1];
+    // console.log("name: ", obj.name);
+    // setCategories(obj.name)
+    setSelectedCategory(categoryId);
+    setProductSpecs({});
+  };
+
+  const handleSpecChange = (specName, value) => {
+    setProductSpecs((prevSpecs) => ({
+      ...prevSpecs,
+      [specName]: value,
+    }));
+  };
+
+  let numRow = 1;
+  const currentCategory = Category[selectedCategory-1];
+  if(currentCategory){
+    if(currentCategory.name === 'Điện thoại') numRow = 11;
+    else if(currentCategory.name === 'Máy tính bảng') numRow = 10;
+    else if(currentCategory.name === 'Sạc dự phòng') numRow = 11;
+    else if(currentCategory.name === 'Tai nghe') numRow = 10;
+    else if(currentCategory.name === 'Củ sạc') numRow = 9;
+    else if(currentCategory.name === 'Bao da') numRow = 1;
+    else if(currentCategory.name === 'Giá đỡ') numRow = 1;
+    else if(currentCategory.name === 'Dây sạc') numRow = 8;
+  }
+  
 
   const onThumbnailChange = (e) => {
     setProduct({...product, thumbnail: e.target.files[0]});
@@ -61,15 +199,15 @@ const AddProduct = () => {
 
   const onImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (product.images.length < 5) {
+    if (product.image.length < 5) {
     setProduct(prevProduct => ({
       ...prevProduct,
-      images: [...prevProduct.images, ...files]
+      image: [...prevProduct.image, ...files]
     }));
     } else {
-      toast.warn('Không thể thêm nhiều hơn 5 ảnh!', {
+      toast.info('Không thể thêm nhiều hơn 5 ảnh!', {
         position: "top-center",
-        autoClose: 5000,
+        autoClose:1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -83,32 +221,58 @@ const AddProduct = () => {
    const handleDeleteImage = (index) => {
     setProduct(prevProduct => ({
       ...prevProduct,
-      images: prevProduct.images.filter((_, i) => i !== index)
+      image: prevProduct.image.filter((_, i) => i !== index)
     }));
   };
 
-  const isString = (value) => typeof value === 'string';
-
-  // useEffect(() => {
-  //   loadProduct();
-  // },[]);
-
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(product);
-    await axios.post(`https://buckytank.shop/products/create`, product, config);
-    // navigate(`/admin/products`);
+    const str =  JSON.stringify(productSpecs)
+    // console.log(str)
+    const updatedProduct = {...product, spec: str, category: currentCategory.name };
+    // setProduct({...product, spec: str})
+    console.log(updatedProduct);
+    const formData = new FormData();
+    formData.append('title', updatedProduct.title);
+    formData.append('price', updatedProduct.price);
+    formData.append('description', updatedProduct.description);
+    formData.append('discountPercentage', updatedProduct.discountPercentage);
+    formData.append('stock', updatedProduct.stock);
+    formData.append('brand', updatedProduct.brand);
+    formData.append('category', updatedProduct.category);
+    formData.append('rating', updatedProduct.rating);
+    formData.append('spec', updatedProduct.spec);
+    formData.append('thumbnail', updatedProduct.thumbnail);
+    formData.append('image', updatedProduct.image[0]);
+    for (let i = 1; i < updatedProduct.image.length; i++) {
+      formData.append('image', updatedProduct.image[i]);
+    }
+    // console.log(formData);
+    await axios.post(`https://buckytank.shop/products/create`, formData, config)
+    .then(res => {
+      toast.info('Thêm sản phẩm thành công!', {
+      position: "top-center",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    setTimeout(() => {
+      navigate(`/admin/products`);
+    }, 1000);
   };
-
-  // const loadProduct = async () => {
-  //   const result = await axios.get(`https://dummyjson.com/products/${id}`);
-  //   setProduct(result.data);
-  // };
 
   return (
     
     <>
-    <TopHeader title="PRODUCTS" subtitle="Create new product" />
+    <TopHeader title="SẢN PHẨM" subtitle="Thêm sản phẩm mới" />
     <Box component="form"  onSubmit={onSubmit} sx={{display: 'flex', flexDirection: 'column',  justifyContent: 'center', alignItems: 'center'}} >
       <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
         <Grid item sm={8} >
@@ -117,11 +281,11 @@ const AddProduct = () => {
             name="title"
             required
             id="title"
-            label="Tilte"
+            label="Tên sản phẩm"
             autoFocus
             value={product.title}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
+            InputProps={{ style: { color: 'black' } }}
             onChange={onInputChange}
           />
         </Grid>
@@ -132,27 +296,35 @@ const AddProduct = () => {
             required
             fullWidth
             id="description"
-            label="Description"
+            label="Mô tả"
             value={product.description}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
+            InputProps={{ style: { color: 'black' } }}
             multiline
             onChange={onInputChange}
           />
         </Grid>
 
         <Grid item sm={8}>
-          <TextField
-            name="category"
-            required
-            fullWidth
-            id="category"
-            label="Category"
-            value={product.category}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
-            onChange={onInputChange}
-          />
+          <FormControl required fullWidth>
+            <InputLabel id="category-label" style={{ color: 'blue' }}>Danh mục</InputLabel>
+            <Select
+              labelId="category-label"
+              id="category"
+              name="category"
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              label="Danh mục"
+              InputLabelProps={{ style: { color: 'blue' } }}
+              InputProps={{ style: { color: 'red' } }}
+            >
+              {categories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
 
         <Grid item sm={8}>
@@ -161,10 +333,10 @@ const AddProduct = () => {
             required
             fullWidth
             id="brand"
-            label="Brand"
+            label="Hãng"
             value={product.brand}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
+            InputProps={{ style: { color: 'black' } }}
             onChange={onInputChange}
           />
         </Grid>
@@ -173,11 +345,11 @@ const AddProduct = () => {
             required
             fullWidth
             name="stock"
-            label="Stock"
+            label="Số lượng"
             id="stock"
             value={product.stock}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
+            InputProps={{ style: { color: 'black' } }}
             onChange={onInputChange}
           />
         </Grid>
@@ -185,11 +357,11 @@ const AddProduct = () => {
           <TextField
             fullWidth
             name="discountPercentage"
-            label="Discount Percentage (%)"
+            label="Phần trăm giảm giá(%)"
             id="discountPercentage"
             value={product.discountPercentage}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
+            InputProps={{ style: { color: 'black' } }}
             onChange={onInputChange}
           />
         </Grid>
@@ -198,19 +370,70 @@ const AddProduct = () => {
             required
             fullWidth
             name="price"
-            label="Price (USD)"
+            label="Giá (VNĐ)"
             id="price"
             value={product.price}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'grey' } }}
+            InputProps={{ style: { color: 'black' } }}
             onChange={onInputChange}
           />
+        </Grid>
+        <Grid item sm={8} >
+          <TextField
+            fullWidth={true}
+            name="rating"
+            required
+            id="rating"
+            label="Đánh giá"
+            autoFocus
+            value={product.rating}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{ style: { color: 'black' } }}
+            onChange={onInputChange}
+          />
+        </Grid>
+        <Grid item sm={8} >
+          <TextField
+            fullWidth={true}
+            name="spec"
+            id="spec"
+            label="Thông số"
+            autoFocus
+            InputLabelProps={{ style: { color: 'blue' } }}
+            multiline
+            rows={numRow}
+            InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    {currentCategory && (
+                      <div>
+                        {currentCategory && currentCategory.specs.map((spec) => (
+                          <div key={spec.name}>
+                            <label>
+                              {spec.name}:
+                              <input
+                                type={spec.type}
+                                value={productSpecs[spec.name] || ''}
+                                onChange={(e) =>
+                                  handleSpecChange(spec.name, e.target.value)
+                                }
+                              />
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </InputAdornment>
+                ),
+              }}
+          />
+          
         </Grid>
         <Grid item sm={8}>
            <TextField
               disabled
               fullWidth
-              label="Thumbnail"
+              label="Ảnh đại diện"
               multiline
               rows={5}
               InputLabelProps={{ style: { color: 'blue' } }}
@@ -225,7 +448,7 @@ const AddProduct = () => {
                           style={{
                             width: '100px',
                             height: '100px',
-                            borderRadius: '10px',
+                            borderRadius: '5px',
                             border: '1px solid blue',
                             marginRight: '10px',
                             marginBottom: '10px',
@@ -239,7 +462,7 @@ const AddProduct = () => {
                       variant="contained"
                       startIcon={<CloudUploadIcon />}
                     >
-                      Upload file
+                      Tải tệp 
                       <input type="file" accept="image/*" onChange={onThumbnailChange} style={{ display: 'none' }} />
                     </Button>
                   </InputAdornment>
@@ -252,14 +475,14 @@ const AddProduct = () => {
            <TextField
               disabled
               fullWidth
-              label="Images"
+              label="Hình ảnh chi tiết"
               multiline
               rows={5}
               InputLabelProps={{ style: { color: 'blue' } }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    {product.images && product.images.map((image, index) => (
+                    {product.image && product.image.map((image, index) => (
                       
                       <div
                         style={{position: 'relative', display: 'inline-block'}}
@@ -282,7 +505,7 @@ const AddProduct = () => {
                           style={{
                             width: '100px',
                             height: '100px',
-                            borderRadius: '20px',
+                            borderRadius: '5px',
                             border: '1px solid blue',
                             marginRight: '10px',
                           }}
@@ -298,7 +521,7 @@ const AddProduct = () => {
                         sx={{mt:2}}
                         
                       >
-                        Upload file
+                        Tải tệp
                         <VisuallyHiddenInput type="file" accept="image/*" onChange={onImageChange} />
                       </Button>
                   </InputAdornment>
@@ -306,12 +529,10 @@ const AddProduct = () => {
               }}
             />
         </Grid>
-        <ToastContainer/>
-        
-        
+        {/* <ToastContainer/> */}
     </Grid>
         
-       <div
+    <div
       style={{
           display: 'flex',
           justifyContent: 'flex-end',  
@@ -322,22 +543,23 @@ const AddProduct = () => {
         }}
     >
       <Button
-        sx={{backgroundColor: 'red', color: 'white', borderRadius: '10px', mr:1}}
+        sx={{backgroundColor: 'red', color: 'white', borderRadius: '10px', mr:1, padding: '10px'}}
         onClick={() => {navigate('/admin/products')}}
       >
         <CancelPresentationOutlinedIcon sx={{mr:1}}/>
-        Cancel
+        Hủy bỏ
       </Button>
       <Button 
         type="submit"
-        sx={{backgroundColor: '#2686CB', color: 'white', borderRadius: '10px', marginLeft: 'auto'}}
+        sx={{backgroundColor: '#2686CB', color: 'white', borderRadius: '10px', marginLeft: 'auto', padding: '10px'}}
       >
         <SendOutlinedIcon sx={{mr:1}} />
-        Submit
+        Tạo mới
       </Button>
     </div>
-       
+       <ToastContainer/>
     </Box>
+    
     </>
   );
 }
