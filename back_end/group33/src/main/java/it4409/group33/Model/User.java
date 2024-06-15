@@ -1,6 +1,9 @@
 package it4409.group33.Model;
 
 import jakarta.persistence.*;
+import org.checkerframework.checker.units.qual.K;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @Entity
 @Table(name = "user")
@@ -33,6 +36,22 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.address = address;
+    }
+
+    public JSONObject toJSON() throws JSONException {
+        JSONObject res = new JSONObject();
+        res.put("username",this.username);
+        res.put("email",this.email);
+        res.put("phone",this.phone);
+        res.put("id",this.id);
+        res.put("address",this.address);
+        res.put("fullname",this.fullName);
+        if(isActived) {
+            res.put("locked","false");
+        } else {
+            res.put("locked","true");
+        }
+        return res;
     }
 
     public User() {
@@ -85,5 +104,7 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+
 }
 

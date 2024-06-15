@@ -27,26 +27,15 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @Autowired
+    private JWT jwt;
+
+    @Autowired
     public ProductController(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Autowired
     private CategoryService categoryService;
-
-    @PostMapping("/create")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
-            try {
-                Product newProduct = productRepository.save(product);
-                return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
-            } catch (Exception e) {
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
-        }
-    }
 
     @GetMapping
     public ResponseEntity<String> getAllProduct(@RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "0") int skip,@RequestParam(required = false) String select) {
@@ -90,7 +79,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
             Optional<Product> optionalProduct = productRepository.findById(id);
 
             if (optionalProduct.isPresent()) {
@@ -141,7 +130,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
             Optional<Product> optionalProduct = productRepository.findById(id);
 
             if (optionalProduct.isPresent()) {
@@ -269,7 +258,7 @@ public class ProductController {
         return response.toString();
     }
 
-    @PostMapping("/test")
+    @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestParam("thumbnail") MultipartFile thumbnail,
                                                  @RequestParam("image") List<MultipartFile> images,
                                                  @RequestParam("title") String title,
@@ -284,7 +273,7 @@ public class ProductController {
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String token
     ){
 
-        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
 
             List<String> X = new ArrayList<>();
 
@@ -355,5 +344,56 @@ public class ProductController {
             return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
 
+    }
+
+//    @PostMapping("/test/{id}")
+//    public ResponseEntity<Product> updateProduct(@RequestParam(value = "thumbnail",required = false) MultipartFile thumbnail,
+//                                                 @RequestParam(value = "image",required = false) List<MultipartFile> images,
+//                                                 @RequestParam(value = "title",required = false) String title,
+//                                                 @RequestParam(value = "description",required = false) String description,
+//                                                 @RequestParam(value = "price",required = false) Double price,
+//                                                 @RequestParam(value = "discountPercentage",required = false) Double discountPercentage,
+//                                                 @RequestParam(value = "rating",required = false) Double rating,
+//                                                 @RequestParam(value = "stock",required = false) Integer stock,
+//                                                 @RequestParam(value = "brand",required = false) String brand,
+//                                                 @RequestParam(value = "category",required = false) String category,
+//                                                 @RequestParam(value = "spec",required = false) String spec,
+//                                                 @RequestParam(value = "mergeImage",required = false) boolean mergeImage,
+//                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+//                                                 @PathVariable Long id
+//    ){
+//        Optional<Product> optionalProduct = productRepository.findById(id);
+//        if(optionalProduct.isPresent()) {
+//            Product product = optionalProduct.get();
+//            if(thumbnail != null) {
+//                String thumb = uploadAndGetUrl(thumbnail);
+//                product.setThumbnail(thumb);
+//            }
+//
+//            if(images != null ) {
+//                if(!mergeImage) {
+//                    List<String> X = new ArrayList<>();
+//                    for (MultipartFile image : images) {
+//                        String tmp = uploadAndGetUrl(image);
+//                        if (!tmp.equals("Upload failed")) {
+//                            X.add(tmp);
+//                        }
+//                    }
+//                    product.setImages(X);
+//                } else {
+//
+//                }
+//            }
+//
+//
+//
+//
+//        }
+//    }
+
+    public static List<String> mergeLists(List<String> list1, List<String> list2) {
+        List<String> mergedList = new ArrayList<>(list1);
+        mergedList.addAll(list2);
+        return mergedList;
     }
 }

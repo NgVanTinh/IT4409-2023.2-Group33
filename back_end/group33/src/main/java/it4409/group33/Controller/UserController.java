@@ -3,6 +3,7 @@ package it4409.group33.Controller;
 import it4409.group33.Model.User;
 import it4409.group33.Repository.UserRepository;
 import it4409.group33.Service.CartService;
+import it4409.group33.Service.UserService;
 import it4409.group33.Util.EmailSender;
 import it4409.group33.Util.JWT;
 import org.json.JSONException;
@@ -30,6 +31,12 @@ public class UserController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JWT jwt;
+
     @PostMapping("/auth/login")
     public ResponseEntity<String> auth(@RequestBody Map<String, String> requestBody) {
         String username = requestBody.get("username");
@@ -45,14 +52,10 @@ public class UserController {
         }
 
         String jwtToken = JWT.createJWT(String.valueOf(user.getId()),user.getUsername() ,user.getRole());
-        JSONObject response = new JSONObject();
         try {
-            response.put("token", jwtToken);
-            response.put("id",String.valueOf(user.getId()));
-            response.put("username",username);
-            response.put("role",user.getRole());
-            response.put("email",user.getEmail());
-            return ResponseEntity.ok(response.toString());
+            JSONObject res = user.toJSON();
+            res.put("token",jwtToken);
+            return ResponseEntity.ok(res.toString());
         } catch (JSONException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
@@ -60,9 +63,9 @@ public class UserController {
     }
 
     @GetMapping("/auth/me")
-    public ResponseEntity<String> currentAuthUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
-        if(JWT.validateJWT(jwt)) {
-            String payload = JWT.getPayload(jwt);
+    public ResponseEntity<String> currentAuthUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(jwt.validateJWT(token)) {
+            String payload = JWT.getPayload(token);
             JSONObject payloadJSON;
             JSONObject response = new JSONObject();
             try {
@@ -83,9 +86,9 @@ public class UserController {
     }
 
     @PostMapping("/auth/refresh")
-    public ResponseEntity<String> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
-        if(JWT.validateJWT(jwt)) {
-            String payload = JWT.getPayload(jwt);
+    public ResponseEntity<String> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(jwt.validateJWT(token)) {
+            String payload = JWT.getPayload(token);
             JSONObject payloadJSON;
             JSONObject response = new JSONObject();
             try {
@@ -261,25 +264,17 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     public ResponseEntity<String> getUser(@PathVariable Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token)) {
+        if(token != null && jwt.validateJWT(token)) {
             Long userId = Long.valueOf(JWT.getUserId(token));
             if(userId.equals(id) || JWT.isAdmin(token)) {
                 Optional<User> user = userRepository.findById(id);
                 if(user.isPresent()) {
                     User u = user.get();
-                    JSONObject jsonObject = new JSONObject();
                     try {
-                        jsonObject.put("id",u.getId());
-                        jsonObject.put("address",u.getAddress());
-                        jsonObject.put("email",u.getEmail());
-                        jsonObject.put("fullname",u.getFullName());
-                        jsonObject.put("phone",u.getPhone());
-                        jsonObject.put("username",u.getUsername());
+                        return new ResponseEntity<>(u.toJSON().toString(),HttpStatus.OK);
                     } catch (JSONException e) {
-                        e.printStackTrace();
                         return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
                     }
-                    return new ResponseEntity<>(jsonObject.toString(),HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
                 }
@@ -292,12 +287,55 @@ public class UserController {
 
     }
 
-
     @GetMapping("/users/number-users")
     private ResponseEntity<String> count() {
         long x = userRepository.count();
         String xx = "{\"users\":" + String.valueOf(x) + "}";
         return new ResponseEntity<>(xx,HttpStatus.OK);
+    }
+
+    @PutMapping("/users/lock")
+    private ResponseEntity<String> lock(@RequestParam Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(jwt.validateJWT(token) && JWT.isAdmin(token)) {
+            if(userService.lockUserById(id)) {
+                try {
+                    Optional<User> user = userRepository.findById(id);
+                    if(user.isPresent()) {
+                        return new ResponseEntity<>(user.get().toJSON().toString(),HttpStatus.OK);
+                    }
+                    return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PutMapping("/users/unlock")
+    private ResponseEntity<String> unlock(@RequestParam Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(jwt.validateJWT(token) && JWT.isAdmin(token)) {
+            if (userService.unlockUserById(id)) {
+                try {
+                    Optional<User> user = userRepository.findById(id);
+                    if (user.isPresent()) {
+                        return new ResponseEntity<>(user.get().toJSON().toString(), HttpStatus.OK);
+                    }
+                    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
     }
 
 }

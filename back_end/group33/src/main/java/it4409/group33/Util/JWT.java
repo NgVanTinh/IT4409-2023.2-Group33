@@ -1,10 +1,19 @@
 package it4409.group33.Util;
 
+import it4409.group33.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 import java.util.Objects;
+
+@Component
 public class JWT {
+    @Autowired
+    public UserService userService;
     private static final String SECRET_KEY = "5a14345e0beabc059a0478ad735c40114d7eb8d96776c22b5538ed6a6a95a24b";
     private static final long EXPIRATION_TIME = 360000000;
 
@@ -33,7 +42,11 @@ public class JWT {
         }
     }
 
-    public static boolean validateJWT(String token) {
+    public boolean validateJWT(String token) {
+        Long id = Long.valueOf(getUserId(token));
+        if(!userService.isActived(id)) {
+            return false;
+        }
         try {
             if (token.startsWith("Bearer ")) {
                 token = token.substring(7);

@@ -1,5 +1,6 @@
 package it4409.group33.Controller;
 
+import com.zaxxer.hikari.util.SuspendResumeLock;
 import it4409.group33.Config.VnpayConfig;
 import it4409.group33.Model.Order;
 import it4409.group33.Repository.OrderRepository;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/payment")
 public class PaymentController {
 
     @Autowired
@@ -36,14 +36,14 @@ public class PaymentController {
 
     @Autowired
     private OrderService orderService;
-    @GetMapping("/create")
+    @GetMapping("/payment/create")
     public ResponseEntity<String> createPayment(@RequestParam Long orderId,HttpServletRequest request) throws NoSuchAlgorithmException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
         return new ResponseEntity<>(vnpayService.createPaymentUrl(order,request),HttpStatus.OK);
     }
 
-    @GetMapping("/vnpay_return")
+    @GetMapping("/payment/vnpay_return")
     public ResponseEntity<String> paymentReturn(HttpServletRequest request) {
         Map<String, String> vnp_Params = new HashMap<>();
         Map<String, String[]> requestParams = request.getParameterMap();
@@ -87,6 +87,16 @@ public class PaymentController {
             String x = "{\"code\":\"01\",\"message\":\"failure\"}";
             return new ResponseEntity<>(x, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/IPN")
+    public String handleVNPayIPN(@RequestParam Map<String, String> params) {
+        StringBuilder response = new StringBuilder("Received parameters: \n");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            response.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
+        }
+        System.out.println(response.toString());
+        return response.toString();
     }
 }
 

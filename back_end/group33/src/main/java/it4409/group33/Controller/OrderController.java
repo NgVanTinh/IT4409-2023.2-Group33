@@ -29,9 +29,14 @@ public class OrderController {
     @Autowired
     private VnpayService vnpayService;
 
+    @Autowired
+    private JWT jwt;
+    
+    
+
     @PostMapping("/order")
     public ResponseEntity<String> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody String requestBody, HttpServletRequest request) {
-        if(token != null && JWT.validateJWT(token)) {
+        if(token != null && jwt.validateJWT(token)) {
             Long userId = Long.valueOf(Objects.requireNonNull(JWT.getUserId(token)));
             try{
                 Order order = orderService.createOrderFromCart(userId,requestBody);
@@ -42,7 +47,7 @@ public class OrderController {
                 JSONObject req = new JSONObject(requestBody);
                 String method = req.getString("method");
                 if (method.equals("VNPay")) {
-                    String VNPayURL = vnpayService.createPaymentUrl(order,request);
+                    String VNPayURL = vnpayService.createPaymentUrlX(order,request);
                     res.put("payURL",VNPayURL);
                 } else {
                     res.put("payURL","");
@@ -70,7 +75,7 @@ public class OrderController {
 
     @GetMapping("/orders/user")
     public ResponseEntity<String> getOrdersByUserId(@RequestParam(required = false) Order.OrderStatus status,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws JSONException {
-        if(token != null && JWT.validateJWT(token)) {
+        if(token != null && jwt.validateJWT(token)) {
             Long userId = Long.valueOf(JWT.getUserId(token));
             JSONArray res = new JSONArray();
             List<Order> orders;
@@ -93,7 +98,7 @@ public class OrderController {
 
     @PutMapping("/orders/{orderId}/pay")
     public ResponseEntity<Order> updateOrderStatusToPaid(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isUserOrAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUserOrAdmin(token)) {
             Order order;
             try {
                 order = orderService.updateOrderStatusToPaid(orderId);
@@ -116,7 +121,7 @@ public class OrderController {
 
     @PutMapping("/orders/{orderId}/ship")
     public ResponseEntity<Order> updateOrderStatusToShipping(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
             Order order;
             try {
                 order = orderService.updateOrderStatusToShipping(orderId);
@@ -138,7 +143,7 @@ public class OrderController {
 
     @PutMapping("/orders/{orderId}/deliver")
     public ResponseEntity<Order> updateOrderStatusToDelivered(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
             Order order;
             try {
                 order = orderService.updateOrderStatusToDelivered(orderId);
@@ -160,7 +165,7 @@ public class OrderController {
 
     @PutMapping("/orders/{orderId}/completed")
     public ResponseEntity<Order> updateOrderStatusToCompleted(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isUser(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUser(token)) {
             Order order;
             try {
                 order = orderService.updateOrderStatusToCompleted(orderId);
@@ -182,7 +187,7 @@ public class OrderController {
 
     @PutMapping("/orders/{orderId}/cancelled")
     public ResponseEntity<Order> updateOrderStatusToCancelled(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isUser(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUser(token)) {
             Order order;
             try {
                 order = orderService.updateOrderStatusToCancelled(orderId);
@@ -204,7 +209,7 @@ public class OrderController {
 
     @PutMapping("/orders/{orderId}/refunded")
     public ResponseEntity<Order> updateOrderStatusToRefunded(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isUser(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUser(token)) {
             Order order;
             try {
                 order = orderService.updateOrderStatusToRefunded(orderId);
@@ -255,7 +260,7 @@ public class OrderController {
 
     @GetMapping("/orders/{orderId}")
     public ResponseEntity<Order> viewOrder(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && JWT.validateJWT(token) && JWT.isUserOrAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUserOrAdmin(token)) {
             Order order = orderService.findById(orderId);
             if(order != null) {
                 return new ResponseEntity<>(order,HttpStatus.OK);
