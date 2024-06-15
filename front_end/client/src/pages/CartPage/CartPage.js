@@ -19,7 +19,7 @@ import { getCookie } from "../../helpers/cookie";
 import Loader from "../../components/Loader/Loader";
 import OrderModal from "../../components/Order/OrderModal";
 import Swal from "sweetalert2";
-import { createOrder } from "../../store/orderSlice";
+import { createOrder, createVNPAYPayment } from "../../store/orderSlice";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -50,16 +50,29 @@ export default function CartPage() {
   const handleOrderSubmit = async (orderData) => {
     console.log(orderData);
     try {
-      await dispatch(createOrder(orderData));
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Đặt hàng thành công",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      dispatch(fetchUserCart(userId));
-      navigate(`/infoUser/${userId}`);
+      const orderResponse = await dispatch(createOrder(orderData)).unwrap();
+
+      if (orderData.method === "VNPay") {
+        const orderId = orderResponse.id;
+        const paymentResponse = await dispatch(
+          createVNPAYPayment(orderId)
+        ).unwrap();
+        if (paymentResponse.payURL) {
+          window.location.href = paymentResponse.payURL;
+          dispatch(fetchUserCart(userId));
+          return;
+        }
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Đặt hàng thành công",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        dispatch(fetchUserCart(userId));
+        navigate(`/infoUser/${userId}`);
+      }
     } catch (error) {
       Swal.fire({
         position: "center",

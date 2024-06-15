@@ -6,6 +6,7 @@ const initialState = {
   orders: [],
   loading: false,
   error: null,
+  paymentInfo: {},
 };
 
 // Create a order
@@ -60,6 +61,33 @@ export const fetchOrdersByUser = createAsyncThunk(
   }
 );
 
+export const createVNPAYPayment = createAsyncThunk(
+  "orders/createVNPAYPayment",
+  async (orderId, { getState, rejectWithValue }) => {
+    try {
+      const token = getCookie("token");
+      const response = await fetch(
+        `${BASE_URL_2}payment/create?orderId=${orderId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Could not process payment with VNPAY");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Định nghĩa orderSlice
 const orderSlice = createSlice({
   name: "orders",
@@ -86,6 +114,17 @@ const orderSlice = createSlice({
         state.orders = action.payload;
       })
       .addCase(fetchOrdersByUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createVNPAYPayment.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createVNPAYPayment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.paymentInfo = action.payload;
+      })
+      .addCase(createVNPAYPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

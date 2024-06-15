@@ -1,4 +1,5 @@
 import InfoUser from "../components/InfoUser/InfoUser";
+import PaymentCallback from "../components/PaymentCallback/PaymentCallback";
 import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault";
 import GetOtpPage from "../pages/GetOtpPage/GetOtpPage";
@@ -42,6 +43,10 @@ export const routes = [
       {
         path: "infoUser/:id",
         element: <InfoUser />,
+      },
+      {
+        path: "payment/vnpay_return",
+        element: <PaymentCallback />,
       },
     ],
   },

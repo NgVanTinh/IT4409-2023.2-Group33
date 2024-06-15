@@ -55,7 +55,7 @@ export default function InfoUser() {
       key: "products",
       dataIndex: "products",
       align: "center",
-
+      width: 400,
       render: (products) => (
         <div className="productContainer">
           {products.map((product) => (
@@ -84,7 +84,7 @@ export default function InfoUser() {
       render: (tag) => {
         if (tag === "CREATED") {
           return <Tag color="blue">Chờ xác nhận</Tag>;
-        } else if (tag === "WAITTING-SHIPMENT") {
+        } else if (tag === "AWAITING_SHIPMENT") {
           return <Tag color="gold">Đang giao hàng</Tag>;
         }
       },
@@ -110,6 +110,7 @@ export default function InfoUser() {
       dataIndex: "method",
       key: "method",
       align: "center",
+      width: 200,
       render: (method) => {
         if (method === "COD") {
           return <Tag color="cyan">Thanh toán khi nhận hàng</Tag>;
