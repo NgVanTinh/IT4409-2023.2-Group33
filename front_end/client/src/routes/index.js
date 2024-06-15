@@ -1,3 +1,4 @@
+import InfoUser from "../components/InfoUser/InfoUser";
 import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault";
 import GetOtpPage from "../pages/GetOtpPage/GetOtpPage";
@@ -37,6 +38,10 @@ export const routes = [
       {
         path: "search/:searchKeyword",
         element: <Search />,
+      },
+      {
+        path: "infoUser/:id",
+        element: <InfoUser />,
       },
     ],
   },

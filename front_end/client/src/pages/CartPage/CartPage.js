@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./CartPage.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { shopping_cart } from "../../utils/images";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { formatPrice } from "../../utils/helpers";
 import {
   getAllCarts,
@@ -23,6 +23,7 @@ import { createOrder } from "../../store/orderSlice";
 
 export default function CartPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const carts = useSelector(getAllCarts);
   const { itemsCount, totalAmount, loading } = useSelector(
     (state) => state.cart
@@ -47,6 +48,7 @@ export default function CartPage() {
 
   const [showOrderModal, setShowOrderModal] = useState(false);
   const handleOrderSubmit = async (orderData) => {
+    console.log(orderData);
     try {
       await dispatch(createOrder(orderData));
       Swal.fire({
@@ -56,6 +58,8 @@ export default function CartPage() {
         showConfirmButton: false,
         timer: 1500,
       });
+      dispatch(fetchUserCart(userId));
+      navigate(`/infoUser/${userId}`);
     } catch (error) {
       Swal.fire({
         position: "center",
@@ -199,14 +203,11 @@ export default function CartPage() {
                 </span>
               </div>
               <div>
-                <button className="checkout-btn text-white bg-orange fs-16 mx-3">
-                  Thanh toán qua VNPay
-                </button>
                 <button
                   className="checkout-btn text-white bg-orange fs-16"
                   onClick={() => setShowOrderModal(true)}
                 >
-                  Đặt hàng
+                  Thanh toán
                 </button>
 
                 {showOrderModal && (

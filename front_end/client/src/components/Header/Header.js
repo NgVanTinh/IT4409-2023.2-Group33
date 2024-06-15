@@ -1,6 +1,6 @@
 import React from "react";
 import "./Header.scss";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import { FaFacebook, FaTiktok, FaQuestion } from "react-icons/fa6";
 import { getCookie } from "../../helpers/cookie";
@@ -18,7 +18,12 @@ export default function Header() {
             <div className="header-cnt-top-l">
               <ul className="flex top-links align-center">
                 <li className="flex align-center">
-                  <span fs-13>{username}</span>
+                  <NavLink
+                    to={`/infoUser/${id}`}
+                    className="top-link-itm fs-13"
+                  >
+                    {username}
+                  </NavLink>
                   <ul className="social-links flex align-center">
                     <li className="mx-2">
                       <a

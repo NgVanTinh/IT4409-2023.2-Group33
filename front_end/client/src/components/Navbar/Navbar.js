@@ -37,7 +37,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (userId) dispatch(fetchUserCart(userId));
-  }, [dispatch, userId]);
+  }, [dispatch, userId, itemsCount]);
 
   return (
     <nav className="navbar">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Input } from "antd";
+import { Modal, Button, Form, Input, Select } from "antd";
 import "./OrderModal.scss";
+const { Option } = Select;
 
 function OrderModal({ onClose, onSubmit }) {
   const [orderForm, setOrderForm] = useState({
@@ -9,7 +10,8 @@ function OrderModal({ onClose, onSubmit }) {
     ward: "",
     district: "",
     city: "",
-    province: "",
+    phone: "",
+    method: "COD",
   });
 
   const handleFormChange = (e) => {
@@ -20,8 +22,26 @@ function OrderModal({ onClose, onSubmit }) {
     }));
   };
 
+  const handleSelectChange = (value, name) => {
+    setOrderForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = () => {
-    onSubmit(orderForm);
+    const formattedData = {
+      address: {
+        number: orderForm.number,
+        street: orderForm.street,
+        ward: orderForm.ward,
+        district: orderForm.district,
+        city: orderForm.city,
+      },
+      phone: orderForm.phone,
+      method: orderForm.method,
+    };
+    onSubmit(formattedData);
     onClose();
   };
 
@@ -70,12 +90,21 @@ function OrderModal({ onClose, onSubmit }) {
             onChange={handleFormChange}
           />
         </Form.Item>
-        <Form.Item label="Tỉnh" name="province">
+        <Form.Item label="Số điện thoại" name="phone">
           <Input
-            name="province"
+            name="phone"
             value={orderForm.province}
             onChange={handleFormChange}
           />
+        </Form.Item>
+        <Form.Item label="Phương thức thanh toán" name="method">
+          <Select
+            defaultValue={orderForm.method}
+            onChange={(value) => handleSelectChange(value, "method")}
+          >
+            <Option value="COD">Thanh toán khi nhận hàng</Option>
+            <Option value="VNPay">Thanh toán trực tiếp qua VNPay</Option>
+          </Select>
         </Form.Item>
       </Form>
     </Modal>
