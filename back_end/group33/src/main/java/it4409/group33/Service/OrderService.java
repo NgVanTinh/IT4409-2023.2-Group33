@@ -19,22 +19,30 @@ import java.util.*;
 public class OrderService {
 
     @Autowired
-    private CartRepository cartRepository;
+    private CartService cartService;
 
     @Autowired
     private OrderRepository orderRepository;
 
     @Transactional
-    public Order createOrderFromCart(Long userId, String addressJSON) throws JSONException {
-
-        JSONObject X = new JSONObject(addressJSON);
-        String address = X.toString();
+    public Order createOrderFromCart(Long userId, String request) throws JSONException {
+        JSONObject X = new JSONObject(request);
+        String address = X.getJSONObject("address").toString();
         if(address == null) {
             throw new NullPointerException("address null");
         }
-        Cart cart = cartRepository.findByUserId(userId);
+        String phone = X.getString("phone");
+        String method = X.getString("method");
+        if(phone == null) {
+            throw new NullPointerException("phone null");
+        }
+
+        Cart cart = cartService.getUserCartById(userId);
         if (cart == null) {
             throw new RuntimeException("Cart not found for user id: " + userId);
+        }
+        if (cart.getTotalProducts() == 0) {
+            return null;
         }
         Order order = new Order();
         order.setProductJsonArray(cart.getProductJsonArray());
@@ -46,8 +54,12 @@ public class OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Order.OrderStatus.CREATED);
         order.setAddressJSON(address);
+        order.setPhone(phone);
+        order.setMethod(method);
         orderRepository.save(order);
-        cartRepository.delete(cart);
+        if(!cartService.clearCart(cart.getUserId())) {
+            throw new RuntimeException("can not clear cart");
+        }
         return order;
     }
 
@@ -65,6 +77,11 @@ public class OrderService {
 
     public List<Order> getOrdersByUserIdAndStatus(Long userId,Order.OrderStatus status) {
         return orderRepository.findByUserIdAndStatus(userId,status);
+    }
+
+    public Order findById(Long id) {
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+        return optionalOrder.orElse(null);
     }
 
     public Order updateOrderStatusToPaid(Long orderId) {

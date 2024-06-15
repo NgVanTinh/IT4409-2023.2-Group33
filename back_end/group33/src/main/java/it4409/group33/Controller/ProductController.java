@@ -269,7 +269,7 @@ public class ProductController {
         return response.toString();
     }
 
-    @PostMapping("test")
+    @PostMapping("/test")
     public ResponseEntity<Product> createProduct(@RequestParam("thumbnail") MultipartFile thumbnail,
                                                  @RequestParam("image") List<MultipartFile> images,
                                                  @RequestParam("title") String title,

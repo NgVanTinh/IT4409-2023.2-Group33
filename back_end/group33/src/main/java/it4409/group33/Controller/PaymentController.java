@@ -37,11 +37,10 @@ public class PaymentController {
     @Autowired
     private OrderService orderService;
     @GetMapping("/create")
-    public ResponseEntity<String> createPayment(@RequestParam Long orderId) throws NoSuchAlgorithmException {
+    public ResponseEntity<String> createPayment(@RequestParam Long orderId,HttpServletRequest request) throws NoSuchAlgorithmException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
-        String res = "{\"payURL\":\"" + vnpayService.createPaymentUrl(order) + "\",\"total\":" + String.valueOf(order.getTotal()) + "\"}";
-        return new ResponseEntity<>(res,HttpStatus.OK);
+        return new ResponseEntity<>(vnpayService.createPaymentUrl(order,request),HttpStatus.OK);
     }
 
     @GetMapping("/vnpay_return")

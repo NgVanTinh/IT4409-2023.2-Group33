@@ -2,6 +2,7 @@ package it4409.group33.Controller;
 
 import it4409.group33.Model.User;
 import it4409.group33.Repository.UserRepository;
+import it4409.group33.Service.CartService;
 import it4409.group33.Util.EmailSender;
 import it4409.group33.Util.JWT;
 import org.json.JSONException;
@@ -13,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it4409.group33.Util.Hash.sha256;
 import static it4409.group33.Util.TimeStamp.genOTP;
@@ -28,6 +26,9 @@ public class UserController {
 
     @Autowired
     private EmailSender emailSender;
+
+    @Autowired
+    private CartService cartService;
 
     @PostMapping("/auth/login")
     public ResponseEntity<String> auth(@RequestBody Map<String, String> requestBody) {
@@ -50,6 +51,7 @@ public class UserController {
             response.put("id",String.valueOf(user.getId()));
             response.put("username",username);
             response.put("role",user.getRole());
+            response.put("email",user.getEmail());
             return ResponseEntity.ok(response.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -188,6 +190,7 @@ public class UserController {
         JSONObject jsonBody;
         User user;
         JSONObject response = new JSONObject();
+        int code;
 
         try {
             jsonBody = new JSONObject(requestBody);
@@ -208,6 +211,10 @@ public class UserController {
                                 jsonBody.getString("address"));
 
                         userRepository.save(user);
+                        code = 100;
+                        if(!cartService.createEmptyCart(user.getId())) {
+                            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                        }
                         response.put("id",user.getId());
                         response.put("message","Sign Up complete");
                         response.put("username",jsonBody.getString("username"));
@@ -215,13 +222,17 @@ public class UserController {
                         return new ResponseEntity<>(response.toString(), HttpStatus.CREATED);
                     } else {
                         response.put("message","Invalid phone");
+                        code = 101;
                     }
                 } else {
                     response.put("message","Invalid Email");
+                    code = 102;
                 }
             } else {
                 response.put("message","Invalid Username");
+                code = 102;
             }
+            response.put("code",code);
         } catch (JSONException e) {
             e.printStackTrace();
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -247,6 +258,40 @@ public class UserController {
         }
         return new ResponseEntity<>(userDicts,HttpStatus.OK);
     }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<String> getUser(@PathVariable Long id,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && JWT.validateJWT(token)) {
+            Long userId = Long.valueOf(JWT.getUserId(token));
+            if(userId.equals(id) || JWT.isAdmin(token)) {
+                Optional<User> user = userRepository.findById(id);
+                if(user.isPresent()) {
+                    User u = user.get();
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("id",u.getId());
+                        jsonObject.put("address",u.getAddress());
+                        jsonObject.put("email",u.getEmail());
+                        jsonObject.put("fullname",u.getFullName());
+                        jsonObject.put("phone",u.getPhone());
+                        jsonObject.put("username",u.getUsername());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                    return new ResponseEntity<>(jsonObject.toString(),HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
+
+    }
+
 
     @GetMapping("/users/number-users")
     private ResponseEntity<String> count() {

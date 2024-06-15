@@ -2,8 +2,13 @@ package it4409.group33.Service;
 
 import it4409.group33.Config.VnpayConfig;
 import it4409.group33.Model.Order;
+import it4409.group33.Repository.OrderRepository;
 import it4409.group33.Util.VNPayUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -14,20 +19,25 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static it4409.group33.Util.VNPayUtil.getIpAddress;
+
 @Service
 public class VnpayService {
 
     @Autowired
     private VnpayConfig vnpayConfig;
 
-    public String createPaymentUrl(Order order) {
+    @Autowired
+    private OrderRepository orderRepository;
+
+    public String createPaymentUrl(Order order, HttpServletRequest request) {
         try {
             String vnp_Version = "2.1.0";
             String vnp_Command = "pay";
             String vnp_TxnRef = VNPayUtil.getRandomNumber(8);
-            String vnp_IpAddr = "127.0.0.1"; // Example IP address, replace with actual IP
+            String vnp_IpAddr = getIpAddress(request);
 
-            int amount = (int) (order.getTotal() * 100); // Amount in VND * 100
+            long amount = (long) (order.getDiscountedPrice() * 100); // Amount in VND * 100
             Map<String, String> vnp_Params = new HashMap<>();
             vnp_Params.put("vnp_Version", vnp_Version);
             vnp_Params.put("vnp_Command", vnp_Command);
@@ -45,7 +55,7 @@ public class VnpayService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
             String vnp_CreateDate = formatter.format(cld.getTime());
             vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-            cld.add(Calendar.MINUTE, 15);
+            cld.add(Calendar.MINUTE, 435);
             String vnp_ExpireDate = formatter.format(cld.getTime());
             vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
@@ -78,10 +88,14 @@ public class VnpayService {
             queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
             String paymentUrl = vnpayConfig.getVnpUrl() + "?" + queryUrl;
 
-            return paymentUrl;
+            JSONObject res = order.toJson();
+            res.put("payURL",paymentUrl);
+            return res.toString();
 
         } catch (Exception ex) {
-            return "";
+            ex.printStackTrace();
+            return null;
         }
     }
+
 }

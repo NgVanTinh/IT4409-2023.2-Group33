@@ -6,7 +6,7 @@ import java.util.Base64;
 import java.util.Objects;
 public class JWT {
     private static final String SECRET_KEY = "5a14345e0beabc059a0478ad735c40114d7eb8d96776c22b5538ed6a6a95a24b";
-    private static final long EXPIRATION_TIME = 36000000;
+    private static final long EXPIRATION_TIME = 360000000;
 
     public static String createJWT(String userId, String userName, String role) {
         try {
@@ -35,6 +35,10 @@ public class JWT {
 
     public static boolean validateJWT(String token) {
         try {
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+
             String[] parts = token.split("\\.");
             if (parts.length != 3) {
                 return false;

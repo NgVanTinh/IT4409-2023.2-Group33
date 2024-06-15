@@ -1,8 +1,13 @@
 package it4409.group33.Model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "orders")
@@ -19,6 +24,8 @@ public class Order {
 
     private int totalQuantity;
     private int totalProducts;
+    private String phone;
+    private String method;
 
     private LocalDateTime orderDate;
 
@@ -30,7 +37,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String productJsonArray, Long userId, double total, double discountedPrice, int totalQuantity, int totalProducts, LocalDateTime orderDate, OrderStatus status, String addressJSON) {
+    public Order(String productJsonArray, Long userId, double total, double discountedPrice, int totalQuantity, int totalProducts, LocalDateTime orderDate, OrderStatus status, String addressJSON, String phone, String method) {
         this.productJsonArray = productJsonArray;
         this.userId = userId;
         this.total = total;
@@ -40,6 +47,12 @@ public class Order {
         this.orderDate = orderDate;
         this.status = status;
         this.addressJSON = addressJSON;
+        this.phone = phone;
+        this.method = method;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public OrderStatus getStatus() {
@@ -116,6 +129,28 @@ public class Order {
 
     public LocalDateTime getOrderDate() {
         return orderDate;
+    }
+
+    public JSONObject toJson() throws JSONException {
+        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+        JSONObject res = new JSONObject();
+        res.put("id",this.id);
+        res.put("productJsonArray",this.productJsonArray);
+        res.put("userId",this.userId);
+        res.put("total",this.total);
+        res.put("discountedPrice",this.discountedPrice);
+        res.put("totalQuantity",this.totalQuantity);
+        res.put("totalProducts",this.totalProducts);
+        res.put("orderDate",this.orderDate.format(FORMATTER));
+        res.put("status",this.status);
+        res.put("addressJSON",this.addressJSON);
+        res.put("phone",this.phone);
+        res.put("method",this.method);
+        return res;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public enum OrderStatus {

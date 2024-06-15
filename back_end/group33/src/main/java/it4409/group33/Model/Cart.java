@@ -23,7 +23,8 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Long userId,String productJsonArray, double total, double discountedPrice, int totalQuantity, int totalProducts) {
+    public Cart(Long id,Long userId,String productJsonArray, double total, double discountedPrice, int totalQuantity, int totalProducts) {
+        this.id = id;
         this.productJsonArray = productJsonArray;
         this.total = total;
         this.discountedPrice = discountedPrice;
@@ -33,6 +34,9 @@ public class Cart {
     }
 
     public JSONArray getJSONArrayObject() {
+        if(productJsonArray == null) {
+            return null;
+        }
         try {
             return new JSONArray(productJsonArray);
         } catch (JSONException e) {
@@ -63,6 +67,10 @@ public class Cart {
 
     public void setJSONArrayObject(JSONArray jsonArray) {
         this.productJsonArray = jsonArray.toString();
+    }
+
+    public void setJSONArrayObject(String jsonArray) {
+        this.productJsonArray = jsonArray;
     }
 
     public Long getId() {
