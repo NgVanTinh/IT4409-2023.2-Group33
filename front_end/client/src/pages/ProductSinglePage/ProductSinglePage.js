@@ -27,6 +27,7 @@ import Swal from "sweetalert2";
 import { Col, Row } from "antd";
 import Rating from "../../components/Rating/Rating";
 import ProductSimilar from "../../components/ProductSimilar/ProductSimilar";
+import { getCookie } from "../../helpers/cookie";
 
 export default function ProductSinglePage() {
   const { id } = useParams();
@@ -34,6 +35,7 @@ export default function ProductSinglePage() {
   const product = useSelector(getProductSingle);
   const productSingleStatus = useSelector(getProductSingleStatus);
   const [quantity, setQuantity] = useState(1);
+  const token = getCookie("token");
 
   // Similar products
   const similarProducts = useSelector((state) => state.product.similarProducts);
@@ -248,20 +250,24 @@ export default function ProductSinglePage() {
                 </div>
 
                 <div className="btns">
-                  <button className="add-to-cart-btn btn">
-                    <FaShoppingCart />
-                    <span
-                      className="btn-text mx-2"
-                      onClick={() => {
-                        addToCartHandler(product);
-                      }}
-                    >
-                      Thêm vào giỏ hàng
-                    </span>
-                  </button>
-                  <button className="buy-now btn mx-3">
-                    <span className="btn-text">Mua ngay</span>
-                  </button>
+                  {token ? (
+                    <button className="add-to-cart-btn btn">
+                      <FaShoppingCart />
+                      <span
+                        className="btn-text mx-2"
+                        onClick={() => {
+                          addToCartHandler(product);
+                        }}
+                      >
+                        Thêm vào giỏ hàng
+                      </span>
+                    </button>
+                  ) : (
+                    <button className="add-to-cart-btn btn">
+                      <FaShoppingCart />
+                      <span className="btn-text mx-2">Thêm vào giỏ hàng</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

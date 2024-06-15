@@ -2,12 +2,17 @@ import React from "react";
 import "./ProductSimilar.scss";
 import Rating from "../Rating/Rating";
 import { formatPrice } from "../../utils/helpers";
+import { Link } from "react-router-dom";
 
 export default function ProductSimilar({ products }) {
   return (
     <div className="product-similar">
       {products.map((product, index) => (
-        <div key={product.id} className="item-similar">
+        <Link
+          to={`/product/${product.id}`}
+          key={product.id}
+          className="item-similar"
+        >
           <div className="item-similar-img">
             <img src={product.thumbnail} alt={product.title} />
           </div>
@@ -30,7 +35,7 @@ export default function ProductSimilar({ products }) {
               />
             </p>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
