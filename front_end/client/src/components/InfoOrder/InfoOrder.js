@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrdersByUser } from "../../store/orderSlice";
-import { Table, Tag, Image } from "antd";
+import { Table, Tag, Image, Input } from "antd";
 import "./InfoOrder.scss";
 import { formatPrice } from "../../utils/helpers";
 import moment from "moment";
@@ -12,6 +12,7 @@ const InfoOrder = () => {
   const dispatch = useDispatch();
   const orders = useSelector((state) => state.order.orders);
   const [dataSource, setDataSource] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     if (userId) {
@@ -20,6 +21,14 @@ const InfoOrder = () => {
   }, [dispatch, userId]);
 
   useEffect(() => {
+    if (!searchText) {
+      processOrders(orders);
+    } else {
+      handleSearchProduct(searchText);
+    }
+  }, [orders, searchText]);
+
+  const processOrders = (orders) => {
     const reversedOrders = [...orders].reverse();
     const processedData = reversedOrders.map((order, index) => {
       const products = JSON.parse(order.productJsonArray);
@@ -44,7 +53,21 @@ const InfoOrder = () => {
     });
 
     setDataSource(processedData);
-  }, [orders]);
+  };
+
+  const handleSearchProduct = (value) => {
+    setSearchText(value);
+    if (!value) {
+      processOrders(orders);
+    } else {
+      const filteredData = orders.filter((order) =>
+        JSON.parse(order.productJsonArray).some((product) =>
+          product.title.toLowerCase().includes(value.toLowerCase())
+        )
+      );
+      processOrders(filteredData);
+    }
+  };
 
   const columns = [
     {
@@ -85,6 +108,12 @@ const InfoOrder = () => {
       dataIndex: "status",
       align: "center",
       width: 100,
+      filters: [
+        { text: "Chờ xác nhận", value: "CREATED" },
+        { text: "Đang giao hàng", value: "AWAITING_SHIPMENT" },
+        // Thêm các trạng thái khác tương ứng nếu có
+      ],
+      onFilter: (value, record) => record.status === value,
       render: (tag) => {
         if (tag === "CREATED") {
           return <Tag color="blue">Chờ xác nhận</Tag>;
@@ -115,6 +144,12 @@ const InfoOrder = () => {
       key: "method",
       align: "center",
       width: 100,
+      filters: [
+        { text: "Thanh toán khi nhận hàng", value: "COD" },
+        { text: "Thanh toán bằng VNPAY", value: "VNPay" },
+        // Thêm các hình thức thanh toán khác nếu có
+      ],
+      onFilter: (value, record) => record.method === value,
       render: (method) => {
         if (method === "COD") {
           return <Tag color="cyan">Thanh toán khi nhận hàng</Tag>;
@@ -129,13 +164,44 @@ const InfoOrder = () => {
       key: "discountedPrice",
       align: "center",
       width: 150,
+      sorter: (a, b) => a.discountedPrice - b.discountedPrice,
+      sortDirections: ["descend", "ascend"],
+      filters: [
+        { text: "Dưới 1 triệu", value: "under-1m" },
+        { text: "1 triệu đến 5 triệu", value: "1m-to-5m" },
+        { text: "Trên 5 triệu", value: "over-5m" },
+      ],
+      onFilter: (value, record) => {
+        switch (value) {
+          case "under-1m":
+            return record.discountedPrice < 1000000;
+          case "1m-to-5m":
+            return (
+              record.discountedPrice >= 1000000 &&
+              record.discountedPrice <= 5000000
+            );
+          case "over-5m":
+            return record.discountedPrice > 5000000;
+          default:
+            return true;
+        }
+      },
       render: (discountedPrice) => (
         <span className="price-highlight">{formatPrice(discountedPrice)}</span>
       ),
     },
   ];
+
   return (
-    <div className=" my-3">
+    <div className="my-3">
+      <Input.Search
+        placeholder="Tìm sản phẩm..."
+        onSearch={handleSearchProduct}
+        style={{ marginBottom: 20, width: 200 }}
+        allowClear
+        value={searchText}
+        onChange={(e) => handleSearchProduct(e.target.value)}
+      />
       <Table
         dataSource={dataSource}
         columns={columns}

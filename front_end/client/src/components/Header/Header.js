@@ -3,6 +3,7 @@ import "./Header.scss";
 import { Link, NavLink } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import { FaFacebook, FaTiktok, FaQuestion } from "react-icons/fa6";
+import { FaQuestionCircle } from "react-icons/fa";
 import { getCookie } from "../../helpers/cookie";
 
 export default function Header() {
@@ -18,9 +19,12 @@ export default function Header() {
             <div className="header-cnt-top-l">
               <ul className="flex top-links align-center">
                 <li className="flex align-center">
-                  <NavLink to={`/infoUser`} className="top-link-itm fs-13">
-                    {username}
-                  </NavLink>
+                  <Link to="#" className="top-link-itm">
+                    <span className="top-link-itm-ico mx-2">
+                      <FaQuestionCircle />
+                    </span>
+                    <span className="top-link-itm-txt">Bạn cần hỗ trợ </span>
+                  </Link>
                   <ul className="social-links flex align-center">
                     <li className="mx-2">
                       <a
@@ -45,21 +49,20 @@ export default function Header() {
 
             <div className="header-cnt-top-r">
               <ul className="top-links flex align-center">
-                <li>
-                  <Link to="/" className="top-link-itm">
-                    <span className="top-link-itm-ico mx-2">
-                      <FaQuestion />
-                    </span>
-                    <span className="top-link-itm-txt">Bạn cần hỗ trợ</span>
-                  </Link>
-                </li>
-                <li className="vert-line"></li>
                 {token ? (
-                  <li>
-                    <Link to={"/logout"}>
-                      <span className="top-link-itm-txt">Đăng xuất</span>
-                    </Link>
-                  </li>
+                  <>
+                    <li>
+                      <NavLink to={`/infoUser`} className="top-link-itm fs-14">
+                        {username}
+                      </NavLink>
+                    </li>
+                    <li className="vert-line"></li>
+                    <li>
+                      <Link to={"/logout"}>
+                        <span className="top-link-itm-txt">Đăng xuất</span>
+                      </Link>
+                    </li>
+                  </>
                 ) : (
                   <>
                     <li>

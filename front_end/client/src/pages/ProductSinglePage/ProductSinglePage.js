@@ -117,7 +117,7 @@ export default function ProductSinglePage() {
           ]}
         />
       </div>
-      <div className="product-single">
+      <div className="product-single my-3">
         <div className="container">
           <div className="product-single-content bg-white grid">
             <div className="product-single-l">
