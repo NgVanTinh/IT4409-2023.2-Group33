@@ -61,7 +61,7 @@ const Chart = () => {
             p="30px"
           >
             <Typography variant="h5" fontWeight="600">
-              Campaign
+              Thống kê doanh thu theo doanh mục
             </Typography>
             <Box
               display="flex"

@@ -38,6 +38,8 @@ const OrderPage = () => {
       // console.log(user);
       const formattedDateTime = new Date(`${order.orderDate}`).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false });
       order.createdDate = formattedDateTime;
+      order.total = order.total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+      order.discountedPrice = order.discountedPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     })
     // console.log(ordersData);
     
@@ -75,17 +77,9 @@ const OrderPage = () => {
       flex: 1,
     },
     {
-      field: "total",
-      id: "total",
-      headerName: "Tổng tiền (VNĐ)",
-      headerAlign: "left",
-      cellClassName: "price-column--cell",
-      flex: 1,
-    },
-    {
       field: "discountedPrice",
       id: "discountedPrice",
-      headerName: "Tổng tiền sau giảm (VNĐ)",
+      headerName: "Tổng tiền sau giảm",
       headerAlign: "left",
       cellClassName: "price-column--cell",
       flex: 1,
@@ -99,26 +93,37 @@ const OrderPage = () => {
       flex: 1,
     },
     {
-      id:"action",
+      id:"update",
+      headerName: "Cập nhật trạng thái",
       flex: 1,
-      cellClassName: "status-column--cell",
       renderCell: params => {
         return (
-          <Box>
-            <IconButton aria-label="view" color="primary"
-              onClick={() => {
-                let id = params.row.id ? params.row.id : null;
-                
-                navigate(`/admin/view-order/${id}`)
-              }}
-            >
-              < VisibilityOutlinedIcon />
-            </IconButton> 
-          </Box>
+          <p>hiii</p>
         );
       },
       
-    }
+    },
+    // {
+    //   id:"action",
+    //   flex: 1,
+    //   cellClassName: "status-column--cell",
+    //   renderCell: params => {
+    //     return (
+    //       <Box>
+    //         <IconButton aria-label="view" color="primary"
+    //           onClick={() => {
+    //             let id = params.row.id ? params.row.id : null;
+                
+    //             navigate(`/admin/view-order/${id}`)
+    //           }}
+    //         >
+    //           < VisibilityOutlinedIcon />
+    //         </IconButton> 
+    //       </Box>
+    //     );
+    //   },
+      
+    // }
   ]
   return (
     <>

@@ -35,7 +35,7 @@ const EditProduct = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [productSpecs, setProductSpecs] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const config = {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   };
@@ -92,7 +92,6 @@ const EditProduct = () => {
               { name: 'Thời gian tai nghe', type: 'text' },
               { name: 'Thời gian hộp sạc', type: 'text' },
               { name: 'Cổng sạc', type: 'text' },
-              { name: 'Công nghệ âm thanh', type: 'text' },
               { name: 'Tương thích', type: 'text' },
               { name: 'Tiện ích', type: 'text' },
               { name: 'Hỗ trợ kết nối', type: 'text' },
@@ -114,16 +113,20 @@ const EditProduct = () => {
       },
       {
           id: 'bao-da',
-          name: 'Bao dao',
+          name: 'Bao da',
           specs: [
-              
+              { name: 'Chất liệu', type: 'text' },
+              { name: 'Kích thước', type: 'text' },
+              { name: 'Trọng lượng', type: 'text' },
           ],
       },
       {
           id: 'gia-do',
           name: 'Giá đỡ',
           specs: [
-              
+              { name: 'Chất liệu', type: 'text' },
+              { name: 'Kích thước', type: 'text' },
+              { name: 'Trọng lượng', type: 'text' },
           ],
       },
       {
@@ -148,30 +151,28 @@ const EditProduct = () => {
     brand: "",
     category: "",
     thumbnail: "",
-    image: "",
+    images: "",
     rating: "",
     spec: ""
   });
 
-  const loadCategores = async () => {
-    const result = await axios.get('https://buckytank.shop/products/categories', config);
-    setCategories(result.data);
-    // console.log(result.data);
+  const loadData = async () => {
+    const categories = await axios.get('https://buckytank.shop/products/categories', config);
+    setCategories(categories.data);
+    const product = await axios.get(`https://buckytank.shop/products/${id}`);
+    console.log(product.data);
+    setProduct(product.data);
+    categories.data.map((category) => {
+      if(category.name === product.data.category) {
+        setSelectedCategory(category.id);
+      }
+    })
+      // console.log(selectedCategory)
+      setProductSpecs(JSON.parse(product.data.spec));
+      console.log(productSpecs);
+      // console.log(selectedCategory);
   }
 
-  const loadProduct = async () => {
-      const result = await axios.get(`https://buckytank.shop/products/${id}`);
-      setProduct(result.data);
-      console.log("load product: ", result.data.category);
-      categories && categories.map((category) => {
-        console.log("category: ", category.name)
-        if(category.name === result.data.category) {
-          setSelectedCategory(category.id);
-        }
-      })
-      // console.log(selectedCategory);
-    };
-  
   const handleCategoryChange = (event) => {
     
     const categoryId = event.target.value;
@@ -191,14 +192,18 @@ const EditProduct = () => {
 
   let numRow = 1;
   const currentCategory = Category[selectedCategory - 1];
-  if(currentCategory.name === 'Điện thoại') numRow = 21;
-  else if(currentCategory.name === 'Máy tính bảng') numRow = 19;
-  else if(currentCategory.name === 'Sạc dự phòng') numRow = 21;
-  else if(currentCategory.name === 'Tai nghe') numRow = 19;
-  else if(currentCategory.name === 'Củ sạc') numRow = 16;
-  else if(currentCategory.name === 'Bao da') numRow = 1;
-  else if(currentCategory.name === 'Giá đỡ') numRow = 1;
-  else if(currentCategory.name === 'Dây sạc') numRow = 14; 
+  console.log(currentCategory)
+  if(currentCategory){
+    if(currentCategory.name === 'Điện thoại') numRow = 23;
+    else if(currentCategory.name === 'Máy tính bảng') numRow = 21;
+    else if(currentCategory.name === 'Sạc dự phòng') numRow = 23;
+    else if(currentCategory.name === 'Tai nghe') numRow = 20;
+    else if(currentCategory.name === 'Củ sạc') numRow = 18;
+    else if(currentCategory.name === 'Bao da') numRow = 7;
+    else if(currentCategory.name === 'Giá đỡ') numRow = 7;
+    else if(currentCategory.name === 'Dây sạc') numRow = 16;
+  }
+ 
 
   const onInputChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -239,28 +244,40 @@ const EditProduct = () => {
   const onSubmit = async (e) => {
     // console.log(product)
     e.preventDefault();
-    const str =  JSON.stringify(productSpecs)
-    // console.log(str)
-    const updatedProduct = {...product, spec: str, category: currentCategory.name };
-    // setProduct({...product, spec: str})
-    console.log(updatedProduct);
-    console.log(product);
-    const formData = new FormData();
-    formData.append('title', updatedProduct.title);
-    formData.append('price', updatedProduct.price);
-    formData.append('description', updatedProduct.description);
-    formData.append('discountPercentage', updatedProduct.discountPercentage);
-    formData.append('stock', updatedProduct.stock);
-    formData.append('brand', updatedProduct.brand);
-    formData.append('category', updatedProduct.category);
-    formData.append('rating', updatedProduct.rating);
-    formData.append('spec', updatedProduct.spec);
-    formData.append('thumbnail', updatedProduct.thumbnail);
-    // formData.append('image', updatedProduct.image[0]);
-    // for (let i = 1; i < updatedProduct.image.length; i++) {
-    //   formData.append('image', updatedProduct.image[i]);
+    console.log(productSpecs)
+    await axios.put(`https://buckytank.shop/products/spec/${id}`, productSpecs, config)
+    .then(res => {
+      console.log(res.data)
+    })
+    .catch(err => {
+        console.log(err);
+    })
+    navigate(`/admin/view-product/${id}`);
+
+    // const str =  JSON.stringify(productSpecs)
+    // // console.log(str)
+    // const updatedProduct = {...product, spec: str, category: currentCategory.name };
+    // // setProduct({...product, spec: str})
+    // console.log("update product: ", updatedProduct);
+    // // console.log(product);
+    // const formData = new FormData();
+    // formData.append('title', updatedProduct.title);
+    // formData.append('price', updatedProduct.price);
+    // formData.append('description', updatedProduct.description);
+    // formData.append('discountPercentage', updatedProduct.discountPercentage);
+    // formData.append('stock', updatedProduct.stock);
+    // formData.append('brand', updatedProduct.brand);
+    // formData.append('category', updatedProduct.category);
+    // formData.append('rating', updatedProduct.rating);
+    // formData.append('spec', updatedProduct.spec);
+    // formData.append('thumbnail', updatedProduct.thumbnail);
+    // for (let i = 0; i < updatedProduct.images.length; i++) {
+    //   formData.append('image', updatedProduct.images[i]);
     // }
-    
+    // console.log("form data: ", formData);
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
     // await axios.put(`https://buckytank.shop/products/${id}`, formData, config)
     // .then(res => {
     //   toast.info('Cập nhật thành công!', {
@@ -283,8 +300,7 @@ const EditProduct = () => {
   const isString = (value) => typeof value === 'string';
 
   useEffect(() => {
-    loadCategores();
-    loadProduct();
+    loadData();
   },[]);
 
   return (
@@ -300,7 +316,6 @@ const EditProduct = () => {
             required
             id="title"
             label="Tên sản phẩm"
-            autoFocus
             value={product.title}
             InputLabelProps={{ style: { color: 'blue' } }}
             InputProps={{ style: { color: 'black' } }}
@@ -412,6 +427,7 @@ const EditProduct = () => {
         </Grid>
         <Grid item sm={8} >
           <TextField
+            disabled
             fullWidth={true}
             name="spec"
             id="spec"
@@ -424,38 +440,27 @@ const EditProduct = () => {
                 startAdornment: (
                   <InputAdornment position="start">
                     {currentCategory && (
-                      <div>
+                      <div style={{ width: '720px' }}>
                         {currentCategory.specs && currentCategory.specs.map((spec) => (
-                          // <div key={spec.name}>
-                          //   <label>
-                          //     {spec.name}:
-                          //     <input
-                          //       type={spec.type}
-                          //       value={productSpecs[spec.name] || ''}
-                          //       onChange={(e) =>
-                          //         handleSpecChange(spec.name, e.target.value)
-                          //       }
-                          //     />
-                          //   </label>
-                          // </div>
-                          <div>
-                          <TextField
-                          variant="standard"
-                          // fullWidth={true}
-                          width="800px"
-                          multiline
-                          name={spec.name}
-                          required
-                          id={spec.name}
-                          label={spec.name}
-                          autoFocus
-                          value={productSpecs[spec.name] || ''}
-                          InputLabelProps={{ style: { color: 'blue' } }}
-                          InputProps={{ style: { color: 'black' } }}
-                          onChange={(e) =>
-                            handleSpecChange(spec.name, e.target.value)
-                          }
-                          /> 
+                          <div>                              
+                            <Grid sm={12}>
+                              <TextField
+                              sx={{marginBottom: '5px'}}
+                              variant="standard"
+                              fullWidth={true}
+                              multiline
+                              name={spec.name}
+                              required
+                              id={spec.name}
+                              label={spec.name}
+                              value={productSpecs[spec.name] || ''}
+                              InputLabelProps={{ style: { color: 'blue' } }}
+                              InputProps={{ style: { color: 'black' } }}
+                              onChange={(e) =>
+                                handleSpecChange(spec.name, e.target.value)
+                              }
+                              /> 
+                            </Grid>
                           </div>                         
                         ))}
                       </div>
@@ -466,6 +471,7 @@ const EditProduct = () => {
           />
           
         </Grid>
+
         <Grid item sm={8}>
            <TextField
               disabled
@@ -487,7 +493,7 @@ const EditProduct = () => {
                           borderRadius: '10px',
                           border: '1px solid blue',
                           marginRight: '10px',
-                          marginBottom: '10px',
+                          marginBottom: '5px',
                         }}
                       />
                     ) : (
@@ -500,7 +506,7 @@ const EditProduct = () => {
                           borderRadius: '10px',
                           border: '1px solid blue',
                           marginRight: '10px',
-                          marginBottom: '10px',
+                          marginBottom: '5px',
                         }}
                       />
                     )}
@@ -555,6 +561,7 @@ const EditProduct = () => {
                                 borderRadius: '10px',
                                 border: '1px solid blue',
                                 marginRight: '10px',
+                                marginBottom: '5px',
                               }}
                             />
                           
@@ -585,6 +592,7 @@ const EditProduct = () => {
                               borderRadius: '10px',
                               border: '1px solid blue',
                               marginRight: '10px',
+                              marginBottom: '5px'
                             }}
                           />
                         </div>
@@ -599,7 +607,7 @@ const EditProduct = () => {
                         sx={{mt:2}}
                         
                       >
-                        Upload file
+                        Tải tệp
                         <VisuallyHiddenInput type="file" accept="image/*" onChange={onImageChange} />
                       </Button>
                   </InputAdornment>

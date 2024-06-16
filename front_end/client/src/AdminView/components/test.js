@@ -1,155 +1,104 @@
-import React, { useState } from 'react';
-import { Grid, Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/material';
-import InputAdornment from '@mui/material/InputAdornment';
+import React, { useState, useEffect } from 'react';
+import TextField from '@mui/material/TextField'; // Sử dụng Material-UI TextField
 
-const AdminPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [productSpecs, setProductSpecs] = useState({});
+const EditProduct = ({ productId }) => {
+  // State để lưu trữ thông tin sản phẩm
+  const [product, setProduct] = useState({
+    name: '',
+    price: 0,
+    description: '',
+    // Thêm các thuộc tính khác của sản phẩm tại đây
+  });
 
-  
-    const categories = [
-        {
-          id: '8',
-          name: 'Điện thoại',
-          specs: [
-              { name: 'Màn hình', type: 'text' },
-              { name: 'Hệ điều hành', type: 'text' },
-              { name: 'Camera sau', type: 'text' },
-              { name: 'Camera trước', type: 'text' },
-              { name: 'Chip', type: 'text' },
-              { name: 'RAM', type: 'text' },
-              { name: 'Dung lượng lưu trữ', type: 'text' },
-              { name: 'Sim', type: 'text' },
-              { name: 'Pin, Sạc', type: 'text' },
-          ],
-      },
-      {
-          id: '1',
-          name: 'Máy tính bảng',
-          specs: [
-              { name: 'Màn hình', type: 'text' },
-              { name: 'Hệ điều hành', type: 'text' },
-              { name: 'Camera sau', type: 'text' },
-              { name: 'Camera trước', type: 'text' },
-              { name: 'Chip', type: 'text' },
-              { name: 'RAM', type: 'text' },
-              { name: 'Dung lượng lưu trữ', type: 'text' },
-              { name: 'Pin, Sạc', type: 'text' },
-          ],
-      },
-      {
-          id: '2',
-          name: 'Sạc dự phòng',
-          specs: [
-              { name: 'Hiệu suất sạc', type: 'text' },
-              { name: 'Dung lượng pin', type: 'text' },
-              { name: 'Thời gian sạc đầy pin', type: 'text' },
-              { name: 'Nguồn vào', type: 'text' },
-              { name: 'Nguồn ra', type: 'text' },
-              { name: 'Lõi pin', type: 'text' },
-              { name: 'Công nghệ/Tiện ích', type: 'text' },
-              { name: 'Kích thước', type: 'text' },
-              { name: 'Khối lượng', type: 'text' },
-          ],
-      },
-      {
-          id: '3',
-          name: 'Tai nghe',
-          specs: [
-              { name: 'Thời gian tai nghe', type: 'text' },
-              { name: 'Thời gian hộp sạc', type: 'text' },
-              { name: 'Cổng sạc', type: 'text' },
-              { name: 'Công nghệ âm thanh', type: 'text' },
-              { name: 'Tương thích', type: 'text' },
-              { name: 'Tiện ích', type: 'text' },
-              { name: 'Hỗ trợ kết nối', type: 'text' },
-              { name: 'Điều khiển bằng', type: 'text' },
-          ],
-      },
-      {
-          id: '4',
-          name: 'Củ sạc',
-          specs: [
-              { name: 'Model', type: 'text' },
-              { name: 'Chức năng', type: 'text' },
-              { name: 'Đầu vào', type: 'text' },
-              { name: 'Đầu ra', type: 'text' },
-              { name: 'Dòng sạc tối đa', type: 'text' },
-              { name: 'Kích thước', type: 'text' },
-              { name: 'Công nghệ/Tiện ích', type: 'text' },
-          ],
-      },
-      {
-          id: '7',
-          name: 'Dây sạc',
-          specs: [
-              { name: 'Công suất tối đa', type: 'text' },
-              { name: 'Chức năng', type: 'text' },
-              { name: 'Đầu vào', type: 'text' },
-              { name: 'Đầu ra', type: 'text' },
-              { name: 'Jack kết nối', type: 'text' },
-              { name: 'Độ dài dây', type: 'text' },
-          ],
-      }, 
-    ];
-
-
-  const handleCategoryChange = (event) => {
-    const categoryId = event.target.value;
-    setSelectedCategory(categoryId);
-    setProductSpecs({});
+  // Mô phỏng hàm để lấy thông tin sản phẩm từ API hoặc từ local storage
+  const fetchProduct = async () => {
+    // Thay thế bằng logic thực tế để lấy dữ liệu sản phẩm từ backend hoặc local storage
+    try {
+      // Giả định lấy thông tin sản phẩm từ API với productId
+      const response = await fetch(`https://dummyjson.com/products/1`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product.');
+      }
+      const data = await response.json();
+      setProduct(data); // Cập nhật state với thông tin sản phẩm lấy được
+    } catch (error) {
+      console.error('Fetch product error:', error);
+      // Xử lý lỗi hoặc cập nhật state với giá trị mặc định nếu cần thiết
+    }
   };
 
-  const handleSpecChange = (specName, value) => {
-    setProductSpecs((prevSpecs) => ({
-      ...prevSpecs,
-      [specName]: value,
+  // Sử dụng useEffect để gọi hàm fetchProduct khi productId thay đổi hoặc lúc ban đầu load component
+  useEffect(() => {
+    fetchProduct();
+  }, [productId]);
+
+  // Hàm xử lý thay đổi giá trị của các trường input
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProduct(prevProduct => ({
+      ...prevProduct,
+      [name]: value,
     }));
   };
 
-  const currentCategory = categories.find(
-    (category) => category.id === selectedCategory
-  );
-
-  console.log(currentCategory)
+  // Hàm xử lý khi người dùng nhấn nút lưu để cập nhật thông tin sản phẩm
+  const handleSaveProduct = async () => {
+    try {
+      // Gửi request PUT hoặc PATCH để cập nhật thông tin sản phẩm lên server
+      const response = await fetch(`https://api.example.com/products/${productId}`, {
+        method: 'PUT', // Hoặc 'PATCH' tùy vào backend API
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(product),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update product.');
+      }
+      console.log('Product updated successfully!');
+      // Có thể thêm thông báo hoặc chuyển hướng sau khi cập nhật thành công
+    } catch (error) {
+      console.error('Update product error:', error);
+      // Xử lý lỗi hoặc hiển thị thông báo cho người dùng
+    }
+  };
 
   return (
     <div>
-      <h1>Create New Product</h1>
-      <label>
-        Select Category:
-        <select value={selectedCategory} onChange={handleCategoryChange}>
-          <option value="">--Select Category--</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      {currentCategory && (
-        <div>
-          <h2>Product Specifications</h2>
-          {currentCategory.specs.map((spec) => (
-            <div key={spec.name}>
-              <label>
-                {spec.name}:
-                <input
-                  type={spec.type}
-                  value={productSpecs[spec.name] || ''}
-                  onChange={(e) =>
-                    handleSpecChange(spec.name, e.target.value)
-                  }
-                />
-              </label>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <button onClick={() => console.log(productSpecs)}>Save Product</button>
+      <h2>Edit Product</h2>
+      <form>
+        <TextField
+          fullWidth
+          margin="normal"
+          name="name"
+          label="Product Name"
+          value={product.name}
+          onChange={handleInputChange}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          name="price"
+          label="Price"
+          type="number"
+          value={product.price}
+          onChange={handleInputChange}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          name="description"
+          label="Description"
+          multiline
+          rows={4}
+          value={product.description}
+          onChange={handleInputChange}
+        />
+        {/* Thêm các TextField khác tương tự cho các thuộc tính khác của sản phẩm */}
+        <button type="button" onClick={handleSaveProduct}>Save</button>
+      </form>
     </div>
   );
 };
 
-export default AdminPage;
+export default EditProduct;

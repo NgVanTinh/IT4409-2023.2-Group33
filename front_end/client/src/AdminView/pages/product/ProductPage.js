@@ -8,18 +8,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
-import PreviewIcon from '@mui/icons-material/Preview';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import TopHeader from "../../components/TopHeader";
-import { Modal } from 'antd';
-import { Carousel } from 'antd';
-import { Image } from 'antd';
-import { Space, Typography } from 'antd';
 import {GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
-
-const { Text } = Typography;
 
 const CustomGridToolbar = () => {
   return (
@@ -36,9 +29,7 @@ const CustomGridToolbar = () => {
 
 const OrderPage = () => {
   const navigate = useNavigate();
-  const [product, setProduct] = useState([]);
   const [products, setProducts] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false); 
 
   const config = {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -51,11 +42,6 @@ const OrderPage = () => {
         setProducts(products.filter(product => product.isDeleted === false)); 
   };
 
-  const loadProduct = async (id) => {
-        const result = await axios.get(`https://buckytank.shop/products/${id}`, config);
-        // const {dataProduct } = result.data;
-        setProduct(result.data);
-  }
   useEffect(() => {
       loadProducts();
   }, []);
@@ -127,16 +113,6 @@ const OrderPage = () => {
         // console.log(params.row.id);
         return (
           <Box>
-            <IconButton aria-label="view" color="primary"
-              title="Preview product"
-              onClick={() => {
-                // console.log(params.row.id);
-                loadProduct(params.row.id);
-                setModalVisible(true);
-              }} 
-            >
-              < PreviewIcon />
-            </IconButton> 
             <IconButton aria-label="view" color="primary"
               title="View product"
               onClick={() => {
@@ -231,39 +207,6 @@ const OrderPage = () => {
         
       </Box>
       <ToastContainer/>
-      <Modal
-        // title="Product Information"
-        
-        visible={modalVisible}
-        onCancel={() => setModalVisible(false)} 
-        footer={[ ]}
-      >
-        <Carousel arrows infinite={false} dotWidth={20}>
-            {product.images && product.images.map((imageUrl, index) => (
-              <Image
-                key={index} 
-                width={476}
-                height={300}
-                src={imageUrl}
-                alt={`Product Image ${index + 1}`}
-              />
-            ))}
-        </Carousel>
-        <br/>
-        <Space direction="vertical">
-          <Text type="secondary">ID: <Text strong>{product ? product.id : null}</Text></Text>
-          <Text type="secondary">Tên sản phẩm: <Text strong>{product ? product.title : null}</Text></Text>
-          <Text type="secondary">Hãng: <Text strong>{product ? product.brand : null}</Text></Text>
-          <Text type="secondary">Danh mục: <Text strong>{product ? product.category : null}</Text></Text>
-          <Text type="secondary">Mô tả: <Text strong>{product ? product.description : null}</Text></Text>
-          <Text type="secondary">Số lượng: <Text strong>{product ? product.stock : null}</Text></Text>
-          <Text type="secondary">Giá: <Text strong>{product ? product.price : null} VNĐ</Text></Text>
-          <Text type="secondary">Giảm giá: <Text strong>{product ? product.discountPercentage : null} %</Text></Text>
-          <Text type="secondary">Đánh giá: <Text strong>{product ? product.rating : null}/5</Text></Text>
-          <Text type="secondary">Thông số chi tiết: <Text strong>{product ? product.spec : null}</Text></Text>
-        </Space>
-      </Modal>
-
 
     </>
   )

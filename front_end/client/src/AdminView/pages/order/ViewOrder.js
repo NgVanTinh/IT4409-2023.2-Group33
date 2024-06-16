@@ -12,15 +12,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const ViewOrder = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [user, setUser] = useState({
-    address: "",
-    role: "",
-    phone: "",
-    name: "",
-    id: '',
-    email: "",
-    username: ""
-  });
 
   const [order, setOrder] = useState({
     id: "",
@@ -44,7 +35,7 @@ const ViewOrder = () => {
 
   const loadOrder = async () => {
     const result = await axios.get(`https://buckytank.shop/api/orders/${id}`, config);
-    // console.log("order: ", result.data[0]);
+    console.log("order: ", result.data);
     const order = result.data;
     const formattedDateTime = new Date(`${order.orderDate}`).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false });
     order.createdTime = formattedDateTime;
@@ -52,12 +43,14 @@ const ViewOrder = () => {
     const res = await axios.get(`https://buckytank.shop/user/${order.userId}`, config);
     const user = res.data;
     const addressObj = JSON.parse(order.addressJSON);
-    const orderedKeys = ["number", "street", "ward", "district", "city", "province"];
+    const orderedKeys = ["number", "street", "ward", "district", "city"];
     const orderedValues = orderedKeys.map(key => addressObj[key]);
     const addressValuesString = orderedValues.join(", ");    
     order.products = products;
     order.address = addressValuesString;
     order.user = user.fullname;
+    order.total = order.total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    order.discountedPrice = order.discountedPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     setOrder(order);
   };
 
@@ -78,8 +71,8 @@ const ViewOrder = () => {
             value={order.createdTime && order.createdTime}
             InputLabelProps={{ style: { color: 'blue'}, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -95,8 +88,8 @@ const ViewOrder = () => {
             InputLabelProps={{ style: { color: 'blue' } }}
             multiline
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -111,8 +104,8 @@ const ViewOrder = () => {
             value={order.totalProducts && order.totalProducts}
             InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -126,8 +119,8 @@ const ViewOrder = () => {
             value={order.totalQuantity && order.totalQuantity}
             InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -136,13 +129,13 @@ const ViewOrder = () => {
             variant="standard"
             fullWidth
             name="total"
-            label="Tổng tiền (VNĐ)"
+            label="Tổng tiền"
             id="total"
             value={order.total && order.total}
             InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -151,13 +144,13 @@ const ViewOrder = () => {
             variant="standard"
             fullWidth
             name="discountedPrice"
-            label="Tổng tiền sau khi giảm (VNĐ)"
+            label="Tổng tiền sau khi giảm"
             id="discountedPrice"
             value={order.discountedPrice && order.discountedPrice}
             InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -172,8 +165,8 @@ const ViewOrder = () => {
             value={order.user && order.user}
             InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -188,8 +181,8 @@ const ViewOrder = () => {
             value={order.address && order.address}
             InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>
@@ -204,8 +197,8 @@ const ViewOrder = () => {
             value={order.status}
             InputLabelProps={{ style: { color: 'blue' }, shrink: true }}
             InputProps={{
-              style: { color: 'black' }, // Thay đổi màu chữ ở đây
-              readOnly: true, // Để đảm bảo ô input là chỉ đọc
+              style: { color: 'black' }, 
+              readOnly: true, 
             }}
           />
         </Grid>

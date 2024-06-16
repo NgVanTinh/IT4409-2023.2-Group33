@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [countUser, setCountUser] = useState(0);
   const [countProduct, setCountProduct] = useState(0);
   const [countOrder, setCountOrder] = useState(0); 
+  const [revenue, setRevenue] = useState(0);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -21,8 +22,15 @@ const Dashboard = () => {
     loadCountUser();
     loadCountProduct();
     loadCountOrder(); 
+    loadRevenue();
   }, []);
 
+  const loadRevenue = async() =>{
+    const result = await axios.get(`https://buckytank.shop/api/orders/sum`);
+    const sum = Number(result.data.sum)
+    const data = sum.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+    setRevenue(data);
+  }
   const loadCountUser = async() =>{
     const result = await axios.get(`https://buckytank.shop/users/number-users`);
     setCountUser(result.data.users - 1);
@@ -41,8 +49,9 @@ const Dashboard = () => {
   const loadData = async () => {
     const result = await axios.get(`https://buckytank.shop/products`);
     const {products} = result.data;
-    products.sort((a, b) => a.rating - b.rating);
+    products.sort((a, b) => b.rating - a.rating);
     const arr = products.slice(0, 5);
+    console.log(arr);
     setData(arr);
   };
 
@@ -152,7 +161,7 @@ const Dashboard = () => {
         >
           <StatBox
             
-            title="32,441 VNĐ"
+            title={revenue}
             subtitle="Doanh thu"
             icon={
               <MonetizationOnOutlinedIcon
@@ -196,7 +205,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Sales Quantity
+            Top 5 sản phẩm được đánh giá cao nhất
           </Typography>
           <Box
             display="flex"

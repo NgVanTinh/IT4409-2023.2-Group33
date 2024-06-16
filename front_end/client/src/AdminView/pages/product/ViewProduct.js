@@ -15,7 +15,7 @@ const ViewProduct = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
-
+  const [productSpecs, setProductSpecs] = useState({});
   const [product, setProduct] = useState({
     title: "",
     description: "",
@@ -35,12 +35,16 @@ const ViewProduct = () => {
   const loadProduct = async () => {
     const result = await axios.get(`https://buckytank.shop/products/${id}`);
     setProduct(result.data);
+    console.log(result.data);
+    const obj = JSON.parse(result.data.spec)
+    console.log(obj);
+    setProductSpecs(obj)
   };
 
   return (
     
     <>
-    <TopHeader title="PRODUCTS" subtitle="Viewing a product" />
+    <TopHeader title="SẢN PHẨM" subtitle="Xem chi tiết sản phẩm" />
     <Box sx={{display: 'flex', flexDirection: 'column'}} >
       <Grid container spacing={2} sx={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
         <Grid item sm={8} >
@@ -49,10 +53,14 @@ const ViewProduct = () => {
             fullWidth={true}
             name="title"
             id="title"
-            label="Tilte"
+            label="Tên sản phẩm"
             value={product.title}
             InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
+            
           />
         </Grid>
 
@@ -62,11 +70,14 @@ const ViewProduct = () => {
             name="description"
             fullWidth
             id="description"
-            label="Description"
+            label="Mô tả"
             value={product.description}
             InputLabelProps={{ style: { color: 'blue' } }}
             multiline
-            disabled
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
           />
         </Grid>
 
@@ -76,10 +87,13 @@ const ViewProduct = () => {
             name="category"
             fullWidth
             id="category"
-            label="Category"
+            label="Danh mục"
             value={product.category}
             InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
           />
         </Grid>
 
@@ -89,22 +103,45 @@ const ViewProduct = () => {
             name="brand"
             fullWidth
             id="brand"
-            label="Brand"
+            label="Hãng"
             value={product.brand}
             InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
           />
         </Grid>
+
+         <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            name="rating"
+            fullWidth
+            id="rating"
+            label="Đánh giá"
+            value={String(product.rating)}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
+          />
+        </Grid>
+
         <Grid item sm={8}>
           <TextField
             variant="standard"
             fullWidth
             name="stock"
-            label="Stock"
+            label="Số lượng"
             id="stock"
             value={product.stock}
             InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
           />
         </Grid>
 
@@ -113,11 +150,14 @@ const ViewProduct = () => {
             variant="standard"
             fullWidth
             name="discountPercentage"
-            label="Discount Percentage (%)"
+            label="Phần trăm giảm giá (%)"
             id="discountPercentage"
             value={product.discountPercentage}
             InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
           />
         </Grid>
 
@@ -125,36 +165,47 @@ const ViewProduct = () => {
           <TextField
             variant="standard"
             fullWidth
-            name="spec"
-            label="Spec"
-            id="spec"
-            value={product.spec && product.spec}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
-          />
-        </Grid>
-        <Grid item sm={8}>
-          <TextField
-            variant="standard"
-            fullWidth
             name="price"
-            label="Price (USD)"
+            label="Giá (VNĐ)"
             id="price"
             value={product.price}
             InputLabelProps={{ style: { color: 'blue' } }}
-            disabled
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
           />
         </Grid>
+        
+        <Grid item sm={8} >
+          <TextField
+            InputProps={{
+              style: { color: 'black' }, 
+              readOnly: true, 
+            }}
+            variant="standard"
+            fullWidth={true}
+            name="spec"
+            id="spec"
+            label="Thông số"
+            value={productSpecs && Object.entries(productSpecs).map(([key, value]) => `${key}: ${value}`).join('\n')}
+            InputLabelProps={{ style: { color: 'blue' } }}
+            multiline
+          />
+          
+        </Grid>
+
         <Grid item sm={8}>
            <TextField
               variant="standard"
               disabled
               fullWidth
-              label="Thumbnail"
+              label="Ảnh đại diện"
               multiline
-              rows={5}
+              rows={6}
               InputLabelProps={{ style: { color: 'blue' } }}
               InputProps={{
+                style: { color: 'black' },
                 startAdornment: (
                   <InputAdornment position="start">
                       <img
@@ -165,8 +216,6 @@ const ViewProduct = () => {
                           height: '100px',
                           borderRadius: '10px',
                           border: '1px solid blue',
-                          marginRight: '10px',
-                          marginBottom: '10px',
                         }}
                       /> 
                   </InputAdornment>
@@ -180,9 +229,9 @@ const ViewProduct = () => {
               variant="standard"
               disabled
               fullWidth
-              label="Images"
+              label="Ảnh chi tiết"
               multiline
-              rows={5}
+              rows={6}
               InputLabelProps={{ style: { color: 'blue' } }}
               InputProps={{
                 startAdornment: (
@@ -224,7 +273,7 @@ const ViewProduct = () => {
     >
       <Button
         sx={{backgroundColor: '#1890ff', color: 'white', borderRadius: '10px', mr:1}}
-        onClick={() => {navigate('/products')}}
+        onClick={() => {navigate('/admin/products')}}
       >
         <ArrowBackIcon sx={{mr:1}}/>
         Quay lại trang sản phẩm
@@ -232,7 +281,7 @@ const ViewProduct = () => {
 
       <Button
         sx={{backgroundColor: '#1890ff', color: 'white', borderRadius: '10px', marginLeft: 'auto'}}
-        onClick={() => {navigate(`/edit-product/${id}`)}}
+        onClick={() => {navigate(`/admin/edit-product/${id}`)}}
       >
         Chỉnh sửa sản phẩm
         <ArrowForwardIcon sx={{ml:1}}/>

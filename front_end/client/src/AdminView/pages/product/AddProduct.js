@@ -101,16 +101,17 @@ const Category = [
       },
       {
           id: 'bao-da',
-          name: 'Bao dao',
+          name: 'Bao da',
           specs: [
-              
+              { name: 'Chất liệu', type: 'text' },
+              { name: 'Kích thước', type: 'text' },
+              { name: 'Trọng lượng', type: 'text' },
           ],
       },
       {
           id: 'gia-do',
           name: 'Giá đỡ',
-          specs: [
-              
+          specs: [      
           ],
       },
       {
@@ -182,15 +183,16 @@ const AddProduct = () => {
   let numRow = 1;
   const currentCategory = Category[selectedCategory-1];
   if(currentCategory){
-    if(currentCategory.name === 'Điện thoại') numRow = 11;
-    else if(currentCategory.name === 'Máy tính bảng') numRow = 10;
-    else if(currentCategory.name === 'Sạc dự phòng') numRow = 11;
-    else if(currentCategory.name === 'Tai nghe') numRow = 10;
-    else if(currentCategory.name === 'Củ sạc') numRow = 9;
-    else if(currentCategory.name === 'Bao da') numRow = 1;
-    else if(currentCategory.name === 'Giá đỡ') numRow = 1;
-    else if(currentCategory.name === 'Dây sạc') numRow = 8;
+    if(currentCategory.name === 'Điện thoại') numRow = 23;
+    else if(currentCategory.name === 'Máy tính bảng') numRow = 21;
+    else if(currentCategory.name === 'Sạc dự phòng') numRow = 23;
+    else if(currentCategory.name === 'Tai nghe') numRow = 20;
+    else if(currentCategory.name === 'Củ sạc') numRow = 18;
+    else if(currentCategory.name === 'Bao da') numRow = 7;
+    else if(currentCategory.name === 'Giá đỡ') numRow = 7;
+    else if(currentCategory.name === 'Dây sạc') numRow = 16;
   }
+  
   
 
   const onThumbnailChange = (e) => {
@@ -269,6 +271,7 @@ const AddProduct = () => {
     }, 1000);
   };
 
+  console.log(selectedCategory)
   return (
     
     <>
@@ -379,22 +382,9 @@ const AddProduct = () => {
           />
         </Grid>
         <Grid item sm={8} >
-          <TextField
+          <TextField  
             fullWidth={true}
-            name="rating"
-            required
-            id="rating"
-            label="Đánh giá"
-            autoFocus
-            value={product.rating}
-            InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'black' } }}
-            onChange={onInputChange}
-          />
-        </Grid>
-        <Grid item sm={8} >
-          <TextField
-            fullWidth={true}
+            disabled
             name="spec"
             id="spec"
             label="Thông số"
@@ -406,20 +396,27 @@ const AddProduct = () => {
                 startAdornment: (
                   <InputAdornment position="start">
                     {currentCategory && (
-                      <div>
+                      <div style={{ width: '720px' }}>
                         {currentCategory && currentCategory.specs.map((spec) => (
-                          <div key={spec.name}>
-                            <label>
-                              {spec.name}:
-                              <input
-                                type={spec.type}
-                                value={productSpecs[spec.name] || ''}
-                                onChange={(e) =>
-                                  handleSpecChange(spec.name, e.target.value)
-                                }
-                              />
-                            </label>
-                          </div>
+                          <div>                              
+                            <Grid item sm={12}>
+                              <TextField
+                              variant="standard"
+                              fullWidth={true}
+                              multiline
+                              name={spec.name}
+                              required
+                              id={spec.name}
+                              label={spec.name}
+                              value={productSpecs[spec.name] || ''}
+                              InputLabelProps={{ style: { color: 'blue' } }}
+                              InputProps={{ style: { color: 'black' } }}
+                              onChange={(e) =>
+                                handleSpecChange(spec.name, e.target.value)
+                              }
+                              /> 
+                            </Grid>
+                          </div>   
                         ))}
                       </div>
                     )}
@@ -429,6 +426,7 @@ const AddProduct = () => {
           />
           
         </Grid>
+      
         <Grid item sm={8}>
            <TextField
               disabled
