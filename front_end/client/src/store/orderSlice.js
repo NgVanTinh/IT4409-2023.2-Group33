@@ -10,6 +10,8 @@ const initialState = {
   ratingResult: null,
   ratingError: null,
   ratingLoading: false,
+  ratedProduct: [],
+  statusRatedProduct: false,
 };
 
 // Create a order
@@ -121,6 +123,30 @@ export const submitProductRating = createAsyncThunk(
   }
 );
 
+// Lấy toàn bộ đánh giá của một sản phẩm
+export const fetchProductRatings = createAsyncThunk(
+  "orders/fetchProductRatings",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL_2}rating/product/${productId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not fetch product ratings");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Định nghĩa orderSlice
 const orderSlice = createSlice({
   name: "orders",
@@ -172,6 +198,16 @@ const orderSlice = createSlice({
       .addCase(submitProductRating.rejected, (state, action) => {
         state.ratingLoading = false;
         state.ratingError = action.payload;
+      })
+      .addCase(fetchProductRatings.pending, (state) => {
+        state.statusRatedProduct = "loading";
+      })
+      .addCase(fetchProductRatings.fulfilled, (state, action) => {
+        state.statusRatedProduct = "succeeded";
+        state.ratedProducts = action.payload;
+      })
+      .addCase(fetchProductRatings.rejected, (state, action) => {
+        state.statusRatedProduct = "failed";
       });
   },
 });

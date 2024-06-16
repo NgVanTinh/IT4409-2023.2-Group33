@@ -3,16 +3,16 @@ import { Modal, Rate, Input, Select } from "antd";
 import Swal from "sweetalert2";
 const { Option } = Select;
 
-const ReviewModal = ({ isVisible, onOk, onCancel, products }) => {
+const ReviewModal = ({ isVisible, onOk, onCancel, products, isLoading }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [selectedProduct, setSelectedProduct] = useState();
 
-  useEffect(() => {
-    if (isVisible && products.length > 0) {
-      setSelectedProduct(products[0].id);
-    }
-  }, [products, isVisible]);
+  // useEffect(() => {
+  //   if (isVisible && products.length > 0) {
+  //     setSelectedProduct(products[0].id);
+  //   }
+  // }, [products, isVisible]);
 
   const handleOk = () => {
     // Đảm bảo một sản phẩm được chọn
@@ -40,6 +40,7 @@ const ReviewModal = ({ isVisible, onOk, onCancel, products }) => {
       visible={isVisible}
       onOk={handleOk}
       onCancel={onCancel}
+      loading={isLoading}
     >
       <Select
         showSearch

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrdersByUser, submitProductRating } from "../../store/orderSlice";
+import {
+  fetchOrdersByUser,
+  fetchProductRatings,
+  submitProductRating,
+} from "../../store/orderSlice";
 import { Table, Tag, Image, Input, Button } from "antd";
 import "./InfoOrder.scss";
 import { formatPrice } from "../../utils/helpers";
@@ -16,9 +20,13 @@ const InfoOrder = () => {
   const orders = useSelector((state) => state.order.orders);
   const [dataSource, setDataSource] = useState([]);
   const [searchText, setSearchText] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrderProducts, setSelectedOrderProducts] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  const ratedProduct = useSelector((state) => state.order.ratedProduct);
 
   useEffect(() => {
     if (userId) {
@@ -43,6 +51,7 @@ const InfoOrder = () => {
 
       return {
         key: order.id,
+        stt: index + 1,
         id: order.id,
         orderDate: moment(order.orderDate).format("DD/MM/YYYY HH:mm:ss"),
         status: order.status,
@@ -77,9 +86,30 @@ const InfoOrder = () => {
   };
 
   // Rating
-  const showReviewModal = (products, orderId) => {
-    setSelectedOrderProducts(products);
+  const showReviewModal = async (products, orderId) => {
+    setIsLoading(true);
+    let filterProducts = [...products];
+
+    for (let product of products) {
+      try {
+        // Gọi fetchProductRatings và xử lý kết quả ngay lập tức
+        const actionResult = await dispatch(fetchProductRatings(product.id));
+        const ratings = unwrapResult(actionResult);
+
+        // Kiểm tra nếu sản phẩm đã được đánh giá trong đơn hàng này, loại bỏ nó khỏi danh sách
+        const hasRated = ratings.some((rating) => rating.orderId === orderId);
+        if (hasRated) {
+          filterProducts = filterProducts.filter((p) => p.id !== product.id);
+        }
+      } catch (error) {
+        console.error("Error fetching product ratings:", error);
+      }
+    }
+
+    // Cập nhật danh sách sản phẩm có thể đánh giá
+    setSelectedOrderProducts(filterProducts);
     setSelectedOrderId(orderId);
+    setIsLoading(false);
     setIsModalVisible(true);
   };
 
@@ -122,11 +152,12 @@ const InfoOrder = () => {
   const columns = [
     {
       title: "STT",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "stt",
+      key: "stt",
       align: "center",
       width: 50,
     },
+
     {
       title: "Sản phẩm",
       key: "products",
@@ -246,11 +277,12 @@ const InfoOrder = () => {
       key: "action",
       align: "center",
       render: (_, record) =>
-        record.status === "COMPLETED" && (
-          <Button onClick={() => showReviewModal(record.products, record.id)}>
-            Đánh giá
-          </Button>
-        ),
+        // record.status === "COMPLETED" && (
+        //   <Button onClick={() => showReviewModal(record.products, record.id)}>
+        //     Đánh giá
+        //   </Button>
+        // ),
+        console.log(record),
     },
   ];
 
@@ -269,13 +301,14 @@ const InfoOrder = () => {
         columns={columns}
         bordered
         size="middle"
-        pagination={{ pageSize: 5 }}
+        pagination={false}
       />
       <ReviewModal
         isVisible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         products={selectedOrderProducts}
+        isLoading={isLoading}
       />
     </div>
   );
