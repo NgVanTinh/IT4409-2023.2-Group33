@@ -10,7 +10,7 @@ import { Select } from "antd";
 // Destructuring để lấy component Option từ Select
 const { Option } = Select;
 
-const FilterCategory = () => {
+const FilterCategory = ({ onCategoryChange }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,6 +22,7 @@ const FilterCategory = () => {
   const handleCategoryChange = (value) => {
     if (value) dispatch(setFilter({ filterType: "category", value }));
     else dispatch(resetFilter({ filterType: "category" }));
+    onCategoryChange(value);
   };
 
   return (
