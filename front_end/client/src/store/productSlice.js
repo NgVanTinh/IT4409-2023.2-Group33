@@ -12,6 +12,12 @@ const initialState = {
     brand: null,
     specRam: null,
     specStorage: null,
+    screenType: null,
+    operatingSystem: null,
+    rearCamera: null,
+    frontCamera: null,
+    chip: null,
+    battery: null,
   },
   currentSort: null,
   productsStatus: STATUS.IDLE,
@@ -64,6 +70,103 @@ function applyFilters(products, filters) {
       }
     });
   }
+
+  if (filters.specStorage) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return (
+          productSpecs["Dung lượng lưu trữ"] &&
+          productSpecs["Dung lượng lưu trữ"] === filters.specStorage
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+  // Xử lý bộ lọc cho màn hình
+  if (filters.screenType) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const screenInfo = productSpecs["Màn hình"];
+        return screenInfo && screenInfo.includes(filters.screenType);
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho hệ điều hành
+  if (filters.operatingSystem) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const osInfo = productSpecs["Hệ điều hành"];
+        return osInfo && osInfo.includes(filters.operatingSystem);
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+  // Xử lý bộ lọc cho Camera sau
+  if (filters.rearCamera) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const rearCameraSpec = productSpecs["Camera sau"];
+        return rearCameraSpec && rearCameraSpec.includes(filters.rearCamera);
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Camera trước
+  if (filters.frontCamera) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const frontCameraSpec = productSpecs["Camera trước"];
+        return frontCameraSpec && frontCameraSpec.includes(filters.frontCamera);
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+  // Xử lý bộ lọc cho Chip
+  if (filters.chip) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const chipSpec = productSpecs["Chip"];
+        return chipSpec && chipSpec.includes(filters.chip);
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Pin, Sạc
+  if (filters.battery) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const batterySpec = productSpecs["Pin, Sạc"].match(/\d+/g)?.[0]; // Lấy số đầu tiên từ chuỗi (giả sử đây là dung lượng pin)
+        return batterySpec && parseInt(batterySpec) >= filters.battery;
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
   return filteredProducts;
 }
 
