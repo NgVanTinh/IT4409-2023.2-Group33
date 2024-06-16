@@ -7,6 +7,9 @@ const initialState = {
   loading: false,
   error: null,
   paymentInfo: {},
+  ratingResult: null,
+  ratingError: null,
+  ratingLoading: false,
 };
 
 // Create a order
@@ -88,6 +91,36 @@ export const createVNPAYPayment = createAsyncThunk(
   }
 );
 
+// Rating product of order
+export const submitProductRating = createAsyncThunk(
+  "orders/submitProductRating",
+  async ({ orderId, productId, rate, comment }, { rejectWithValue }) => {
+    try {
+      const token = getCookie("token");
+      const response = await fetch(
+        `${BASE_URL_2}rating/create?orderId=${orderId}&productId=${productId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ rate, comment }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Could not submit product rating");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Định nghĩa orderSlice
 const orderSlice = createSlice({
   name: "orders",
@@ -127,6 +160,18 @@ const orderSlice = createSlice({
       .addCase(createVNPAYPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(submitProductRating.pending, (state) => {
+        state.ratingLoading = true;
+        state.ratingError = null;
+      })
+      .addCase(submitProductRating.fulfilled, (state, action) => {
+        state.ratingLoading = false;
+        state.ratingResult = action.payload;
+      })
+      .addCase(submitProductRating.rejected, (state, action) => {
+        state.ratingLoading = false;
+        state.ratingError = action.payload;
       });
   },
 });

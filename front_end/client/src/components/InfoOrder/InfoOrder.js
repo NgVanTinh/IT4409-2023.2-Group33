@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrdersByUser } from "../../store/orderSlice";
-import { Table, Tag, Image, Input } from "antd";
+import { fetchOrdersByUser, submitProductRating } from "../../store/orderSlice";
+import { Table, Tag, Image, Input, Button } from "antd";
 import "./InfoOrder.scss";
 import { formatPrice } from "../../utils/helpers";
 import moment from "moment";
 import { getCookie } from "../../helpers/cookie";
+import ReviewModal from "../ReviewOrder/ReviewOrder";
+import Swal from "sweetalert2";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const InfoOrder = () => {
   const userId = getCookie("id");
@@ -13,6 +16,9 @@ const InfoOrder = () => {
   const orders = useSelector((state) => state.order.orders);
   const [dataSource, setDataSource] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedOrderProducts, setSelectedOrderProducts] = useState([]);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
     if (userId) {
@@ -37,10 +43,11 @@ const InfoOrder = () => {
 
       return {
         key: order.id,
-        id: index + 1,
+        id: order.id,
         orderDate: moment(order.orderDate).format("DD/MM/YYYY HH:mm:ss"),
         status: order.status,
         products: products.map((product) => ({
+          id: product.id,
           title: product.title,
           quantity: product.quantity,
           discountedPrice: product.discountedPrice,
@@ -67,6 +74,49 @@ const InfoOrder = () => {
       );
       processOrders(filteredData);
     }
+  };
+
+  // Rating
+  const showReviewModal = (products, orderId) => {
+    setSelectedOrderProducts(products);
+    setSelectedOrderId(orderId);
+    setIsModalVisible(true);
+  };
+
+  const handleOk = async (productId, rate, comment) => {
+    try {
+      const actionResult = await dispatch(
+        submitProductRating({
+          orderId: selectedOrderId,
+          productId,
+          rate,
+          comment,
+        })
+      );
+      unwrapResult(actionResult);
+
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Đánh giá sản phẩm thành công!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Có lỗi xảy ra khi đánh giá sản phẩm",
+        text: error.toString(),
+        showConfirmButton: true,
+      });
+    }
+
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   const columns = [
@@ -111,7 +161,7 @@ const InfoOrder = () => {
       filters: [
         { text: "Chờ xác nhận", value: "CREATED" },
         { text: "Đang giao hàng", value: "AWAITING_SHIPMENT" },
-        // Thêm các trạng thái khác tương ứng nếu có
+        { text: "Đã nhận hàng", value: "COMPLETED" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (tag) => {
@@ -119,6 +169,8 @@ const InfoOrder = () => {
           return <Tag color="blue">Chờ xác nhận</Tag>;
         } else if (tag === "AWAITING_SHIPMENT") {
           return <Tag color="gold">Đang giao hàng</Tag>;
+        } else {
+          return <Tag color="green">Đã nhận hàng</Tag>;
         }
       },
     },
@@ -147,7 +199,6 @@ const InfoOrder = () => {
       filters: [
         { text: "Thanh toán khi nhận hàng", value: "COD" },
         { text: "Thanh toán bằng VNPAY", value: "VNPay" },
-        // Thêm các hình thức thanh toán khác nếu có
       ],
       onFilter: (value, record) => record.method === value,
       render: (method) => {
@@ -190,6 +241,17 @@ const InfoOrder = () => {
         <span className="price-highlight">{formatPrice(discountedPrice)}</span>
       ),
     },
+    {
+      title: "Hành động",
+      key: "action",
+      align: "center",
+      render: (_, record) =>
+        record.status === "COMPLETED" && (
+          <Button onClick={() => showReviewModal(record.products, record.id)}>
+            Đánh giá
+          </Button>
+        ),
+    },
   ];
 
   return (
@@ -208,6 +270,12 @@ const InfoOrder = () => {
         bordered
         size="middle"
         pagination={{ pageSize: 5 }}
+      />
+      <ReviewModal
+        isVisible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        products={selectedOrderProducts}
       />
     </div>
   );
