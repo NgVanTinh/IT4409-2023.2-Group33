@@ -2,6 +2,9 @@ package it4409.group33.Service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,6 +28,23 @@ public class CloudinaryService {
             e.printStackTrace();
             return "Upload failed";
         }
+    }
+
+    public static String combineImageAndColor(MultipartFile file, String color){
+        String image = uploadAndGetUrl(file);
+        if(image.equals("Upload failed")) {
+            return "Upload failed";
+        }
+        try {
+            JSONObject res = new JSONObject();
+            res.put("color",color);
+            res.put("image",image);
+            return res.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "Upload failed";
+        }
+
     }
 
 }

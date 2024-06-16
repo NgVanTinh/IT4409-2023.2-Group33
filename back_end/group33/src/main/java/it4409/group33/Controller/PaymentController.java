@@ -1,6 +1,5 @@
 package it4409.group33.Controller;
 
-import com.zaxxer.hikari.util.SuspendResumeLock;
 import it4409.group33.Config.VnpayConfig;
 import it4409.group33.Model.Order;
 import it4409.group33.Repository.OrderRepository;
@@ -12,12 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,7 +77,7 @@ public class PaymentController {
 
         if (secureHash.equals(vnp_SecureHash)) {
             String x = "{\"code\":\"00\",\"message\":\"completed\"}";
-            orderService.updateOrderStatusToPaid(orderId);
+            orderService.updateOrderStatusToShip(orderId);
             return new ResponseEntity<>(x,HttpStatus.OK);
         } else {
             String x = "{\"code\":\"01\",\"message\":\"failure\"}";

@@ -96,12 +96,12 @@ public class OrderController {
         }
     }
 
-    @PutMapping("/orders/{orderId}/pay")
+    @PutMapping("/orders/{orderId}/confirm")
     public ResponseEntity<Order> updateOrderStatusToPaid(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if(token != null && jwt.validateJWT(token) && JWT.isUserOrAdmin(token)) {
             Order order;
             try {
-                order = orderService.updateOrderStatusToPaid(orderId);
+                order = orderService.updateOrderStatusToShip(orderId);
             } catch (InvalidOrderStatusException e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

@@ -4,7 +4,6 @@ import it4409.group33.Exception.InvalidOrderStatusException;
 import it4409.group33.Exception.OrderNotFoundException;
 import it4409.group33.Model.Cart;
 import it4409.group33.Model.Order;
-import it4409.group33.Repository.CartRepository;
 import it4409.group33.Repository.OrderRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +83,7 @@ public class OrderService {
         return optionalOrder.orElse(null);
     }
 
-    public Order updateOrderStatusToPaid(Long orderId) {
+    public Order updateOrderStatusToShip(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
