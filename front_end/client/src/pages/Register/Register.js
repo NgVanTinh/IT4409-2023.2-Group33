@@ -1,12 +1,12 @@
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import { setCookie } from "../../helpers/cookie";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Checkbox, ConfigProvider, Form, Input, Modal } from "antd";
 import "./Register.scss";
-import { useState } from "react";
-import { checkExist, register } from "../../store/userSlice";
+import { useEffect, useState } from "react";
 import { TinyColor } from "@ctrl/tinycolor";
+import { fetchAllUsers, register } from "../../store/userSlice";
 const { TextArea } = Input;
 const colors2 = ["rgb(62, 190, 62)", "rgb(57, 195, 57)"];
 const getHoverColors = (colors) =>
@@ -18,18 +18,58 @@ function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const allUser = useSelector((state) => state.user.users);
+
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
 
   const handleOnFinishRegister = async (values) => {
-    // call api register
-    console.log(values);
+    const checkExistUsername = allUser.find(
+      (user) => user.username === values.username
+    );
+    if (checkExistUsername) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Username đã tồn tại",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    const checkExistEmail = allUser.find((user) => user.email === values.email);
+    if (checkExistEmail) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Email đã tồn tại",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    const checkExistPhone = allUser.find((user) => user.phone === values.phone);
+    if (checkExistPhone) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "SĐT đã tồn tại",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
     const actionResult = await dispatch(register(values));
     const response = actionResult.payload;
-    console.log(response);
     if (response) {
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Register success",
+        title: "Đăng ký thành công",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -39,7 +79,7 @@ function Register() {
       Swal.fire({
         position: "center",
         icon: "error",
-        title: "Register failed",
+        title: "Đăng ký thất bại",
         showConfirmButton: false,
         timer: 1500,
       });

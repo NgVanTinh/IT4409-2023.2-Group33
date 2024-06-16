@@ -1,0 +1,35 @@
+@import "../../App.scss";
+.cardInfoPersonal {
+  max-width: 300px;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .ant-card-head {
+    background-color: $clr-light-green;
+    color: white;
+  }
+
+  .ant-card-body {
+    p {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 15px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:before {
+        content: "• ";
+        color: $clr-light-green;
+      }
+    }
+  }
+}

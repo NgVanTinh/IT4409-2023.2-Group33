@@ -1,110 +1,204 @@
-import { createSlice } from "@reduxjs/toolkit";
-
-const fetchFromLocalStorage = () => {
-  let cart = localStorage.getItem("cart");
-  if (cart) {
-    return JSON.parse(localStorage.getItem("cart"));
-  } else {
-    return [];
-  }
-};
-
-const storeInLocalStorage = (data) => {
-  localStorage.setItem("cart", JSON.stringify(data));
-};
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { BASE_URL_2 } from "../utils/apiURL";
+import { STATUS } from "../utils/status";
+import { getCookie } from "../helpers/cookie";
 
 const initialState = {
-  carts: fetchFromLocalStorage(),
+  carts: [],
   itemsCount: 0,
   totalAmount: 0,
   isCartMessageOn: false,
+  loading: false,
+  error: null,
 };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
-  reducers: {
-    addToCart: (state, action) => {
-      const isItemInCart = state.carts.find(
-        (item) => item.id === action.payload.id
-      );
-
-      if (isItemInCart) {
-        const tempCart = state.carts.map((item) => {
-          if (item.id === action.payload.id) {
-            let tempQty = item.quantity + action.payload.quantity;
-            let tempTotalPrice = tempQty * item.price;
-
-            return {
-              ...item,
-              quantity: tempQty,
-              tempTotalPrice: tempTotalPrice,
-            };
-          } else {
-            return item;
-          }
-        });
-        state.carts = tempCart;
-        storeInLocalStorage(state.carts);
-      } else {
-        state.carts.push(action.payload);
-        storeInLocalStorage(state.carts);
-      }
-    },
-
-    removeFromCart: (state, action) => {
-      const tempCart = state.carts.filter((item) => item.id !== action.payload);
-      state.carts = tempCart;
-      storeInLocalStorage(state.carts);
-    },
-
-    clearCart: (state) => {
-      state.carts = [];
-      storeInLocalStorage(state.carts);
-    },
-
-    getCartTotal: (state) => {
-      state.totalAmount = state.carts.reduce((cartTotal, cartItem) => {
-        return (cartTotal += cartItem.totalPrice);
-      }, 0);
-      state.itemsCount = state.carts.length;
-    },
-
-    toggleCartQty: (state, action) => {
-      const tempCart = state.carts.map((item) => {
-        if (item.id === action.payload.id) {
-          let tempQty = item.quantity;
-          let tempTotalPrice = item.totalPrice;
-
-          if (action.payload.type === "INC") {
-            tempQty++;
-            if (tempQty >= item.stock) tempQty = item.stock;
-            tempTotalPrice = tempQty * item.discountedPrice;
-          }
-
-          if (action.payload.type === "DEC") {
-            tempQty--;
-            if (tempQty < 1) tempQty = 1;
-            tempTotalPrice = tempQty * item.discountedPrice;
-          }
-
-          return { ...item, quantity: tempQty, totalPrice: tempTotalPrice };
-        } else {
-          return item;
-        }
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUserCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserCart.fulfilled, (state, action) => {
+        state.carts = action.payload.products;
+        state.itemsCount = action.payload.totalQuantity;
+        state.totalAmount = action.payload.discountedTotal;
+        state.loading = false;
+      })
+      .addCase(fetchUserCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(addItemToCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addItemToCart.fulfilled, (state, action) => {
+        state.carts = action.payload;
+        state.itemsCount = action.payload.totalQuantity;
+        state.totalAmount = action.payload.discountedTotal;
+        state.loading = false;
+      })
+      .addCase(addItemToCart.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(removeItemFromCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(removeItemFromCart.fulfilled, (state, action) => {
+        state.carts = action.payload.products;
+        state.itemsCount = action.payload.totalQuantity;
+        state.totalAmount = action.payload.discountedTotal;
+        state.loading = false;
+      })
+      .addCase(removeItemFromCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(clearCartAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(clearCartAsync.fulfilled, (state) => {
+        state.carts = [];
+        state.itemsCount = 0;
+        state.totalAmount = 0;
+        state.loading = false;
+      })
+      .addCase(clearCartAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
-      state.carts = tempCart;
-      storeInLocalStorage(state.carts);
-    },
-
-    setCartMessageOn: (state) => {
-      state.isCartMessageOn = true;
-    },
-    setCartMessageOff: (state) => {
-      state.isCartMessageOn = false;
-    },
   },
 });
+
+// Get cart of user
+export const fetchUserCart = createAsyncThunk(
+  "cart/fetchUserCart",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const token = getCookie("token");
+      const response = await fetch(`${BASE_URL_2}carts/user/${userId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      if (!data) {
+        return rejectWithValue("No data received");
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Add item to cart
+export const addItemToCart = createAsyncThunk(
+  "cart/addItemToCart",
+  async ({ productId, quantity }, { getState, rejectWithValue }) => {
+    try {
+      const token = getCookie("token");
+
+      const requestBody = {
+        products: [
+          {
+            id: productId,
+            quantity: quantity,
+          },
+        ],
+      };
+
+      const response = await fetch(`${BASE_URL_2}carts/add-to-cart`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add item to cart");
+      }
+      const data = await response.json();
+
+      if (!data) {
+        return rejectWithValue("No data returned from add to cart");
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Remove item from cart
+export const removeItemFromCart = createAsyncThunk(
+  "cart/removeItemFromCart",
+  async (productId, { getState, rejectWithValue }) => {
+    try {
+      const token = getCookie("token");
+      const response = await fetch(
+        `${BASE_URL_2}carts/delete-product?productId=${productId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to remove item from cart");
+      }
+
+      const data = await response.json();
+
+      if (!data) {
+        return rejectWithValue("No data returned from remove from cart");
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Clear cart
+export const clearCartAsync = createAsyncThunk(
+  "cart/clearCart",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getCookie("token");
+      const response = await fetch(`${BASE_URL_2}carts/clear-cart`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to clear cart");
+      }
+
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const {
   addToCart,

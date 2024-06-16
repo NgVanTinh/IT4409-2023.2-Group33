@@ -1,0 +1,17 @@
+@import "../../App.scss";
+
+// custom css antd
+.custom-modal-center-title .ant-modal-header {
+  text-align: center;
+}
+
+.custom-ok-button {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.custom-ok-button:hover {
+  background-color: #218838 !important;
+  border-color: #1e7e34 !important;
+}

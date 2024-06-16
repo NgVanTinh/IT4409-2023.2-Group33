@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAllCategories } from "../../store/categorySlice";
 // carts
 import {
+  fetchUserCart,
   getAllCarts,
   getCartItemsCount,
   getCartTotal,
@@ -21,6 +22,7 @@ import {
 import CartModal from "../CartModal/CartModal";
 import SearchBar from "../SearchBar/SearchBar";
 import SearchResultList from "../SearchResultList/SearchResultList";
+import { getCookie } from "../../helpers/cookie";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -31,9 +33,11 @@ export default function Navbar() {
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
 
+  const userId = getCookie("id");
+
   useEffect(() => {
-    dispatch(getCartTotal());
-  }, [carts, dispatch]);
+    if (userId) dispatch(fetchUserCart(userId));
+  }, [dispatch, userId, itemsCount]);
 
   return (
     <nav className="navbar">
@@ -70,7 +74,7 @@ export default function Navbar() {
               />
             )}
           </div>
-          <ul className="navbar-nav flex align-center fs-12 fw-4 font-manrope">
+          <ul className="navbar-nav flex align-center fs-13 fw-4 font-manrope">
             {/* taking only first 8 categories */}
             {categories.slice(0, 8).map((category, idx) => (
               <li className="nav-item no-wrap" key={idx}>

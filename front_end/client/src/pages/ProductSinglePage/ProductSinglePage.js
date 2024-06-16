@@ -15,6 +15,7 @@ import { formatPrice } from "../../utils/helpers";
 
 import { FaMinus, FaPlus, FaShoppingCart } from "react-icons/fa";
 import {
+  addItemToCart,
   addToCart,
   getCartMessageStatus,
   setCartMessageOff,
@@ -26,6 +27,7 @@ import Swal from "sweetalert2";
 import { Col, Row } from "antd";
 import Rating from "../../components/Rating/Rating";
 import ProductSimilar from "../../components/ProductSimilar/ProductSimilar";
+import { getCookie } from "../../helpers/cookie";
 
 export default function ProductSinglePage() {
   const { id } = useParams();
@@ -33,6 +35,7 @@ export default function ProductSinglePage() {
   const product = useSelector(getProductSingle);
   const productSingleStatus = useSelector(getProductSingleStatus);
   const [quantity, setQuantity] = useState(1);
+  const token = getCookie("token");
 
   // Similar products
   const similarProducts = useSelector((state) => state.product.similarProducts);
@@ -70,20 +73,38 @@ export default function ProductSinglePage() {
     });
   };
 
-  const addToCartHandler = (product) => {
-    let discountedPrice =
-      product.price * (1 - product.discountPercentage / 100).toFixed(2);
-    let totalPrice = quantity * discountedPrice;
+  const addToCartHandler = async (product) => {
+    try {
+      const response = await dispatch(
+        addItemToCart({ productId: product.id, quantity: quantity })
+      );
 
-    dispatch(addToCart({ ...product, quantity, totalPrice, discountedPrice }));
-    //dispatch(setCartMessageOn(true));
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Sản phẩm đã được thêm vào giỏ hàng",
-      showConfirmButton: false,
-      timer: 1500,
-    });
+      if (response.meta.requestStatus === "fulfilled") {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Sản phẩm đã được thêm vào giỏ hàng",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Có lỗi xảy ra khi thêm sản phẩm",
+          showConfirmButton: true,
+        });
+      }
+    } catch (error) {
+      // Xử lý nếu có lỗi xảy ra trong quá trình gửi request
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Có lỗi xảy ra khi thêm sản phẩm",
+        text: error.message,
+        showConfirmButton: true,
+      });
+    }
   };
 
   return (
@@ -96,7 +117,7 @@ export default function ProductSinglePage() {
           ]}
         />
       </div>
-      <div className="product-single">
+      <div className="product-single my-3">
         <div className="container">
           <div className="product-single-content bg-white grid">
             <div className="product-single-l">
@@ -229,20 +250,24 @@ export default function ProductSinglePage() {
                 </div>
 
                 <div className="btns">
-                  <button className="add-to-cart-btn btn">
-                    <FaShoppingCart />
-                    <span
-                      className="btn-text mx-2"
-                      onClick={() => {
-                        addToCartHandler(product);
-                      }}
-                    >
-                      Thêm vào giỏ hàng
-                    </span>
-                  </button>
-                  <button className="buy-now btn mx-3">
-                    <span className="btn-text">Mua ngay</span>
-                  </button>
+                  {token ? (
+                    <button className="add-to-cart-btn btn">
+                      <FaShoppingCart />
+                      <span
+                        className="btn-text mx-2"
+                        onClick={() => {
+                          addToCartHandler(product);
+                        }}
+                      >
+                        Thêm vào giỏ hàng
+                      </span>
+                    </button>
+                  ) : (
+                    <button className="add-to-cart-btn btn">
+                      <FaShoppingCart />
+                      <span className="btn-text mx-2">Thêm vào giỏ hàng</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
