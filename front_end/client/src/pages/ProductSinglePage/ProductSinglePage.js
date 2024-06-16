@@ -28,6 +28,7 @@ import { Col, Row } from "antd";
 import Rating from "../../components/Rating/Rating";
 import ProductSimilar from "../../components/ProductSimilar/ProductSimilar";
 import { getCookie } from "../../helpers/cookie";
+import ProductSpecsTable from "../../components/ProductSpecsTable/ProductSpecsTable";
 
 export default function ProductSinglePage() {
   const { id } = useParams();
@@ -42,6 +43,11 @@ export default function ProductSinglePage() {
   const similarProductsStatus = useSelector(
     (state) => state.product.similarProductsStatus
   );
+
+  const specsJson = product.spec;
+  const specsObject = specsJson ? JSON.parse(specsJson) : null;
+
+  console.log(specsJson);
 
   useEffect(() => {
     dispatch(fetchAsyncProductSingle(id));
@@ -281,12 +287,17 @@ export default function ProductSinglePage() {
             <div className="title-md mx-3">
               <h3>Thông số kỹ thuật</h3>
             </div>
+            <div className="mx-3 my-3">
+              {specsObject && <ProductSpecsTable specs={specsObject} />}
+            </div>
           </Col>
           <Col span={12}>
             <div className="title-md mx-3">
               <h3>Các sản phẩm tương tự</h3>
             </div>
-            <ProductSimilar products={similarProducts} />
+            <div className="mx-3 my-3">
+              <ProductSimilar products={similarProducts} />
+            </div>
           </Col>
         </Row>
       </div>
