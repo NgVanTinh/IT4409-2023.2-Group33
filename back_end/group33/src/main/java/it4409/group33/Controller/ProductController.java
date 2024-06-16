@@ -1,6 +1,5 @@
 package it4409.group33.Controller;
 
-import it4409.group33.Model.Category;
 import it4409.group33.Model.Product;
 import it4409.group33.Repository.ProductRepository;
 import it4409.group33.Service.CategoryService;
@@ -18,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static it4409.group33.Service.CloudinaryService.combineImageAndColor;
 import static it4409.group33.Service.CloudinaryService.uploadAndGetUrl;
 import static it4409.group33.Util.TimeStamp.getTimestamp;
 
@@ -394,5 +394,47 @@ public class ProductController {
         List<String> mergedList = new ArrayList<>(list1);
         mergedList.addAll(list2);
         return mergedList;
+    }
+
+    @PostMapping("/dev")
+    public ResponseEntity<Product> dev(
+            @RequestParam("thumbnail") MultipartFile thumbnail,
+            @RequestParam("images") MultipartFile[] images,
+            @RequestParam("colors") String[] colors,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("price") Double price,
+            @RequestParam("discountPercentage") Double discountPercentage,
+            @RequestParam("rating") Double rating,
+            @RequestParam("stock") Integer stock,
+            @RequestParam("brand") String brand,
+            @RequestParam("category") String category,
+            @RequestParam("spec") String spec,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+    ) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
+            List<String> imagesList = new ArrayList<>();
+            for (int i = 0; i < images.length; i++) {
+                MultipartFile imageFile = images[i];
+                String color = colors[i];
+                String img = combineImageAndColor(imageFile,color);
+                if(img != null) {
+                    imagesList.add(img);
+                } else {
+                    return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+
+            String thumb = uploadAndGetUrl(thumbnail);
+            if (thumb.equals("Upload failed")) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            Product product = new Product(title, description, price, discountPercentage, rating, stock, brand, category, thumb, imagesList, spec);
+            productRepository.save(product);
+            return new ResponseEntity<>(product, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
     }
 }
