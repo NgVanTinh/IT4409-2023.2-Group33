@@ -9,6 +9,9 @@ const initialState = {
     price: null,
     category: null,
     rating: null,
+    brand: null,
+    specRam: null,
+    specStorage: null,
   },
   currentSort: null,
   productsStatus: STATUS.IDLE,
@@ -36,6 +39,11 @@ function applyFilters(products, filters) {
       (product) => product.category === filters.category
     );
   }
+  if (filters.brand) {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.brand === filters.brand
+    );
+  }
   if (filters.rating) {
     const minRating = parseFloat(filters.rating);
     const maxRating = minRating + 1;
@@ -43,6 +51,17 @@ function applyFilters(products, filters) {
     filteredProducts = filteredProducts.filter((product) => {
       const productRating = parseFloat(product.rating);
       return productRating >= minRating && productRating < maxRating;
+    });
+  }
+  if (filters.specRam) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return productSpecs.RAM && productSpecs.RAM === filters.specRam;
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
     });
   }
   return filteredProducts;

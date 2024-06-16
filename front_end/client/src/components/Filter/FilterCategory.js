@@ -26,8 +26,8 @@ const FilterCategory = () => {
 
   return (
     <Select
-      style={{ width: 200 }}
-      placeholder="Lựa chọn danh mục"
+      style={{ width: 150 }}
+      placeholder="Danh mục"
       onChange={handleCategoryChange}
       allowClear
     >
