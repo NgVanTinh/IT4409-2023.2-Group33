@@ -10,7 +10,7 @@ const initialState = {
   ratingResult: null,
   ratingError: null,
   ratingLoading: false,
-  ratedProduct: [],
+  ratedProducts: [],
   statusRatedProduct: false,
 };
 

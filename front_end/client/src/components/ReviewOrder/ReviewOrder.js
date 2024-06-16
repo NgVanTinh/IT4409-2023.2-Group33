@@ -61,7 +61,7 @@ const ReviewModal = ({ isVisible, onOk, onCancel, products, isLoading }) => {
           </Option>
         ))}
       </Select>
-      <Rate onChange={setRating} value={rating} />
+      <Rate onChange={setRating} value={rating} allowHalf />
       <Input.TextArea
         rows={4}
         value={comment}

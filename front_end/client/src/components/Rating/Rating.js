@@ -11,6 +11,7 @@ export default function Rating({ rating, disabled, tooltips }) {
         onChange={setValue}
         value={value}
         disabled={disabled}
+        allowHalf
       />
     </Flex>
   );
