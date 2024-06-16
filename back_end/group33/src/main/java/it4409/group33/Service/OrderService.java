@@ -177,8 +177,8 @@ public class OrderService {
         }
     }
 
-    public Map<String, Long> getTotalQuantityByBrand() {
-        List<Object[]> results = orderRepository.findTotalQuantityByBrand();
+    public Map<String, Long> getTotalQuantityByCategory() {
+        List<Object[]> results = orderRepository.findTotalQuantityByCategory();
         Map<String, Long> brandQuantityMap = new HashMap<>();
         for (Object[] result : results) {
             String brand = (String) result[0];
@@ -188,8 +188,8 @@ public class OrderService {
         return brandQuantityMap;
     }
 
-    public List<Map<String, Object>> getProductsByBrand(String brand) {
-        List<Object[]> results = orderRepository.findProductsByBrand(brand);
+    public List<Map<String, Object>> getProductsByCategory(String category) {
+        List<Object[]> results = orderRepository.findProductsByCategory(category);
         List<Map<String, Object>> productList = new ArrayList<>();
         for (Object[] result : results) {
             Map<String, Object> productMap = new HashMap<>();

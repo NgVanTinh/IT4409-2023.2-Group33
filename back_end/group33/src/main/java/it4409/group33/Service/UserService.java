@@ -59,4 +59,12 @@ public class UserService {
             return false;
         }
     }
+
+    public String getUserNameById(Long id) {
+        return userRepository.getUsernameById(id);
+    }
+
+    public String getFullNameById(Long id) {
+        return userRepository.getFullNameById(id);
+    }
 }

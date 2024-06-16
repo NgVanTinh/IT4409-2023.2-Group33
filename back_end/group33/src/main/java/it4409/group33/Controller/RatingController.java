@@ -4,6 +4,7 @@ import it4409.group33.Model.Order;
 import it4409.group33.Model.Rating;
 import it4409.group33.Service.OrderService;
 import it4409.group33.Service.RatingService;
+import it4409.group33.Service.UserService;
 import it4409.group33.Util.JWT;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +29,9 @@ public class RatingController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private JWT jwt;
@@ -60,7 +64,10 @@ public class RatingController {
                         Rating rating = new Rating(comment, rate, order.getUserId(), productIdY, orderId, getDate());
                         ratingService.save(rating);
                         ratingService.updateProductRating(productIdY);
-                        return new ResponseEntity<>(rating.toJSON().toString(), HttpStatus.OK);
+                        JSONObject ratingJSON = rating.toJSON();
+                        ratingJSON.put("username",userService.getUserNameById(order.getUserId()));
+                        ratingJSON.put("fullName",userService.getFullNameById(order.getUserId()));
+                        return new ResponseEntity<>(ratingJSON.toString(), HttpStatus.OK);
                     }
                 }
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -79,7 +86,11 @@ public class RatingController {
         JSONArray res = new JSONArray();
         for (Rating rating: ratings) {
             try {
-                res.put(rating.toJSON());
+                Long userId = rating.getUserId();
+                JSONObject ratingJSON = rating.toJSON();
+                ratingJSON.put("username",userService.getUserNameById(userId));
+                ratingJSON.put("fullName",userService.getFullNameById(userId));
+                res.put(ratingJSON);
 
             } catch (JSONException e) {
                 e.printStackTrace();

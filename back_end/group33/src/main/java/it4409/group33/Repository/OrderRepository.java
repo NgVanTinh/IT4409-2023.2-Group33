@@ -13,7 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserId(Long userId);
     List<Order> findByStatus(Order.OrderStatus status);
     List<Order> findByUserIdAndStatus(Long userId, Order.OrderStatus status);
-    @Query(value = "SELECT p.brand, " +
+    @Query(value = "SELECT p.category, " +
             "SUM(JSON_UNQUOTE(JSON_EXTRACT(product_data, '$.quantity'))) AS total_quantity " +
             "FROM ( " +
             "   SELECT o.id, o.status, " +
@@ -35,9 +35,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "   AND o.status = 'COMPLETED' " +
             ") AS products_json " +
             "JOIN products p ON JSON_UNQUOTE(JSON_EXTRACT(products_json.product_data, '$.id')) = p.id " +
-            "GROUP BY p.brand",
+            "GROUP BY p.category",
             nativeQuery = true)
-    List<Object[]> findTotalQuantityByBrand();
+    List<Object[]> findTotalQuantityByCategory();
     @Query(value = "SELECT JSON_UNQUOTE(JSON_EXTRACT(product_data, '$.title')) AS title, " +
             "JSON_UNQUOTE(JSON_EXTRACT(product_data, '$.quantity')) AS quantity " +
             "FROM ( " +
@@ -60,9 +60,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "   AND o.status = 'COMPLETED' " +
             ") AS products_json " +
             "JOIN products p ON JSON_UNQUOTE(JSON_EXTRACT(products_json.product_data, '$.id')) = p.id " +
-            "WHERE p.brand = :brand",
+            "WHERE p.category = :category",
             nativeQuery = true)
-    List<Object[]> findProductsByBrand(@Param("brand") String brand);
+    List<Object[]> findProductsByCategory(@Param("category") String category);
     @Query(value = "SELECT p.id AS product_id, " +
             "p.title AS product_title, " +
             "SUM(JSON_UNQUOTE(JSON_EXTRACT(product_data, '$.quantity'))) AS total_quantity_sold " +

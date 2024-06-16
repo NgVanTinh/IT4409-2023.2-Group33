@@ -3,6 +3,7 @@ package it4409.group33.Controller;
 import it4409.group33.Exception.InvalidOrderStatusException;
 import it4409.group33.Exception.OrderNotFoundException;
 import it4409.group33.Model.Order;
+import it4409.group33.Service.CategoryService;
 import it4409.group33.Service.OrderService;
 import it4409.group33.Service.VnpayService;
 import it4409.group33.Util.JWT;
@@ -31,6 +32,9 @@ public class OrderController {
 
     @Autowired
     private JWT jwt;
+
+    @Autowired
+    private CategoryService categoryService;
     
     
 
@@ -229,33 +233,55 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/orders/quantity-sold-by-brand")
-    public Map<String, Long> getTotalQuantityByBrand() {
-        return orderService.getTotalQuantityByBrand();
+    @GetMapping("/orders/quantity-sold-by-category")
+    public ResponseEntity<Map<String, Long>> getTotalQuantityByCategory(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token) ) {
+            return new ResponseEntity<>(orderService.getTotalQuantityByCategory(),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
-    @GetMapping("/orders/list-product-sold-by-brand")
-    public List<Map<String, Object>> getProductsByBrand(@RequestParam String brand) {
-        return orderService.getProductsByBrand(brand);
+    @GetMapping("/orders/list-product-sold-by-category")
+    public ResponseEntity<List<Map<String, Object>>> getProductsByCategory(@RequestParam Long categoryId,
+                                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token) ) {
+            String vnCategory = categoryService.getVietnameseNameById(categoryId);
+            return new ResponseEntity<>(orderService.getProductsByCategory(vnCategory),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/orders/best-seller")
-    public List<Map<String, Object>> getProductsTotalQuantitySold() {
-        return orderService.getProductsTotalQuantitySold();
+    public ResponseEntity<List<Map<String, Object>>> getProductsTotalQuantitySold(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token) ) {
+            return new ResponseEntity<>(orderService.getProductsTotalQuantitySold(),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/orders/number-orders")
-    public ResponseEntity<String> count() {
-        long x = orderService.count();
-        String xx = "{\"orders\":" + String.valueOf(x) + "}";
-        return new ResponseEntity<>(xx,HttpStatus.OK);
+    public ResponseEntity<String> count(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token) ) {
+            long x = orderService.count();
+            String xx = "{\"orders\":" + String.valueOf(x) + "}";
+            return new ResponseEntity<>(xx, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/orders/sum")
-    public ResponseEntity<String> sum() {
-        Double x = orderService.sum();
-        String xx = "{\"sum\":" + String.valueOf(x) + "}";
-        return new ResponseEntity<>(xx,HttpStatus.OK);
+    public ResponseEntity<String> sum(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token) ) {
+            Double x = orderService.sum();
+            String xx = "{\"sum\":" + String.valueOf(x) + "}";
+            return new ResponseEntity<>(xx, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/orders/{orderId}")
