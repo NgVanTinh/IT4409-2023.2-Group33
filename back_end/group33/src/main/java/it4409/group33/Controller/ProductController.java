@@ -1,6 +1,5 @@
 package it4409.group33.Controller;
 
-import it4409.group33.Model.Category;
 import it4409.group33.Model.Product;
 import it4409.group33.Repository.ProductRepository;
 import it4409.group33.Service.CategoryService;
@@ -74,57 +73,6 @@ public class ProductController {
         } catch (JSONException e) {
             e.printStackTrace();
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
-            Optional<Product> optionalProduct = productRepository.findById(id);
-
-            if (optionalProduct.isPresent()) {
-                Product existingProduct = optionalProduct.get();
-                if (updatedProduct.getTitle() != null) {
-                    existingProduct.setTitle(updatedProduct.getTitle());
-                }
-                if (updatedProduct.getDescription() != null) {
-                    existingProduct.setDescription(updatedProduct.getDescription());
-                }
-                if (updatedProduct.getPrice() != null) {
-                    existingProduct.setPrice(updatedProduct.getPrice());
-                }
-                if (updatedProduct.getDiscountPercentage() != null) {
-                    existingProduct.setDiscountPercentage(updatedProduct.getDiscountPercentage());
-                }
-                if (updatedProduct.getRating() != null) {
-                    existingProduct.setRating(updatedProduct.getRating());
-                }
-                if (updatedProduct.getStock() != null) {
-                    existingProduct.setStock(updatedProduct.getStock());
-                }
-                if (updatedProduct.getBrand() != null) {
-                    existingProduct.setBrand(updatedProduct.getBrand());
-                }
-                if (updatedProduct.getCategory() != null) {
-                    existingProduct.setCategory(updatedProduct.getCategory());
-                }
-                if (updatedProduct.getThumbnail() != null) {
-                    existingProduct.setThumbnail(updatedProduct.getThumbnail());
-                }
-                if (updatedProduct.getImages() != null) {
-                    existingProduct.setImages(updatedProduct.getImages());
-                }
-                if (updatedProduct.getSpec() != null) {
-                    existingProduct.setSpec(updatedProduct.getSpec());
-                }
-
-                Product savedProduct = productRepository.save(existingProduct);
-                return new ResponseEntity<>(savedProduct, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } else {
-            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
     }
 
@@ -265,7 +213,6 @@ public class ProductController {
                                                  @RequestParam("description") String description,
                                                  @RequestParam("price") Double price,
                                                  @RequestParam("discountPercentage") Double discountPercentage,
-                                                 @RequestParam("rating") Double rating,
                                                  @RequestParam("stock") Integer stock,
                                                  @RequestParam("brand") String brand,
                                                  @RequestParam("category") String category,
@@ -274,22 +221,18 @@ public class ProductController {
     ){
 
         if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
-
             List<String> X = new ArrayList<>();
-
             String thumb = uploadAndGetUrl(thumbnail);
             if (thumb.equals("Upload failed")) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
             for (MultipartFile image : images) {
                 String tmp = uploadAndGetUrl(image);
                 if (!tmp.equals("Upload failed")) {
                     X.add(tmp);
                 }
             }
-
-            Product product = new Product(title, description, price, discountPercentage, rating, stock, brand, category, thumb, X, spec);
+            Product product = new Product(title, description, price, discountPercentage, 0, stock, brand, category, thumb, X, spec);
             productRepository.save(product);
             return new ResponseEntity<>(product, HttpStatus.CREATED);
         } else {
@@ -345,54 +288,97 @@ public class ProductController {
 
     }
 
-//    @PostMapping("/test/{id}")
-//    public ResponseEntity<Product> updateProduct(@RequestParam(value = "thumbnail",required = false) MultipartFile thumbnail,
-//                                                 @RequestParam(value = "image",required = false) List<MultipartFile> images,
-//                                                 @RequestParam(value = "title",required = false) String title,
-//                                                 @RequestParam(value = "description",required = false) String description,
-//                                                 @RequestParam(value = "price",required = false) Double price,
-//                                                 @RequestParam(value = "discountPercentage",required = false) Double discountPercentage,
-//                                                 @RequestParam(value = "rating",required = false) Double rating,
-//                                                 @RequestParam(value = "stock",required = false) Integer stock,
-//                                                 @RequestParam(value = "brand",required = false) String brand,
-//                                                 @RequestParam(value = "category",required = false) String category,
-//                                                 @RequestParam(value = "spec",required = false) String spec,
-//                                                 @RequestParam(value = "mergeImage",required = false) boolean mergeImage,
-//                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-//                                                 @PathVariable Long id
-//    ){
-//        Optional<Product> optionalProduct = productRepository.findById(id);
-//        if(optionalProduct.isPresent()) {
-//            Product product = optionalProduct.get();
-//            if(thumbnail != null) {
-//                String thumb = uploadAndGetUrl(thumbnail);
-//                product.setThumbnail(thumb);
-//            }
-//
-//            if(images != null ) {
-//                if(!mergeImage) {
-//                    List<String> X = new ArrayList<>();
-//                    for (MultipartFile image : images) {
-//                        String tmp = uploadAndGetUrl(image);
-//                        if (!tmp.equals("Upload failed")) {
-//                            X.add(tmp);
-//                        }
-//                    }
-//                    product.setImages(X);
-//                } else {
-//
-//                }
-//            }
-//
-//
-//
-//
-//        }
-//    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Product> updateProduct(@RequestParam(value = "thumbnail",required = false) MultipartFile thumbnail,
+                                                 @RequestParam(value = "image",required = false) List<MultipartFile> images,
+                                                 @RequestParam(value = "title",required = false) String title,
+                                                 @RequestParam(value = "description",required = false) String description,
+                                                 @RequestParam(value = "price",required = false) Double price,
+                                                 @RequestParam(value = "discountPercentage",required = false) Double discountPercentage,
+                                                 @RequestParam(value = "stock",required = false) Integer stock,
+                                                 @RequestParam(value = "brand",required = false) String brand,
+                                                 @RequestParam(value = "category",required = false) String category,
+                                                 @RequestParam(value = "spec",required = false) String spec,
+                                                 @RequestParam(value = "mergeImage",required = false) boolean mergeImage,
+                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                 @PathVariable Long id
+    ){
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
+            Optional<Product> optionalProduct = productRepository.findById(id);
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                if (thumbnail != null) {
+                    String thumb = uploadAndGetUrl(thumbnail);
+                    product.setThumbnail(thumb);
+                }
+
+                if (images != null) {
+                    List<String> newImages = new ArrayList<>();
+                    for (MultipartFile image : images) {
+                        String tmp = uploadAndGetUrl(image);
+                        if (!tmp.equals("Upload failed")) {
+                            newImages.add(tmp);
+                        } else {
+                            new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                        }
+                    }
+                    if (mergeImage) {
+                        List<String> mergedImages = mergeLists(product.getImages(), newImages);
+                        product.setImages(mergedImages);
+                    } else {
+                        product.setImages(newImages);
+                    }
+                }
+
+                if (title != null) {
+                    product.setTitle(title);
+                }
+                if (description != null) {
+                    product.setDescription(description);
+                }
+                if (price != null) {
+                    product.setPrice(price);
+                }
+                if (discountPercentage != null) {
+                    product.setDiscountPercentage(discountPercentage);
+                }
+                if (stock != null) {
+                    product.setStock(stock);
+                }
+                if (brand != null) {
+                    product.setBrand(brand);
+                }
+                if (category != null) {
+                    product.setCategory(category);
+                }
+                if (spec != null) {
+                    product.setSpec(spec);
+                }
+                Product updatedProduct = productRepository.save(product);
+                return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            }
+        }
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    }
 
     public static List<String> mergeLists(List<String> list1, List<String> list2) {
         List<String> mergedList = new ArrayList<>(list1);
         mergedList.addAll(list2);
         return mergedList;
+    }
+
+    @PutMapping("/spec/{productId}")
+    public ResponseEntity<Product> updateSpec(@RequestBody String requestBody,@PathVariable Long productId) {
+       Product product = productRepository.findByProductId(productId);
+       if(product != null) {
+           product.setSpec(requestBody);
+           productRepository.save(product);
+           return new ResponseEntity<>(product,HttpStatus.OK);
+       } else {
+           return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+       }
+
     }
 }

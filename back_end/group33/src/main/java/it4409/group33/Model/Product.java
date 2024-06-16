@@ -25,7 +25,7 @@ public class Product {
     private boolean isDeleted;
     private long deletedOn;
 
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String spec;
 
     public Product() {
