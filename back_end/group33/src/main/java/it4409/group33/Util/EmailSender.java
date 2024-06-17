@@ -20,10 +20,9 @@ public class EmailSender {
 
         try {
             mailSender.send(message);
-            System.out.println("Email sent successfully");
             return true;
         } catch (MailException e) {
-            System.out.println("Failed to send email: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
