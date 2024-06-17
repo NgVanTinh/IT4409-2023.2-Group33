@@ -27,6 +27,9 @@ import FilterLoaiPin from "./FilterLoaiPin";
 import FilterTienIchPin from "./FilterTienIchPin";
 import FilterKhoiLuong from "./FilterKhoiLuong";
 import FilterHieuSuatSac from "./FilterHieuSuatSac";
+import FilterDongSacToiDa from "./FilterDongSacToiDa";
+import FilterChatLieu from "./FilterChatLieu";
+import FilterTrongLuong from "./FilterTrongLuong";
 
 export default function Filter() {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -76,6 +79,17 @@ export default function Filter() {
             <FilterTienIchPin />
             <FilterKhoiLuong />
             <FilterHieuSuatSac />
+          </>
+        )}
+        {selectedCategory === "Củ sạc" && (
+          <>
+            <FilterDongSacToiDa />
+          </>
+        )}
+        {selectedCategory === "Bao da" && (
+          <>
+            <FilterTrongLuong />
+            <FilterChatLieu />
           </>
         )}
       </Space>

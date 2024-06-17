@@ -32,6 +32,9 @@ const initialState = {
     tienIchPin: null,
     khoiLuong: null,
     hieuSuatSac: null,
+    dongSacToiDa: null,
+    chatLieu: null,
+    trongLuong: null,
   },
   currentSort: null,
   productsStatus: STATUS.IDLE,
@@ -56,12 +59,13 @@ function applyFilters(products, filters) {
   }
   if (filters.category) {
     filteredProducts = filteredProducts.filter(
-      (product) => product.category === filters.category
+      (product) =>
+        product.category.toLowerCase() === filters.category.toLowerCase()
     );
   }
   if (filters.brand) {
     filteredProducts = filteredProducts.filter(
-      (product) => product.brand === filters.brand
+      (product) => product.brand.toLowerCase() === filters.brand.toLowerCase()
     );
   }
   if (filters.rating) {
@@ -77,7 +81,10 @@ function applyFilters(products, filters) {
     filteredProducts = filteredProducts.filter((product) => {
       try {
         const productSpecs = JSON.parse(product.spec);
-        return productSpecs.RAM && productSpecs.RAM === filters.specRam;
+        return (
+          productSpecs.RAM &&
+          productSpecs.RAM.toLowerCase() === filters.specRam.toLowerCase()
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
@@ -91,7 +98,8 @@ function applyFilters(products, filters) {
         const productSpecs = JSON.parse(product.spec);
         return (
           productSpecs["Dung lượng lưu trữ"] &&
-          productSpecs["Dung lượng lưu trữ"] === filters.specStorage
+          productSpecs["Dung lượng lưu trữ"].toLowerCase() ===
+            filters.specStorage.toLowerCase()
         );
       } catch (error) {
         console.error("Parsing error:", error);
@@ -105,7 +113,10 @@ function applyFilters(products, filters) {
       try {
         const productSpecs = JSON.parse(product.spec);
         const screenInfo = productSpecs["Màn hình"];
-        return screenInfo && screenInfo.includes(filters.screenType);
+        return (
+          screenInfo &&
+          screenInfo.toLowerCase().includes(filters.screenType.toLowerCase())
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
@@ -119,7 +130,10 @@ function applyFilters(products, filters) {
       try {
         const productSpecs = JSON.parse(product.spec);
         const osInfo = productSpecs["Hệ điều hành"];
-        return osInfo && osInfo.includes(filters.operatingSystem);
+        return (
+          osInfo &&
+          osInfo.toLowerCase().includes(filters.operatingSystem.toLowerCase())
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
@@ -132,7 +146,12 @@ function applyFilters(products, filters) {
       try {
         const productSpecs = JSON.parse(product.spec);
         const rearCameraSpec = productSpecs["Camera sau"];
-        return rearCameraSpec && rearCameraSpec.includes(filters.rearCamera);
+        return (
+          rearCameraSpec &&
+          rearCameraSpec
+            .toLowerCase()
+            .includes(filters.rearCamera.toLowerCase())
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
@@ -146,7 +165,12 @@ function applyFilters(products, filters) {
       try {
         const productSpecs = JSON.parse(product.spec);
         const frontCameraSpec = productSpecs["Camera trước"];
-        return frontCameraSpec && frontCameraSpec.includes(filters.frontCamera);
+        return (
+          frontCameraSpec &&
+          frontCameraSpec
+            .toLowerCase()
+            .includes(filters.frontCamera.toLowerCase())
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
@@ -159,7 +183,10 @@ function applyFilters(products, filters) {
       try {
         const productSpecs = JSON.parse(product.spec);
         const chipSpec = productSpecs["Chip"];
-        return chipSpec && chipSpec.includes(filters.chip);
+        return (
+          chipSpec &&
+          chipSpec.toLowerCase().includes(filters.chip.toLowerCase())
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
@@ -187,7 +214,9 @@ function applyFilters(products, filters) {
         const productSpecs = JSON.parse(product.spec);
         return (
           productSpecs["Thời gian tai nghe"] &&
-          productSpecs["Thời gian tai nghe"].includes(filters.thoiGianTaiNghe)
+          productSpecs["Thời gian tai nghe"]
+            .toLowerCase()
+            .includes(filters.thoiGianTaiNghe.toLowerCase())
         );
       } catch (error) {
         console.error("Parsing error:", error);
@@ -202,7 +231,9 @@ function applyFilters(products, filters) {
         const productSpecs = JSON.parse(product.spec);
         return (
           productSpecs["Thời gian hộp sạc"] &&
-          productSpecs["Thời gian hộp sạc"].includes(filters.thoiGianHopSac)
+          productSpecs["Thời gian hộp sạc"]
+            .toLowerCase()
+            .includes(filters.thoiGianHopSac.toLowerCase())
         );
       } catch (error) {
         console.error("Parsing error:", error);
@@ -266,7 +297,9 @@ function applyFilters(products, filters) {
         const productSpecs = JSON.parse(product.spec);
         return (
           productSpecs["Hỗ trợ kết nối"] &&
-          productSpecs["Hỗ trợ kết nối"].includes(filters.hoTroKetNoi)
+          productSpecs["Hỗ trợ kết nối"]
+            .toLowerCase()
+            .includes(filters.hoTroKetNoi.toLowerCase())
         );
       } catch (error) {
         console.error("Parsing error:", error);
@@ -282,7 +315,9 @@ function applyFilters(products, filters) {
         const productSpecs = JSON.parse(product.spec);
         return (
           productSpecs["Điều khiển bằng"] &&
-          productSpecs["Điều khiển bằng"].includes(filters.dieuKhienBang)
+          productSpecs["Điều khiển bằng"]
+            .toLowerCase()
+            .includes(filters.dieuKhienBang.toLowerCase())
         );
       } catch (error) {
         console.error("Parsing error:", error);
@@ -290,6 +325,7 @@ function applyFilters(products, filters) {
       }
     });
   }
+
   if (filters.dungLuongPin) {
     filteredProducts = filteredProducts.filter((product) => {
       try {
@@ -309,7 +345,10 @@ function applyFilters(products, filters) {
       try {
         const productSpecs = JSON.parse(product.spec);
         const nguonVao = productSpecs["Nguồn vào"];
-        return nguonVao && nguonVao.includes(filters.nguonVao);
+        return (
+          nguonVao &&
+          nguonVao.toLowerCase().includes(filters.nguonVao.toLowerCase())
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
@@ -395,7 +434,59 @@ function applyFilters(products, filters) {
         const productSpecs = JSON.parse(product.spec);
         const hieuSuatSacStr = productSpecs["Hiệu suất sạc"];
         const hieuSuatSac = parseFloat(hieuSuatSacStr.replace("%", ""));
-        return hieuSuatSac && hieuSuatSac >= filters.hieuSuatSac;
+        return hieuSuatSac && hieuSuatSac <= filters.hieuSuatSac;
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  if (filters.dongSacToiDa) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const dongSacToiDaStr = productSpecs["Dòng sạc tối đa"];
+        const dongSacToiDa = parseFloat(
+          dongSacToiDaStr.replace("W", "").trim()
+        );
+        // So sánh giá trị "Dòng sạc tối đa" của sản phẩm với giá trị từ bộ lọc
+        return dongSacToiDa && dongSacToiDa >= filters.dongSacToiDa;
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  if (filters.chatLieu) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const chatLieu = productSpecs["Chất liệu"];
+        // Chuyển cả hai chuỗi về dạng chữ thường trước khi so sánh
+        return (
+          chatLieu &&
+          chatLieu.toLowerCase().includes(filters.chatLieu.toLowerCase())
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  if (filters.trongLuong) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const trongLuong = parseInt(productSpecs["Trọng lượng"], 10); // Đảm bảo là số
+        // Kiểm tra xem trongLuong có nằm trong khoảng được chọn không
+        return (
+          trongLuong &&
+          trongLuong >= filters.trongLuong.min &&
+          (!filters.trongLuong.max || trongLuong <= filters.trongLuong.max)
+        );
       } catch (error) {
         console.error("Parsing error:", error);
         return false;
