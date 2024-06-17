@@ -88,25 +88,10 @@ public class OrderService {
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             if (order.getStatus() == Order.OrderStatus.CREATED) {
-                order.setStatus(Order.OrderStatus.AWAITING_SHIPMENT);
-                return orderRepository.save(order);
-            } else {
-                throw new InvalidOrderStatusException("Only for CREATED status");
-            }
-        } else {
-            throw new OrderNotFoundException("Order not found with ID: " + orderId);
-        }
-    }
-
-    public Order updateOrderStatusToShipping(Long orderId) {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            if (order.getStatus() == Order.OrderStatus.AWAITING_SHIPMENT) {
                 order.setStatus(Order.OrderStatus.SHIPPING);
                 return orderRepository.save(order);
             } else {
-                throw new InvalidOrderStatusException("Only for AWAITING_SHIPMENT status");
+                throw new InvalidOrderStatusException("Only for CREATED status");
             }
         } else {
             throw new OrderNotFoundException("Order not found with ID: " + orderId);
@@ -166,7 +151,7 @@ public class OrderService {
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             Order.OrderStatus currentStatus = order.getStatus();
-            if (currentStatus == Order.OrderStatus.DELIVERED || currentStatus == Order.OrderStatus.AWAITING_SHIPMENT) {
+            if (currentStatus == Order.OrderStatus.DELIVERED || currentStatus == Order.OrderStatus.SHIPPING) {
                 order.setStatus(Order.OrderStatus.REFUNDED);
                 return orderRepository.save(order);
             } else {

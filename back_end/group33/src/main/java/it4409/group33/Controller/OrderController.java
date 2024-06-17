@@ -40,7 +40,7 @@ public class OrderController {
 
     @PostMapping("/order")
     public ResponseEntity<String> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody String requestBody, HttpServletRequest request) {
-        if(token != null && jwt.validateJWT(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUser(token)) {
             Long userId = Long.valueOf(Objects.requireNonNull(JWT.getUserId(token)));
             try{
                 Order order = orderService.createOrderFromCart(userId,requestBody);
@@ -121,28 +121,6 @@ public class OrderController {
             return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         }
 
-    }
-
-    @PutMapping("/orders/{orderId}/ship")
-    public ResponseEntity<Order> updateOrderStatusToShipping(@PathVariable Long orderId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
-            Order order;
-            try {
-                order = orderService.updateOrderStatusToShipping(orderId);
-            } catch (InvalidOrderStatusException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            } catch (OrderNotFoundException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            return ResponseEntity.ok(order);
-        } else {
-            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
-        }
     }
 
     @PutMapping("/orders/{orderId}/deliver")

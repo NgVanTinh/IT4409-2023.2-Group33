@@ -77,7 +77,7 @@ public class CartController {
 
     @PutMapping("/add-to-cart")
     public ResponseEntity<String> updateCart(@RequestBody String requestBody,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && jwt.validateJWT(token) && JWT.isUserOrAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUser(token)) {
 
             try {
                 String newCart = cartService.addToCart(requestBody,token);
@@ -97,7 +97,7 @@ public class CartController {
 
     @PutMapping("/clear-cart")
     public ResponseEntity<String> clearCart(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && jwt.validateJWT(token) && JWT.isUserOrAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUser(token)) {
             Long userId = Long.valueOf(Objects.requireNonNull(JWT.getUserId(token)));
             if(cartService.clearCart(userId)) {
                 return new ResponseEntity<>(cartService.getUserCart(userId), HttpStatus.OK);
@@ -111,7 +111,7 @@ public class CartController {
 
     @PutMapping("/delete-product")
     public ResponseEntity<String> delete1ProductInCart(@RequestParam Long productId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        if(token != null && jwt.validateJWT(token) && JWT.isUserOrAdmin(token)) {
+        if(token != null && jwt.validateJWT(token) && JWT.isUser(token)) {
             try {
                 String newCart = cartService.addToCart("{\"products\":[]}",token,productId);
                 if(newCart != null) {

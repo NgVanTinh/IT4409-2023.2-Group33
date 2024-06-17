@@ -6,6 +6,7 @@ import it4409.group33.Service.CartService;
 import it4409.group33.Service.UserService;
 import it4409.group33.Util.EmailSender;
 import it4409.group33.Util.JWT;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,22 +245,19 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<Map<String, Object>>> getAllUser() {
-        List<Object[]> users = userRepository.getAllUsersExceptPassword();
-
-        List<Map<String, Object>> userDicts = new ArrayList<>();
-        for (Object[] user : users) {
-            Map<String, Object> userDict = new HashMap<>();
-            userDict.put("id", user[0]);
-            userDict.put("address", user[1]);
-            userDict.put("email", user[2]);
-            userDict.put("name", user[3]);
-            userDict.put("phone", user[4]);
-            userDict.put("role", user[5]);
-            userDict.put("username", user[6]);
-            userDicts.add(userDict);
+    public ResponseEntity<String> getAllUser() {
+        List<User> users = userRepository.findAll();
+        JSONArray res = new JSONArray();
+        try {
+            for (User user : users) {
+                res.put(user.toJSON());
+            }
+            return new ResponseEntity<>(res.toString(),HttpStatus.OK);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(userDicts,HttpStatus.OK);
+
     }
 
     @GetMapping("/user/{id}")

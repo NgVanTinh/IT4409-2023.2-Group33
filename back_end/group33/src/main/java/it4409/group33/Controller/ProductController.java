@@ -289,8 +289,8 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(@RequestParam(value = "thumbnail",required = false) MultipartFile thumbnail,
-                                                 @RequestParam(value = "image",required = false) List<MultipartFile> images,
+    public ResponseEntity<Product> updateProduct(@RequestParam(value = "thumbnail",required = false) String thumbnail,
+                                                 @RequestParam(value = "image",required = false) List<String> images,
                                                  @RequestParam(value = "title",required = false) String title,
                                                  @RequestParam(value = "description",required = false) String description,
                                                  @RequestParam(value = "price",required = false) Double price,
@@ -308,26 +308,11 @@ public class ProductController {
             if (optionalProduct.isPresent()) {
                 Product product = optionalProduct.get();
                 if (thumbnail != null) {
-                    String thumb = uploadAndGetUrl(thumbnail);
-                    product.setThumbnail(thumb);
+                    product.setThumbnail(thumbnail);
                 }
 
                 if (images != null) {
-                    List<String> newImages = new ArrayList<>();
-                    for (MultipartFile image : images) {
-                        String tmp = uploadAndGetUrl(image);
-                        if (!tmp.equals("Upload failed")) {
-                            newImages.add(tmp);
-                        } else {
-                            new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-                        }
-                    }
-                    if (mergeImage) {
-                        List<String> mergedImages = mergeLists(product.getImages(), newImages);
-                        product.setImages(mergedImages);
-                    } else {
-                        product.setImages(newImages);
-                    }
+                    product.setImages(images);
                 }
 
                 if (title != null) {
@@ -379,6 +364,36 @@ public class ProductController {
        } else {
            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
        }
+    }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadImage(@RequestParam("images") List<MultipartFile> images,
+                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+    ) {
+        if(token != null && jwt.validateJWT(token) && JWT.isAdmin(token)) {
+            List<String> newImages = new ArrayList<>();
+            int img = 0;
+            for (MultipartFile image : images) {
+                String tmp = uploadAndGetUrl(image);
+                if (!tmp.equals("Upload failed")) {
+                    newImages.add(tmp);
+                    img++;
+                } else {
+                    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+            JSONObject res = new JSONObject();
+            try {
+                res.put("imageUrl",newImages);
+                res.put("imageCount",img);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(res.toString(),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        }
 
     }
 }

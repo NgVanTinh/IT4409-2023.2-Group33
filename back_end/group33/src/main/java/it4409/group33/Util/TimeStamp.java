@@ -39,4 +39,11 @@ public class TimeStamp {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
         return vietnamTime.format(formatter);
     }
+
+    public static String getTime() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+        ZonedDateTime vietnamTime = now.atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:MM:ss");
+        return vietnamTime.format(formatter);
+    }
 }
