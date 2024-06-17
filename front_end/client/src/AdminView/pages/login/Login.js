@@ -3,7 +3,8 @@ import axios from "axios";
 import {Form, Input} from "antd";
 import "./AdminLogin.scss";
 import {toast, ToastContainer} from "react-toastify"
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Button } from "@mui/material";
 function Login() {
     const navigate = useNavigate();
     const handleOnFinishLogin = async (values) => {
@@ -86,9 +87,13 @@ function Login() {
                 <button type="submit">Đăng nhập</button>
                 </Form.Item>
             </Form>
-            <Link style={{color: 'white'}} to={'/'}
-                // onClick={() => navigate(`/login`)}
-            >Quay lại trang dành cho người dùng</Link>
+            <Button
+                variant="contained"
+                onClick={() => navigate(`/`)}
+            > 
+                <ArrowBackIcon/> 
+                Quay lại trang dành cho người dùng
+            </Button>
             </div>
             <div class="admin-right">
             <h3>TShop</h3>

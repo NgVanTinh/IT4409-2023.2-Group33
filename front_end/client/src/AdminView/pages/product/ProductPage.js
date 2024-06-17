@@ -39,6 +39,10 @@ const OrderPage = () => {
         const result = await axios.get(`https://buckytank.shop/products?limit=100`, config);
         const {products} = result.data;
         // console.log(products);
+        products.map((product) =>{
+          product.price = product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+
+        })
         setProducts(products.filter(product => product.isDeleted === false)); 
   };
 
@@ -106,6 +110,13 @@ const OrderPage = () => {
       align: "left",
     },
     {
+      field: "rating",
+      key: "rating",
+      headerName: "Đánh giá",
+      
+      flex: 1,
+    },
+    {
       key: "action",
       flex: 1,
       cellClassName: "action-column--cell",
@@ -114,7 +125,7 @@ const OrderPage = () => {
         return (
           <Box>
             <IconButton aria-label="view" color="primary"
-              title="View product"
+              title="xem chi tiết sản phẩm"
               onClick={() => {
                 navigate(`/admin/view-product/${params.row.id}`);
               }} 
@@ -123,12 +134,12 @@ const OrderPage = () => {
             </IconButton> 
 
             <Link to={`/admin/edit-product/${params.row.id}`}>
-              <IconButton aria-label="edit" color="success" title="Edit product">
+              <IconButton aria-label="edit" color="success" title="Chỉnh sửa sản phẩm">
               <EditIcon />
             </IconButton> 
             </Link>
             <IconButton aria-label="delete" color="error"
-              title="Delete product"
+              title="xóa sản phẩm"
               onClick={() => {
                   deleteProduct(params.row.id);
                 }} 

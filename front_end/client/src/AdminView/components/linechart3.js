@@ -1,14 +1,17 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const LineChart2 = ({ data }) => {
-  const chartData = data;
+const LineChart3 = ({ data }) => {
+  const chartData = Object.keys(data).map((key) => ({
+    title: key,
+    quantity: data[key],
+  }));
 
   if (!data || data.length === 0) {
     return <p>Không có dữ liệu</p>;
   }
   return (
-    <ResponsiveContainer width="100%" height={200}>
+    <ResponsiveContainer width="95%" height={200}>
       <BarChart
         data={chartData}
         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -23,4 +26,4 @@ const LineChart2 = ({ data }) => {
   );
 }
 
-export default LineChart2;
+export default LineChart3;

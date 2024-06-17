@@ -25,29 +25,33 @@ const Dashboard = () => {
     loadRevenue();
   }, []);
 
+  const config = {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  };
+
   const loadRevenue = async() =>{
-    const result = await axios.get(`https://buckytank.shop/api/orders/sum`);
+    const result = await axios.get(`https://buckytank.shop/api/orders/sum`, config);
     const sum = Number(result.data.sum)
     const data = sum.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
     setRevenue(data);
   }
   const loadCountUser = async() =>{
-    const result = await axios.get(`https://buckytank.shop/users/number-users`);
+    const result = await axios.get(`https://buckytank.shop/users/number-users`, config);
     setCountUser(result.data.users - 1);
   }
 
   const loadCountProduct = async() =>{
-    const result = await axios.get(`https://buckytank.shop/products`);
+    const result = await axios.get(`https://buckytank.shop/products`, config);
     setCountProduct(result.data.total);
   }
 
   const loadCountOrder = async() =>{
-    const result = await axios.get(`https://buckytank.shop/api/orders/number-orders`);
+    const result = await axios.get(`https://buckytank.shop/api/orders/number-orders`, config);
     setCountOrder(result.data.orders);
   }
 
   const loadData = async () => {
-    const result = await axios.get(`https://buckytank.shop/products`);
+    const result = await axios.get(`https://buckytank.shop/products`, config);
     const {products} = result.data;
     products.sort((a, b) => b.rating - a.rating);
     const arr = products.slice(0, 5);
@@ -212,6 +216,7 @@ const Dashboard = () => {
             flexDirection="column"
             alignItems="center"
             mt="25px"
+            ml={0}
           >
             <LineChart data={data}/>
           </Box>

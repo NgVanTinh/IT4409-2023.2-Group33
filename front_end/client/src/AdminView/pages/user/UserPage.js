@@ -6,7 +6,7 @@ import TopHeader from "../../components/TopHeader";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import {GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
-
+import {toast, ToastContainer} from 'react-toastify'
 const CustomGridToolbar = () => {
   return (
     <GridToolbarContainer
@@ -22,51 +22,78 @@ const CustomGridToolbar = () => {
 
 const UserPage = () => {
   const [users, setUsers] = useState([]);
-  const [isLocked, setIsLocked] = useState(false);
   const config = {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   };
 
   const loadUsers = async () => {
       const result = await axios.get(`https://buckytank.shop/users`, config);
-      const arr = result.data.filter(user => user.role !== 'admin');
-      // console.log(arr);
+      const arr = result.data.filter(user => user.id !== 1);
+      console.log(arr);
       setUsers(arr);
       
   }
 
   const handleLock = async(id) => {
-      await axios.put(`https://buckytank.shop/users/lock?id=${id}`);
+    const formData = new FormData();
+    formData.append('id', id);
+    await axios.put(`https://buckytank.shop/users/lock`,formData, config)
+    .then(() => {
+      toast.info('Khóa tài khoản thành công!', {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
+      loadUsers();
+    })
+    .catch(err => {console.log(err)})
   }
 
   const handleUnLock = async(id) => {
-      await axios.put(`https://buckytank.shop/users/unlock?id=${id}`);
+    const formData = new FormData();
+    formData.append('id', id);
+    await axios.put(`https://buckytank.shop/users/unlock`,formData, config)
+    .then(() => {
+      toast.info('Mở khóa tài khoản thành công!', {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
+      loadUsers();
+    })
+    .catch(err => {console.log(err)})
   }
 
   useEffect(() => {
-      // if (localStorage.getItem('token') == null) {
-      //     navigate("/login");
-      // }
       loadUsers();
-  });
+  },[]);
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     {
-      field: "name",
-      headerName: "Name",
+      field: "fullname",
+      headerName: "Tên người dùng",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "username",
-      headerName: "UserName",
+      headerName: "Tên tài khoản",
       flex: 1,
       cellClassName: "username-column--cell",
     },
     {
       field: "phone",
-      headerName: "Phone Number",
+      headerName: "Số điện thoại",
       cellClassName: "name-column--cell",
       flex: 1,
     },
@@ -75,26 +102,43 @@ const UserPage = () => {
       headerName: "Email",
       flex: 1,
     },
-     {
+    {
       field: "status",
       cellClassName: "status-column--cell",
-      headerName: "Status",
+      headerName: "Trạng thái",
       flex: 1,
+      renderCell: params => {
+        const status = params.row.locked;
+        // console.log(status);
+        return (
+          <Box>
+            {status === 'true'
+            ? 
+              <p style={{color: 'red'}}>Locked</p>
+            :
+              <p style={{color: 'green'}}>Active</p>}
+          </Box>
+          
+        )
+      }
     },
     {
-      field: "action",
       flex: 1,
       cellClassName: "action-column--cell",
       renderCell: params => {
-        const id = params.row.id;
-        const status = params.row.status;
-
-        console.log(status);
+        const status = params.row.locked;
+        // console.log(params.row.id, params.row.locked)
         return (
           <Button
-            // onClick={() => handleLock(params.row.id)}
-            // onClick={() => setIsLocked(!isLocked)}
-            onClick={() => console.log(params.row.id)}
+              onClick={() => {
+                const sta = params.row.locked;
+                // console.log(sta);
+                if (sta === 'true') {
+                  handleUnLock(params.row.id);
+                } else {
+                  handleLock(params.row.id);
+                }
+              }}
           >
             <Box
             width="100px"
@@ -103,13 +147,13 @@ const UserPage = () => {
             display="flex"
             justifyContent="left"
             boxShadow={5}
-            {...!isLocked ? {backgroundColor : "#4cceac"} : {backgroundColor : "#E95153"}}
+            {...(status === 'true') ? {backgroundColor : "#4cceac"} : {backgroundColor : "#E95153"}}
             borderRadius="4px"
             sx={{
               border: '1px solid white',
             }}
             >
-                {isLocked 
+                {status 
                 ? <LockOutlinedIcon
                     color="#c2c2c2"
                   /> 
@@ -118,7 +162,7 @@ const UserPage = () => {
                   />}
              
             <Typography color="#e0e0e0" sx={{ ml: "5px" }}>
-              {isLocked ? "Lock" : "Unlock" }
+              {status === 'false' ? "Lock" : "Unlock" }
             </Typography>
             </Box>
           </Button>
@@ -182,6 +226,7 @@ const UserPage = () => {
             slots={{ toolbar: CustomGridToolbar }}
           />
         </Box>
+        <ToastContainer/>
       </Box>
     </>
     

@@ -25,7 +25,7 @@ const ViewOrder = () => {
     status: ""
   });
 
-   const config = {
+  const config = {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   };
 
@@ -93,6 +93,36 @@ const ViewOrder = () => {
             }}
           />
         </Grid>
+
+        {/* <Grid item sm={8}>
+          <TextField
+            variant="standard"
+            name="products"
+            fullWidth
+            id="products"
+            label="Sản phẩm"
+            InputLabelProps={{ style: { color: 'blue' } }}
+            multiline
+            InputProps={{
+                style: { color: 'black' },
+                startAdornment: (
+                  <InputAdornment position="start">
+                      <img
+                        src={order.products.thumbnail}
+                        alt="Product Thumbnail"
+                        style={{
+                          width: '100px',
+                          height: '70px',
+                          borderRadius: '10px',
+                          border: '1px solid blue',
+                        }}
+                      /> 
+                  </InputAdornment>
+                ),
+              }}
+          />
+        </Grid> */}
+
 
         <Grid item sm={8}>
           <TextField

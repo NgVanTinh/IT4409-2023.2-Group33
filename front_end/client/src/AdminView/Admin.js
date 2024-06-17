@@ -11,7 +11,8 @@ import AddProduct from './pages/product/AddProduct';
 import MainLayout from './components/MainLayout/MainLayout'
 import Chart from './pages/chart/Chart';
 import Login from './pages/login/Login';
-import Test from './components/test';
+import Message from './pages/message/Message';
+import PM from './components/PM';
 const Admin = () => {
   return (
     <div>
@@ -27,7 +28,8 @@ const Admin = () => {
           <Route path='orders' element={<OrderPage/>}/>
           <Route path='statistics' element={<Chart/>}/>
           <Route path='view-order/:id' element={<ViewOrder/>}/>
-          <Route path='test' element={<Test/>}/>
+          <Route path='messages' element={<Message/>}/>
+          <Route path='messages/:id' element={<PM/>}/>
         </Route>
       </Routes>
     </div>

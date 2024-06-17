@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from "react-toastify";
 import { Box } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid' 
-import {IconButton} from '@mui/material';
+import {IconButton, Button} from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import TopHeader from '../../components/TopHeader';
 import {GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
@@ -46,6 +47,46 @@ const OrderPage = () => {
 
     setOrders(ordersData);
     // console.log(orders);
+  }
+
+  const Confirm = async (orderId) => {
+    const formData = new FormData();
+    formData.append("id", orderId);
+    await axios.put(`https://buckytank.shop/api/orders/${orderId}/confirm`,formData, config)
+    .then(() => {
+      toast.info('Cập nhật trạng thái thành công!', {
+        position: "top-right",
+        autoClose:1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+      loadOrders();
+    })
+    .catch(err =>{console.error(err)})
+  }
+
+  const Delivered = async (orderId) => {
+    const formData = new FormData();
+    formData.append("id", orderId);
+    await axios.put(`https://buckytank.shop/api/orders/${orderId}/deliver`,formData, config)
+    .then(() => {
+      toast.info('Cập nhật trạng thái thành công!', {
+        position: "top-right",
+        autoClose:1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+      loadOrders();
+    })
+    .catch(err =>{console.error(err)})
   }
 
   useEffect(() => {
@@ -93,37 +134,76 @@ const OrderPage = () => {
       flex: 1,
     },
     {
-      id:"update",
+      field: "update",
+      id: "update",
       headerName: "Cập nhật trạng thái",
       flex: 1,
+      renderCell: (params) => {
+        const status = params.row.status;
+        let buttonText;
+        let textColor;
+
+        if (status === 'COMPLETED'){
+          buttonText = 'Hoàn thành';
+          textColor = '#11E80A';
+        }
+        else if( status === 'DELIVERED') {
+          buttonText = 'Chờ xác nhận';
+          textColor = '#F0C61E';
+        } else if (status === 'SHIPPING') {
+          buttonText = 'Đã giao';
+          textColor = '#0EAB08';
+        } else if (status === 'CREATED') {
+          buttonText = 'Xác nhận';
+          textColor = 'blue';
+        } else {
+          buttonText = 'UNKNOWN';
+          textColor = 'red';
+        }
+
+        return (
+          <Box>
+            <Button
+              aria-label="view"
+              color="primary"
+              disabled={status === 'COMPLETED' || status === 'DELIVERED'}
+              onClick={() => {
+                const id = params.row.id ? params.row.id : null;
+                if (status === 'SHIPPING') {
+                  Delivered(id);
+                } else if (status === 'CREATED') {
+                  Confirm(id);
+                }
+              }}
+              style={{ color: textColor }}  
+            >
+              {buttonText}
+            </Button>
+          </Box>
+        );
+      },
+    },
+    {
+      id:"action",
+      flex: 1,
+      cellClassName: "status-column--cell",
       renderCell: params => {
         return (
-          <p>hiii</p>
+          <Box>
+            <IconButton aria-label="view" color="primary"
+              onClick={() => {
+                let id = params.row.id ? params.row.id : null;
+                
+                navigate(`/admin/view-order/${id}`)
+              }}
+            >
+              < VisibilityOutlinedIcon />
+            </IconButton> 
+          </Box>
         );
       },
       
-    },
-    // {
-    //   id:"action",
-    //   flex: 1,
-    //   cellClassName: "status-column--cell",
-    //   renderCell: params => {
-    //     return (
-    //       <Box>
-    //         <IconButton aria-label="view" color="primary"
-    //           onClick={() => {
-    //             let id = params.row.id ? params.row.id : null;
-                
-    //             navigate(`/admin/view-order/${id}`)
-    //           }}
-    //         >
-    //           < VisibilityOutlinedIcon />
-    //         </IconButton> 
-    //       </Box>
-    //     );
-    //   },
-      
-    // }
+    }
   ]
   return (
     <>
@@ -185,6 +265,7 @@ const OrderPage = () => {
             slots={{ toolbar: CustomGridToolbar }}
             />
           </Box>
+          <ToastContainer/>
         </Box>
     </>
     

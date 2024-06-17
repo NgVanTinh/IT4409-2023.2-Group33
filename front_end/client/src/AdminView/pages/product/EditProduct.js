@@ -160,8 +160,8 @@ const EditProduct = () => {
     const categories = await axios.get('https://buckytank.shop/products/categories', config);
     setCategories(categories.data);
     const product = await axios.get(`https://buckytank.shop/products/${id}`);
-    console.log(product.data);
     setProduct(product.data);
+    console.log(product.data);
     categories.data.map((category) => {
       if(category.name === product.data.category) {
         setSelectedCategory(category.id);
@@ -169,7 +169,6 @@ const EditProduct = () => {
     })
       // console.log(selectedCategory)
       setProductSpecs(JSON.parse(product.data.spec));
-      console.log(productSpecs);
       // console.log(selectedCategory);
   }
 
@@ -210,17 +209,19 @@ const EditProduct = () => {
   };
 
   const onThumbnailChange = (e) => {
+    e.preventDefault();
     setProduct({...product, thumbnail: e.target.files[0]});
   };
 
   const onImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (product.images.length < 5) {
-    setProduct(prevProduct => ({
-      ...prevProduct,
-      images: [...prevProduct.images, ...files]
-    }));
-    } else {
+      setProduct(prevProduct => ({
+        ...prevProduct,
+        images: [...prevProduct.images, ...files]
+      }))
+    } 
+    else {
       toast.warn('Can not upload more than 5 images!', {
         position: "top-center",
         autoClose: 5000,
@@ -239,62 +240,79 @@ const EditProduct = () => {
       ...prevProduct,
       images: prevProduct.images.filter((_, i) => i !== index)
     }));
+    
   };
 
   const onSubmit = async (e) => {
-    // console.log(product)
     e.preventDefault();
-    console.log(productSpecs)
-    await axios.put(`https://buckytank.shop/products/spec/${id}`, productSpecs, config)
+    if(!isString(product.thumbnail)) {
+      const fdata = new FormData();
+      fdata.append('images', product.thumbnail);
+      const thumb = await axios.post(`https://buckytank.shop/products/upload-image`, fdata , config);
+      console.log(thumb.data);
+      product.thumbnail = thumb.data.imageUrl.slice(1, -1);
+    }
+
+    const image = product.images;
+    const fdata = new FormData();
+    for(let i = 0; i < image.length; i++) {
+      if(!isString(image[i])) fdata.append('images', image[i]);
+    }
+    let imageCount = 0;
+    for (const [key, value] of fdata.entries()) {
+      if (key === 'images') {
+          imageCount++;
+      }
+    }
+
+    let res;
+    if(imageCount > 0) {
+       res = await axios.post(`https://buckytank.shop/products/upload-image`, fdata , config);
+    }
+    // const imageUrlString = res.data.imageUrl.slice(1, -1);
+
+    // // Tách chuỗi thành mảng các URL
+    // const imageUrls = imageUrlString.split(', ');
+    const str =  JSON.stringify(productSpecs)
+    // console.log(str)
+    const updatedProduct = {...product, spec: str, category: currentCategory.name };
+    // setProduct({...product, spec: str})
+    // console.log(product);
+    const formData = new FormData();
+    formData.append('title', updatedProduct.title);
+    formData.append('price', updatedProduct.price);
+    formData.append('description', updatedProduct.description);
+    formData.append('discountPercentage', updatedProduct.discountPercentage);
+    formData.append('stock', updatedProduct.stock);
+    formData.append('brand', updatedProduct.brand);
+    formData.append('category', updatedProduct.category);
+    formData.append('rating', updatedProduct.rating);
+    formData.append('spec', updatedProduct.spec);
+    formData.append('thumbnail',updatedProduct.thumbnail);
+    formData.append('image', (imageCount > 0) ?  res.data.imageUrl.slice(1, -1) : updatedProduct.images);
+    console.log("form data: ", formData);
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    await axios.put(`https://buckytank.shop/products/update/${id}`, formData, config)
     .then(res => {
-      console.log(res.data)
+      toast.info('Cập nhật thành công!',{
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
     })
     .catch(err => {
         console.log(err);
     })
-    navigate(`/admin/view-product/${id}`);
-
-    // const str =  JSON.stringify(productSpecs)
-    // // console.log(str)
-    // const updatedProduct = {...product, spec: str, category: currentCategory.name };
-    // // setProduct({...product, spec: str})
-    // console.log("update product: ", updatedProduct);
-    // // console.log(product);
-    // const formData = new FormData();
-    // formData.append('title', updatedProduct.title);
-    // formData.append('price', updatedProduct.price);
-    // formData.append('description', updatedProduct.description);
-    // formData.append('discountPercentage', updatedProduct.discountPercentage);
-    // formData.append('stock', updatedProduct.stock);
-    // formData.append('brand', updatedProduct.brand);
-    // formData.append('category', updatedProduct.category);
-    // formData.append('rating', updatedProduct.rating);
-    // formData.append('spec', updatedProduct.spec);
-    // formData.append('thumbnail', updatedProduct.thumbnail);
-    // for (let i = 0; i < updatedProduct.images.length; i++) {
-    //   formData.append('image', updatedProduct.images[i]);
-    // }
-    // console.log("form data: ", formData);
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(`${key}: ${value}`);
-    // }
-    // await axios.put(`https://buckytank.shop/products/${id}`, formData, config)
-    // .then(res => {
-    //   toast.info('Cập nhật thành công!', {
-    //     position: "top-center",
-    //     autoClose: 1000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "dark",
-    //     });
-    // })
-    // .catch(err => {
-    //     console.log(err);
-    // })
-    // navigate(`/admin/view-product/${id}`);
+    setTimeout(() => {
+      navigate(`/admin/view-product/${id}`);
+    }, 1000);
   };
 
   const isString = (value) => typeof value === 'string';
@@ -421,8 +439,9 @@ const EditProduct = () => {
             autoFocus
             value={product.rating}
             InputLabelProps={{ style: { color: 'blue' } }}
-            InputProps={{ style: { color: 'black' } }}
+            InputProps={{ style: { color: 'black' }, readOnly: true }}
             onChange={onInputChange}
+            
           />
         </Grid>
         <Grid item sm={8} >

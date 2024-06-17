@@ -4,7 +4,7 @@ import './MainLayout.css';
 import { Outlet } from "react-router-dom";
 
 import { DashboardOutlined, ProductOutlined, UserOutlined, BellOutlined,
-        OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined, BarChartOutlined, LogoutOutlined  } from '@ant-design/icons'
+        OrderedListOutlined, AppstoreAddOutlined, AppstoreOutlined, BarChartOutlined, LogoutOutlined, MessageOutlined  } from '@ant-design/icons'
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { AiOutlineMenuFold } from "react-icons/ai";
@@ -36,7 +36,7 @@ const MainLayout = () => {
            ? 
               <span className='lg-logo'>T <span className='text-white'>SHOP</span> </span>
            :
-              <span className='sm-logo 50px'>T<span className='text-white'>S</span></span>
+              <span className='sm-logo 60px'>T</span>
            }    
            </h2>
         </div>
@@ -73,6 +73,11 @@ const MainLayout = () => {
               label: 'Thống kê',
               icon:<BarChartOutlined />,
               key: '/admin/statistics'
+            },
+            {
+              label: "Tin nhắn",
+              icon: <MessageOutlined />,
+              key: '/admin/messages'
             },
             {
               label: 'Đăng xuất',

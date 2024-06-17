@@ -112,6 +112,9 @@ const Category = [
           id: 'gia-do',
           name: 'Giá đỡ',
           specs: [      
+              { name: 'Chất liệu', type: 'text' },
+              { name: 'Kích thước', type: 'text' },
+              { name: 'Trọng lượng', type: 'text' },
           ],
       },
       {

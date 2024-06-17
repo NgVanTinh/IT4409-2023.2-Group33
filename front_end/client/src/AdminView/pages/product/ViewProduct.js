@@ -34,6 +34,7 @@ const ViewProduct = () => {
 
   const loadProduct = async () => {
     const result = await axios.get(`https://buckytank.shop/products/${id}`);
+    result.data.price = result.data.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     setProduct(result.data);
     console.log(result.data);
     const obj = JSON.parse(result.data.spec)

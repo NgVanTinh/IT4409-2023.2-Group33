@@ -26,16 +26,12 @@ function Login() {
         timer: 1500,
       });
       setCookie("token", response.token, 1);
-<<<<<<< HEAD
-      console.log(response);
-=======
       setCookie("username", response.username, 1);
       setCookie("id", response.id, 1);
       setCookie("address", response.address, 1);
       setCookie("phone", response.phone, 1);
       setCookie("email", response.email, 1);
       setCookie("fullname", response.fullname, 1);
->>>>>>> 0a2c59e80c32d93e6d57da778a77d73dd1c78dd9
       navigate("/");
     } else {
       Swal.fire({
