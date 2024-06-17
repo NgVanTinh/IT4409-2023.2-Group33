@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL, BASE_URL_2 } from "../utils/apiURL";
+import { BASE_URL_2 } from "../utils/apiURL";
 import { STATUS } from "../utils/status";
 
 const initialState = {
@@ -590,9 +590,8 @@ export const fetchAsyncProducts = createAsyncThunk(
     const response = await fetch(`${BASE_URL_2}products?limit=${limit}`);
     const data = await response.json();
     const filteredProducts = data.products.filter(
-      product => !product.isDeleted
+      product => !product.isDeleted === true
     );
-    console.log(filteredProducts)
     return filteredProducts;
   }
 );

@@ -1,7 +1,7 @@
 // src/features/user/userSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { STATUS } from "../utils/status";
-import { get, post, edit, del } from "../utils/request";
+import { get, post } from "../utils/request";
 
 const initialState = {
   user: null,

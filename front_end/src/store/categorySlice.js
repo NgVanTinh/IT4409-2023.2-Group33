@@ -23,7 +23,10 @@ export const fetchAsyncProductsOfCategory = createAsyncThunk(
       throw new Error(`Failed to fetch products of category ${id}`);
     }
     const data = await response.json();
-    return data.products;
+    const filteredProducts = data.products.filter(
+      product => !product.isDeleted === true
+    );
+    return filteredProducts;
   }
 );
 

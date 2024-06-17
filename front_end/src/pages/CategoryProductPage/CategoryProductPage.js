@@ -53,7 +53,7 @@ export default function CategoryProductPage() {
               <h3>
                 Danh mục{": "}
                 <span className="text-capitalize">
-                  {categoryName.replace("-", " ")}
+                  {categoryName && categoryName.replace("-", " ")}
                 </span>
               </h3>
             </div>

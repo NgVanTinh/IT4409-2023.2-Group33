@@ -13,6 +13,7 @@ import Chart from './pages/chart/Chart';
 import Login from './pages/login/Login';
 import Message from './pages/message/Message';
 import PM from './components/PM';
+import Chat from './components/testChat';
 const Admin = () => {
   return (
     <div>
@@ -30,6 +31,9 @@ const Admin = () => {
           <Route path='view-order/:id' element={<ViewOrder/>}/>
           <Route path='messages' element={<Message/>}/>
           <Route path='messages/:id' element={<PM/>}/>
+          <Route path='test' element={<Chat/>}/>
+          <Route path='*' element={<h1>404 Not Found</h1>}/>
+
         </Route>
       </Routes>
     </div>

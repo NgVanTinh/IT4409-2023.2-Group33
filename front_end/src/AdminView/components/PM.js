@@ -12,6 +12,7 @@ const PM = () => {
     const [inputValue, setInputValue] = useState('');
     const { id } = useParams();
     const bottomRef = useRef(null);
+    const [stompClient, setStompClient] = useState(null);
 
     const config = {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -48,48 +49,39 @@ const PM = () => {
         }
     }, [messages]);
 
-    const [stompClient, setStompClient] = useState(null);
-    const [isConnected, setIsConnected] = useState(false);
-
     useEffect(() => {
-        const socket = new SockJS('https://buckytank.shop/ws');
-        const client = Stomp.over(socket);
-
-        client.connect({}, (frame) => {
-            console.log('Connected: ' + frame);
-            setIsConnected(true);
-            client.subscribe(`/user/${id}/queue/messages`, (chatMessage) => {
-                showMessage(JSON.parse(chatMessage.body));
-            });
-        }, (error) => {
-            console.log('STOMP error: ' + error);
-            setIsConnected(false);
-        });
-
-        setStompClient(client);
-
-        return () => {
-            if (client) {
-                client.disconnect(() => {
-                    console.log('Disconnected');
-                });
-            }
-        };
+        if(id !== null) connect();
     }, [id]);
+
+    const connect = () => {
+    const socket = new SockJS('https://buckytank.shop/ws');
+    const client = Stomp.over(socket);
+
+    client.connect({}, (frame) => {
+      console.log('Connected: ' + frame);
+      client.subscribe(`/user/${id}/queue/messages`, (chatMessage) => {
+        showMessage(JSON.parse(chatMessage.body));
+      });
+    }, (error) => {
+      console.log('STOMP error: ' + error);
+    });
+
+    setStompClient(client);
+  };
 
     const showMessage = (message) => {
         setMessages((prevMessages) => [...prevMessages, message]);
     };
 
     const handleSendMessage = () => {
-        if (inputValue.trim() === '' || !isConnected) return;
+        if (inputValue.trim() === '' || !stompClient) return;
         const receiverId = id; 
         const message = {
             content: inputValue,
             senderId: 1, 
             receiverId: receiverId
         };
-        if (stompClient && isConnected) {
+        if (stompClient) {
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));
             setInputValue('');
         } else {
