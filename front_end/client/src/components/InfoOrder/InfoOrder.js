@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  confirmOrder,
   fetchOrdersByUser,
   fetchProductRatings,
   submitProductRating,
@@ -192,14 +193,17 @@ const InfoOrder = () => {
       filters: [
         { text: "Chờ xác nhận", value: "CREATED" },
         { text: "Đang giao hàng", value: "AWAITING_SHIPMENT" },
+        { text: "Đơn hàng đã được giao", value: "DELIVERED" },
         { text: "Đã nhận hàng", value: "COMPLETED" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (tag) => {
         if (tag === "CREATED") {
           return <Tag color="blue">Chờ xác nhận</Tag>;
-        } else if (tag === "AWAITING_SHIPMENT") {
+        } else if (tag === "SHIPPING") {
           return <Tag color="gold">Đang giao hàng</Tag>;
+        } else if (tag === "DELIVERED") {
+          return <Tag color="purple">Đơn hàng đã được giao</Tag>;
         } else {
           return <Tag color="green">Đã nhận hàng</Tag>;
         }
@@ -276,13 +280,25 @@ const InfoOrder = () => {
       title: "Hành động",
       key: "action",
       align: "center",
-      render: (_, record) =>
-        // record.status === "COMPLETED" && (
-        //   <Button onClick={() => showReviewModal(record.products, record.id)}>
-        //     Đánh giá
-        //   </Button>
-        // ),
-        console.log(record),
+      render: (_, record) => {
+        if (record.status === "COMPLETED") {
+          return (
+            <Button onClick={() => showReviewModal(record.products, record.id)}>
+              Đánh giá
+            </Button>
+          );
+        } else if (record.status === "DELIVERED") {
+          // Nếu đơn hàng chưa được xác nhận, hiển thị nút "Xác nhận đơn hàng"
+          return (
+            <Button
+              type="primary"
+              onClick={() => dispatch(confirmOrder(record.id))}
+            >
+              Xác nhận đã nhận hàng
+            </Button>
+          );
+        }
+      },
     },
   ];
 

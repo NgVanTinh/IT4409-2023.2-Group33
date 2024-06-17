@@ -20,9 +20,7 @@ const ProductRatings = ({ ratedProducts }) => {
             <Rate allowHalf value={item.rate} disabled />
           </div>
           <div className="product-ratings-comment">{item.comment}</div>
-          <div className="product-ratings-date">
-            {moment(item.date).format("DD/MM/YYYY")}
-          </div>
+          <div className="product-ratings-date">{item.date}</div>
         </div>
       ))}
     </>

@@ -140,6 +140,36 @@ export const fetchProductRatings = createAsyncThunk(
       }
 
       const data = await response.json();
+      return data.reverse();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Người dùng xác nhận đã nhận được đơn hàng
+// Xác nhận đơn hàng cho người dùng
+export const confirmOrder = createAsyncThunk(
+  "orders/confirmOrder",
+  async (orderId, { getState, rejectWithValue }) => {
+    try {
+      const token = getCookie("token");
+      const response = await fetch(
+        `${BASE_URL_2}api/orders/${orderId}/completed`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Could not confirm order");
+      }
+
+      const data = await response.json();
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -208,6 +238,23 @@ const orderSlice = createSlice({
       })
       .addCase(fetchProductRatings.rejected, (state, action) => {
         state.statusRatedProduct = "failed";
+      })
+      .addCase(confirmOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.orders.findIndex(
+          (order) => order.id === action.meta.arg
+        );
+        if (index !== -1) {
+          // Cập nhật trạng thái của đơn hàng tại vị trí tìm được
+          state.orders[index].status = "COMPLETED";
+        }
+      })
+      .addCase(confirmOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
