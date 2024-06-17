@@ -74,11 +74,11 @@ const MainLayout = () => {
               icon:<BarChartOutlined />,
               key: '/admin/statistics'
             },
-            {
-              label: "Tin nhắn",
-              icon: <MessageOutlined />,
-              key: '/admin/messages'
-            },
+            // {
+            //   label: "Tin nhắn",
+            //   icon: <MessageOutlined />,
+            //   key: '/admin/messages'
+            // },
             {
               label: 'Đăng xuất',
               icon:<LogoutOutlined />,

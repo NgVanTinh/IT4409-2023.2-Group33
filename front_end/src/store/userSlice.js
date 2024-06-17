@@ -85,7 +85,7 @@ export const login = createAsyncThunk(
   async (records, { rejectWithValue }) => {
     try {
       const response = await post("auth/login", records);
-      return response;
+      if(response.id !== 1) return response;
     } catch (error) {
       return rejectWithValue(error.response);
     }
