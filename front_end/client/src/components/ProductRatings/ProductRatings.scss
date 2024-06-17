@@ -31,3 +31,8 @@
     align-self: flex-end;
   }
 }
+
+/* Chỉ thay đổi màu nền cho đánh giá của người dùng hiện tại */
+.current-user-rating {
+  background-color: #e6f7ff;
+}

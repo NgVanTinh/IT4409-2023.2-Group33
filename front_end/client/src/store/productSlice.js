@@ -589,7 +589,10 @@ export const fetchAsyncProducts = createAsyncThunk(
   async (limit) => {
     const response = await fetch(`${BASE_URL_2}products?limit=${limit}`);
     const data = await response.json();
-    return data.products;
+    const filteredProducts = data.products.filter(
+      (product) => !product.isDeleted
+    );
+    return filteredProducts;
   }
 );
 

@@ -1,20 +1,28 @@
 import React from "react";
-import { Rate, Row } from "antd";
+import { Rate } from "antd";
 import moment from "moment";
 import "./ProductRatings.scss";
-import Rating from "../Rating/Rating";
+import { getCookie } from "../../helpers/cookie";
 
 const ProductRatings = ({ ratedProducts }) => {
+  const id = getCookie("id");
   return (
     <>
       {ratedProducts.map((item) => (
-        <div className="product-ratings">
+        <div
+          // Chỉ thêm class điều kiện ở đây
+          className={`product-ratings ${
+            item.userId.toString() === id ? "current-user-rating" : ""
+          }`}
+        >
           <div className="product-ratings-name">{item.fullName}</div>
           <div className="product-ratings-rate">
             <Rate allowHalf value={item.rate} disabled />
           </div>
           <div className="product-ratings-comment">{item.comment}</div>
-          <div className="product-ratings-date">{item.date}</div>
+          <div className="product-ratings-date">
+            {moment(item.date).format("DD/MM/YYYY")}
+          </div>
         </div>
       ))}
     </>
