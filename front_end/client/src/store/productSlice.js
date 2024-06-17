@@ -18,6 +18,20 @@ const initialState = {
     frontCamera: null,
     chip: null,
     battery: null,
+    thoiGianTaiNghe: null,
+    thoiGianHopSac: null,
+    congSac: null,
+    tuongThich: null,
+    tienIch: null,
+    hoTroKetNoi: null,
+    dieuKhienBang: null,
+    dungLuongPin: null,
+    nguonVao: null,
+    nguonRa: null,
+    loaiPin: null,
+    tienIchPin: null,
+    khoiLuong: null,
+    hieuSuatSac: null,
   },
   currentSort: null,
   productsStatus: STATUS.IDLE,
@@ -166,7 +180,228 @@ function applyFilters(products, filters) {
       }
     });
   }
+  // Xử lý bộ lọc cho Thời gian tai nghe
+  if (filters.thoiGianTaiNghe) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return (
+          productSpecs["Thời gian tai nghe"] &&
+          productSpecs["Thời gian tai nghe"].includes(filters.thoiGianTaiNghe)
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+  // Xử lý bộ lọc cho Thời gian hộp sạc
+  if (filters.thoiGianHopSac) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return (
+          productSpecs["Thời gian hộp sạc"] &&
+          productSpecs["Thời gian hộp sạc"].includes(filters.thoiGianHopSac)
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+  // Xử lý bộ lọc cho Cổng sạc
+  if (filters.congSac) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return (
+          productSpecs["Cổng sạc"] &&
+          productSpecs["Cổng sạc"] === filters.congSac
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
 
+  // Xử lý bộ lọc cho Tương thích
+  if (filters.tuongThich && filters.tuongThich.length > 0) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return filters.tuongThich.every(
+          (t) =>
+            productSpecs["Tương thích"] &&
+            productSpecs["Tương thích"].includes(t)
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Tiện ích
+  if (filters.tienIch && filters.tienIch.length > 0) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return filters.tienIch.every(
+          (t) =>
+            productSpecs["Tiện ích"] && productSpecs["Tiện ích"].includes(t)
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Hỗ trợ kết nối
+  if (filters.hoTroKetNoi) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return (
+          productSpecs["Hỗ trợ kết nối"] &&
+          productSpecs["Hỗ trợ kết nối"].includes(filters.hoTroKetNoi)
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Điều khiển bằng
+  if (filters.dieuKhienBang) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        return (
+          productSpecs["Điều khiển bằng"] &&
+          productSpecs["Điều khiển bằng"].includes(filters.dieuKhienBang)
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+  if (filters.dungLuongPin) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const dungLuongPin = productSpecs["Dung lượng pin"];
+        return dungLuongPin && dungLuongPin >= filters.dungLuongPin;
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Nguồn vào
+  if (filters.nguonVao) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const nguonVao = productSpecs["Nguồn vào"];
+        return nguonVao && nguonVao.includes(filters.nguonVao);
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Nguồn ra
+  if (filters.nguonRa) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const nguonRa = productSpecs["Nguồn ra"];
+        return (
+          nguonRa &&
+          nguonRa.toLowerCase().includes(filters.nguonRa.toLowerCase())
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Loại pin
+  if (filters.loaiPin) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const loaiPin = productSpecs["Lõi pin"];
+        // Chuyển cả hai chuỗi về dạng chữ thường trước khi so sánh
+        return (
+          loaiPin &&
+          loaiPin.toLowerCase().includes(filters.loaiPin.toLowerCase())
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Tiện ích pin
+  if (filters.tienIchPin) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const tienIchPin = productSpecs["Công nghệ/Tiện ích"];
+        return (
+          tienIchPin &&
+          tienIchPin.toLowerCase().includes(filters.tienIchPin.toLowerCase())
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Khối lượng
+  if (filters.khoiLuong) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const khoiLuong = parseInt(productSpecs["Khối lượng"], 10); // Đảm bảo là số
+        // Kiểm tra xem khoiLuong có nằm trong khoảng được chọn không
+        return (
+          khoiLuong &&
+          khoiLuong >= filters.khoiLuong.min &&
+          (!filters.khoiLuong.max || khoiLuong <= filters.khoiLuong.max)
+        );
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
+
+  // Xử lý bộ lọc cho Hiệu suất sạc
+  if (filters.hieuSuatSac) {
+    filteredProducts = filteredProducts.filter((product) => {
+      try {
+        const productSpecs = JSON.parse(product.spec);
+        const hieuSuatSacStr = productSpecs["Hiệu suất sạc"];
+        const hieuSuatSac = parseFloat(hieuSuatSacStr.replace("%", ""));
+        return hieuSuatSac && hieuSuatSac >= filters.hieuSuatSac;
+      } catch (error) {
+        console.error("Parsing error:", error);
+        return false;
+      }
+    });
+  }
   return filteredProducts;
 }
 

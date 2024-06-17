@@ -13,6 +13,20 @@ import FilterRearCamera from "./FilterRearCamera";
 import FilterChip from "./FilterChip";
 import FilterBattery from "./FilterBattery";
 import { Space } from "antd";
+import FilterThoiGianTaiNghe from "./FilterThoiGianTaiNghe";
+import FilterCongSac from "./FilterCongSac";
+import FilterTuongThich from "./FilterTuongThich";
+import FilterThoiGianHopSac from "./FilterThoiGianHopSac";
+import FilterTienIch from "./FilterTienIch";
+import FilterHoTroKetNoi from "./FilterHoTroKetNoi";
+import FilterDieuKhienBang from "./FilterDieuKhienBang";
+import FilterDungLuongPin from "./FilterDungLuongPin";
+import FilterNguonVao from "./FilterNguonVao";
+import FilterNguonRa from "./FilterNguonRa";
+import FilterLoaiPin from "./FilterLoaiPin";
+import FilterTienIchPin from "./FilterTienIchPin";
+import FilterKhoiLuong from "./FilterKhoiLuong";
+import FilterHieuSuatSac from "./FilterHieuSuatSac";
 
 export default function Filter() {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -40,6 +54,28 @@ export default function Filter() {
             <FilterRearCamera />
             <FilterChip />
             <FilterBattery />
+          </>
+        )}
+        {selectedCategory === "Tai nghe" && (
+          <>
+            <FilterThoiGianTaiNghe />
+            <FilterCongSac />
+            <FilterTuongThich />
+            <FilterTienIch />
+            <FilterThoiGianHopSac />
+            <FilterHoTroKetNoi />
+            <FilterDieuKhienBang />
+          </>
+        )}
+        {selectedCategory === "Sạc dự phòng" && (
+          <>
+            <FilterDungLuongPin />
+            <FilterNguonVao />
+            <FilterNguonRa />
+            <FilterLoaiPin />
+            <FilterTienIchPin />
+            <FilterKhoiLuong />
+            <FilterHieuSuatSac />
           </>
         )}
       </Space>
