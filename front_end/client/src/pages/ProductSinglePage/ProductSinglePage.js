@@ -28,6 +28,9 @@ import { Col, Row } from "antd";
 import Rating from "../../components/Rating/Rating";
 import ProductSimilar from "../../components/ProductSimilar/ProductSimilar";
 import { getCookie } from "../../helpers/cookie";
+import ProductSpecsTable from "../../components/ProductSpecsTable/ProductSpecsTable";
+import ProductRatings from "../../components/ProductRatings/ProductRatings";
+import { fetchProductRatings } from "../../store/orderSlice";
 
 export default function ProductSinglePage() {
   const { id } = useParams();
@@ -43,9 +46,18 @@ export default function ProductSinglePage() {
     (state) => state.product.similarProductsStatus
   );
 
+  const ratedProducts = useSelector((state) => state.order.ratedProducts);
+  const statusRatedProduct = useSelector(
+    (state) => state.order.statusRatedProduct
+  );
+
+  const specsJson = product.spec;
+  const specsObject = specsJson ? JSON.parse(specsJson) : null;
+
   useEffect(() => {
     dispatch(fetchAsyncProductSingle(id));
     dispatch(fetchAsyncSimilarProducts(id));
+    dispatch(fetchProductRatings(id));
   }, [id, dispatch]);
 
   let discountedPrice = (
@@ -275,29 +287,33 @@ export default function ProductSinglePage() {
         </div>
       </div>
 
-      <div className="container my-3">
+      <div className="container my-5">
         <Row>
           <Col span={12}>
             <div className="title-md mx-3">
               <h3>Thông số kỹ thuật</h3>
+            </div>
+            <div className="mx-3 my-5">
+              {specsObject && <ProductSpecsTable specs={specsObject} />}
             </div>
           </Col>
           <Col span={12}>
             <div className="title-md mx-3">
               <h3>Các sản phẩm tương tự</h3>
             </div>
-            <ProductSimilar products={similarProducts} />
+            <div className="mx-3 my-3">
+              <ProductSimilar products={similarProducts} />
+            </div>
           </Col>
         </Row>
       </div>
       <div className="container my-3">
-        <Row>
-          <Col span={24}>
-            <div className="title-md mx-3">
-              <h3>Đánh giá từ khách hàng</h3>
-            </div>
-          </Col>
-        </Row>
+        <div className="title-md mx-3">
+          <h3>Đánh giá từ khách hàng</h3>
+        </div>
+        <div className="mx-3 my-5">
+          <ProductRatings ratedProducts={ratedProducts} />
+        </div>
       </div>
     </main>
   );

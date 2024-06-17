@@ -1,0 +1,38 @@
+.product-ratings {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 10px 10px 10px 20px;
+  margin: 15px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+
+  &-name,
+  &-rate,
+  &-comment,
+  &-date {
+    margin: 3px 0;
+  }
+
+  &-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  &-comment {
+    font-size: 14px;
+    text-align: justify;
+  }
+
+  &-date {
+    font-size: 13px;
+    color: #757575;
+    align-self: flex-end;
+  }
+}
+
+/* Chỉ thay đổi màu nền cho đánh giá của người dùng hiện tại */
+.current-user-rating {
+  background-color: #e6f7ff;
+}

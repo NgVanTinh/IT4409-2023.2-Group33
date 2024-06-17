@@ -5,6 +5,8 @@ import Navbar from "../Navbar/Navbar";
 import { FaFacebook, FaTiktok, FaQuestion } from "react-icons/fa6";
 import { FaQuestionCircle } from "react-icons/fa";
 import { getCookie } from "../../helpers/cookie";
+import { AiOutlineMessage } from "react-icons/ai";
+import MessageModal from "../MessageModal/MessageModal";
 
 export default function Header() {
   const token = getCookie("token");
@@ -51,6 +53,8 @@ export default function Header() {
               <ul className="top-links flex align-center">
                 {token ? (
                   <>
+                    <MessageModal />
+                    <li className="vert-line"></li>
                     <li>
                       <NavLink to={`/infoUser`} className="top-link-itm fs-14">
                         {username}

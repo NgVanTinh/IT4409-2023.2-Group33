@@ -68,7 +68,9 @@ export default function HomePage() {
             <div className="title-md">
               <h3>Tiêu chí tìm kiếm</h3>
             </div>
-            <Filter />
+            <div className="my-3">
+              <Filter />
+            </div>
           </div>
 
           <div className="categories py-5">
